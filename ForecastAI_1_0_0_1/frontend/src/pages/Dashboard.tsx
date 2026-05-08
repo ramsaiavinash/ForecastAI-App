@@ -219,7 +219,7 @@ export function Dashboard() {
               <BarChart data={data?.monthlyData || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis dataKey="month" />
-                <YAxis />
+                <YAxis tickFormatter={(v) => { if (v >= 1000000) return `$${(v/1000000).toFixed(0)}M`; if (v >= 1000) return `$${(v/1000).toFixed(0)}K`; return `$${v}`; }} width={60} />
                 <Tooltip
                   formatter={(value) => formatCurrency(value as number)}
                   contentStyle={{
@@ -278,11 +278,11 @@ export function Dashboard() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-slate-900 truncate">
+                      <p className="font-medium text-slate-900 truncate max-w-[180px]">
                         {batch.batchName}
                       </p>
                       <p className="text-xs text-gray-600">
-                        {new Date(batch.createdAt).toLocaleDateString()}
+                        {new Date(batch.createdAt || batch.importDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </p>
                     </div>
                     <div className="text-right flex-shrink-0">
@@ -302,8 +302,7 @@ export function Dashboard() {
                             : "text-red-600"
                         }`}
                       >
-                        {batch.variance >= 0 ? "+" : ""}
-                        {formatPercent((batch.variance / batch.lastTotal) * 100)}
+                        {batch.lastTotal > 0 ? formatPercent((batch.variance / batch.lastTotal) * 100) : formatCompactCurrency(batch.variance)}
                       </p>
                     </div>
                   </div>

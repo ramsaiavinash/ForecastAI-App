@@ -54,9 +54,9 @@ router.get("/:id", async (req, res) => {
     if (!batch) return res.status(404).json({ error: "Batch not found" });
 
     const revenues = await prisma.monthlyRevenue.findMany({
-      where: { importBatchId: id }
+      where: { batchId: id }
     });
-    const projectIds = [...new Set(revenues.map((r: any) => r.projectMasterId))];
+    const projectIds = [...new Set(revenues.map((r: any) => r.projectId))];
     const projects = await prisma.projectMaster.findMany({
       where: { id: { in: projectIds } }
     });
@@ -101,7 +101,7 @@ router.put("/:id/status", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await prisma.monthlyRevenue.deleteMany({ where: { importBatchId: id } });
+    await prisma.monthlyRevenue.deleteMany({ where: { batchId: id } });
     await prisma.importBatch.delete({ where: { id } });
     res.status(204).end();
   } catch (error: any) {

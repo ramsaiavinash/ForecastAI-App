@@ -48,11 +48,11 @@ export default function BatchDetail() {
   // Group revenues by project
   const projectMap = new Map<string, { project: any; months: Record<number, any> }>();
   for (const rev of revenues) {
-    if (!projectMap.has(rev.projectMasterId)) {
-      const project = projects.find((p: any) => p.id === rev.projectMasterId);
-      projectMap.set(rev.projectMasterId, { project, months: {} });
+    if (!projectMap.has(rev.projectId)) {
+      const project = projects.find((p: any) => p.id === rev.projectId);
+      projectMap.set(rev.projectId, { project, months: {} });
     }
-    projectMap.get(rev.projectMasterId)!.months[rev.month] = rev;
+    projectMap.get(rev.projectId)!.months[rev.month] = rev;
   }
 
   const projectRows = Array.from(projectMap.values());

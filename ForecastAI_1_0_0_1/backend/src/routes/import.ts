@@ -2,6 +2,78 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../prisma";
 
 const router = Router();
+const CURRENT_YEAR = 2026;
+const N2_MONTH = 3; // March (n-2 actual)
+const N1_MONTH = 4; // April (n-1 forecast)
+const CURRENT_MONTH = 5; // May
+
+const calculateEstimatedForecast = (
+  row: any,
+  projectEndDate: Date
+): Record<number, { amount: number; isEstimated: boolean }> => {
+  const result: Record<number, { amount: number; isEstimated: boolean }> = {};
+  const months = [1,2,3,4,5,6,7,8,9,10,11,12];
+  const monthKeys = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
+
+  // Get end month (only care about current year)
+  const endYear = projectEndDate.getFullYear();
+  const endMonth = projectEndDate.getMonth() + 1;
+
+  // Rule 4: Project ended in past year — import as-is, no estimation
+  const endMonthForCalc = endYear < CURRENT_YEAR ? 0 : (endYear === CURRENT_YEAR ? endMonth : 12);
+
+  // Get n-2 (March actual) and n-1 (April forecast)
+  const n2Value = Number(row[monthKeys[N2_MONTH - 1]] || 0);
+  const n1Value = Number(row[monthKeys[N1_MONTH - 1]] || 0);
+
+  // Rule 5: determine base value for estimation
+  let baseValue: number | null = null;
+  if (n2Value > 0) {
+    baseValue = n2Value; // use n-2 actual
+  } else if (n2Value < 0) {
+    // n-2 is negative — use n-1
+    if (n1Value > 0) {
+      baseValue = n1Value;
+    } else {
+      baseValue = null; // skip estimation
+    }
+  } else {
+    // n-2 is zero — use n-1 if available
+    if (n1Value > 0) {
+      baseValue = n1Value;
+    }
+  }
+
+  for (const m of months) {
+    const csvValue = Number(row[monthKeys[m - 1]] || 0);
+
+    if (m < CURRENT_MONTH) {
+      // Past months: use CSV value as-is
+      result[m] = { amount: csvValue, isEstimated: false };
+    } else {
+      // Future months (May onwards)
+      if (endMonthForCalc === 0) {
+        // Project ended in past year — use CSV value (likely 0)
+        result[m] = { amount: csvValue, isEstimated: false };
+      } else if (m > endMonthForCalc) {
+        // Beyond project end date — 0
+        result[m] = { amount: 0, isEstimated: false };
+      } else if (csvValue !== 0) {
+        // CSV has a value — use it
+        result[m] = { amount: csvValue, isEstimated: false };
+      } else if (baseValue !== null) {
+        // Estimate using base value
+        result[m] = { amount: baseValue, isEstimated: true };
+      } else {
+        // No base value — use 0
+        result[m] = { amount: 0, isEstimated: false };
+      }
+    }
+  }
+
+  return result;
+};
+
 
 const parseDate = (dateStr: string): Date => {
   if (!dateStr || dateStr === "(blank)" || dateStr === "") return new Date("2099-12-31");
@@ -133,31 +205,20 @@ router.post("/csv", async (req: Request, res: Response) => {
       }
 
       // Create monthly revenues using correct field names
-      const monthData = [
-        { month: 1, amount: row.jan || 0 },
-        { month: 2, amount: row.feb || 0 },
-        { month: 3, amount: row.mar || 0 },
-        { month: 4, amount: row.apr || 0 },
-        { month: 5, amount: row.may || 0 },
-        { month: 6, amount: row.jun || 0 },
-        { month: 7, amount: row.jul || 0 },
-        { month: 8, amount: row.aug || 0 },
-        { month: 9, amount: row.sep || 0 },
-        { month: 10, amount: row.oct || 0 },
-        { month: 11, amount: row.nov || 0 },
-        { month: 12, amount: row.dec || 0 },
-      ];
+      const endDate = project.projectEndDate || new Date("2099-12-31");
+      const monthData = calculateEstimatedForecast(row, new Date(endDate));
 
-      for (const m of monthData) {
+      for (const [monthStr, data] of Object.entries(monthData)) {
+        const m = Number(monthStr);
         try {
           await prisma.monthlyRevenue.create({
             data: {
               batchId: batch.id,
               projectId: project.id,
-              month: m.month,
+              month: m,
               year: 2026,
-              amount: m.amount,
-              isEstimated: false,
+              amount: data.amount,
+              isEstimated: data.isEstimated,
               locked: false,
               ownerId: "system",
               statecode: 0,
