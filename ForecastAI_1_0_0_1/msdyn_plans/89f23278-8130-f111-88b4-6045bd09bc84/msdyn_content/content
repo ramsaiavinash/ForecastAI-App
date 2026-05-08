@@ -1,0 +1,266 @@
+{
+  "personasAndUserStories": [
+    {
+      "user": {
+        "id": "Operations user",
+        "name": "Operations user",
+        "description": "Uploads Excel files, manages import batches, and fixes validation errors before submission.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us01",
+          "description": "Upload an Excel file and create a new import batch so that project and monthly revenue data is loaded into Dataverse.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us02",
+          "description": "Preview imported data with invalid rows highlighted so that I can correct issues before submission.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us03",
+          "description": "Automatically ignore Excel columns Y to AK during import so that only relevant data is processed.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us04",
+          "description": "Create or update project master records during import so that project attributes stay current.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us05",
+          "description": "Generate monthly revenue records per project and month so that actuals and forecasts are stored consistently.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us06",
+          "description": "Automatically fill missing forecast months using estimated values so that future revenue is complete.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us07",
+          "description": "Submit the batch for review so that approval workflow can begin.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us16",
+          "description": "Map Excel columns to Dataverse fields after file upload and before import, so that I can ensure data aligns with the Dataverse schema.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us17",
+          "description": "See system-suggested automatic mappings between Excel columns and Dataverse fields, and adjust the mappings if needed, so that the import process is flexible and accurate.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us18",
+          "description": "When selecting Export CSV in the data validation section, generate a CSV file where each validation warning and each validation error is exported as its own row, with columns for batch, project (showing the actual project name from Project Master where applicable), row reference (containing the original source row number), field/column name, message, and severity (warning or error), so that data issues can be reviewed clearly.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us19",
+          "description": "See a visible legend at the top of data preview, monthly revenue by project, and project detail views that explains how estimated values and actual imported values are visually distinct, so that I can clearly understand the meaning of each presentation.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us23",
+          "description": "Allow negative revenue amounts in the import process so that adjustments, credits, and reversals can be supported.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us24",
+          "description": "Update numeric validation so that the Monthly Revenue Amount field accepts both positive and negative numbers, with validation errors only for non-numeric values or missing mandatory amounts.",
+          "userType": "Operations user"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Practice lead",
+        "name": "Practice lead",
+        "description": "Reviews batch details, validates forecasts, and provides first-level approval.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us08",
+          "description": "Review batch totals and project-level monthly details so that I can validate forecast accuracy.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us09",
+          "description": "See estimated values clearly flagged so that I understand where assumptions were applied.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us10",
+          "description": "Approve or reject a batch with comments so that issues can be resolved by operations.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us20",
+          "description": "See a visible legend at the top of monthly revenue by project and project detail views explaining the difference between estimated values and actual imported values, so that I can accurately interpret the data being reviewed.",
+          "userType": "Practice lead"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Practice head",
+        "name": "Practice head",
+        "description": "Performs final approval and locks the batch for reporting and export.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us11",
+          "description": "Review variance against the last approved batch so that I can assess revenue movement.",
+          "userType": "Practice head"
+        },
+        {
+          "id": "us12",
+          "description": "Approve the batch and lock it so that no further edits are possible.",
+          "userType": "Practice head"
+        },
+        {
+          "id": "us21",
+          "description": "See a visible legend in relevant monthly and project detail views clarifying which values are estimated and which are actual imported values, so that I make informed approval decisions.",
+          "userType": "Practice head"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Finance analyst",
+        "name": "Finance analyst",
+        "description": "Monitors dashboards, variances, and trends across batches and projects.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us13",
+          "description": "View dashboards showing totals, variances, and trends so that I can monitor performance.",
+          "userType": "Finance analyst"
+        },
+        {
+          "id": "us14",
+          "description": "Drill into project monthly revenue details so that I can analyze actuals versus forecasts.",
+          "userType": "Finance analyst"
+        },
+        {
+          "id": "us15",
+          "description": "Export a locked batch to Excel in the original format so that it can be shared externally.",
+          "userType": "Finance analyst"
+        },
+        {
+          "id": "us22",
+          "description": "See legends in dashboards and project detail views that visually distinguish estimated values from actual imported values, so that I can correctly analyze and interpret revenue and trends.",
+          "userType": "Finance analyst"
+        }
+      ]
+    }
+  ],
+  "entitiesAndRelationships": {
+    "entities": [
+      {
+        "entityMetadataId": "9f0173bf-bd2b-f111-88b4-0022480b1e6c",
+        "entityName": "Import Batch",
+        "description": "This table contains records of import batches with file and status details",
+        "columns": [
+          "Batch Name",
+          "File Name",
+          "Import Month",
+          "Import Year",
+          "Import Date",
+          "Status",
+          "Current Total",
+          "Last Total",
+          "Variance"
+        ],
+        "userStories": [],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "b505e25d-d42c-f111-88b4-0022480b1e6c",
+        "entityName": "Project Master",
+        "description": "This table contains master data for projects imported from Excel",
+        "columns": [
+          "Project Description",
+          "Customer ID",
+          "Customer Description",
+          "Tower",
+          "Market",
+          "BU",
+          "Vertical",
+          "Sub Practice",
+          "Category",
+          "EDL ID",
+          "EDL Name",
+          "PDL ID",
+          "PDL Name",
+          "PM ID",
+          "PM Name",
+          "Opportunity ID",
+          "Opportunity Name",
+          "SO ID",
+          "Project End Date",
+          "Jan PPM"
+        ],
+        "userStories": [],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "fe4dd23c-d42c-f111-88b4-0022480b1e6c",
+        "entityName": "Monthly Revenue",
+        "description": "This table contains monthly revenue data per project and batch",
+        "columns": [
+          "Monthly Revenue Name",
+          "Project",
+          "Batch",
+          "Year",
+          "Month",
+          "Amount",
+          "Type",
+          "Is Estimated",
+          "Locked"
+        ],
+        "userStories": [],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "399f434a-d42c-f111-88b4-0022480b1e6c",
+        "entityName": "Submission Summary",
+        "description": "This table contains summary of submissions with totals and variance",
+        "columns": [
+          "Submission Summary Name",
+          "Project",
+          "Batch",
+          "Current Total",
+          "Last Total",
+          "Variance",
+          "Variance %",
+          "Trend"
+        ],
+        "userStories": [],
+        "userConfirmed": false,
+        "generated": true
+      }
+    ],
+    "relationships": []
+  },
+  "entitiesCollection": [],
+  "artifactIds": [
+    "01fceba5-8130-f111-88b4-6045bd09bc84",
+    "fae710d5-5831-f111-88b4-6045bd09bc84",
+    "95f23278-8130-f111-88b4-6045bd09bc84",
+    "99f23278-8130-f111-88b4-6045bd09bc84",
+    "9df23278-8130-f111-88b4-6045bd09bc84"
+  ],
+  "solutionUniqueName": "ForecastAI",
+  "planProcessDiagrams": [],
+  "securityRoles": []
+}

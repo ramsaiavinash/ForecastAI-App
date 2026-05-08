@@ -1,0 +1,21 @@
+{
+  "name": "Forecast reminder notifications",
+  "description": "Sends automated reminders to project managers to update current and next month forecasts before submission deadlines.",
+  "typesOfUsers": [
+    "Project manager"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us05",
+      "description": "Edit forecast and current submission values for the current and next month so that plans stay up to date.",
+      "userType": "Project manager"
+    },
+    {
+      "id": "us07",
+      "description": "See auto-estimated values when forecasts are blank so that I can validate or adjust them.",
+      "userType": "Project manager"
+    }
+  ],
+  "version": 1
+}

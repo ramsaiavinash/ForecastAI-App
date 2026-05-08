@@ -1,0 +1,118 @@
+<msdyn_plan msdyn_planid="512580d8-2331-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_content mimetype="application/octet-stream">content</msdyn_content>
+  <msdyn_contentschemaversion>3.0</msdyn_contentschemaversion>
+  <msdyn_description>A Power Platform solution for OPS, project, and practice leaders to manage month-wise revenue forecasts, submissions, and approvals with variance tracking.</msdyn_description>
+  <msdyn_languagecode>1033</msdyn_languagecode>
+  <msdyn_name>Monthly billing governance</msdyn_name>
+  <msdyn_prompt>Objective
+Import a CSV containing project master data   monthly forecast   actuals   submission values, and enable month-wise editing, approvals, and variance tracking.
+Core design rule
+Do NOT store months as columns.
+Store one row per Project per Month.
+Dataverse Tables
+1. Project (master)
+Project ID (key)
+Project Description
+Project Billability (Choice)
+Project End Date
+Jan PPM (number)
+Lookups:
+Customer
+Org Structure
+Opportunity
+Sales Order
+EDL (Person)
+PDL (Person)
+PM (Person)
+2. Revenue Record (main fact table)
+Project (lookup)
+Financial Year (text)
+Month Number (1–12)
+Month Name
+Forecast Amount
+Actual Amount
+Last Submission Amount
+Current Submission Amount
+Variance Amount (calculated)
+Is Locked (Yes/No)
+Is Auto Estimated (Yes/No)
+Reason (text)
+Key:
+Project   Financial Year   Month
+3. Submission
+Project (lookup)
+Financial Year
+Type (Last / Current)
+Total Value
+Status (Draft / Submitted / Approved)
+Submitted By
+Submission Date
+4. Import Batch
+File Name
+Import Date
+Status
+Total Rows
+5. Supporting tables
+Customer
+Org Structure (Tower, Market, BU, Vertical, Sub Practice, Category)
+Resource Person (EDL/PDL/PM)
+Opportunity
+Sales Order
+CSV Handling
+From CSV:
+Create/update Project
+For each month (Jan–Dec):
+→ create/update Revenue Record
+Mapping:
+Jan’26 Forecast → Forecast Amount (Month 1)
+Jan’26 Actuals → Actual Amount (Month 1)
+Same for all months
+FY Last Submission → Submission (Type = Last)
+FY Current Submission → Submission (Type = Current)
+Reasons → Revenue Record or separate Reason table
+Business Logic
+Variance:
+Current Submission – Last Submission
+Edit rules:
+Only current month   next month editable
+Others locked
+Auto forecast:
+If blank → use previous actuals (consider project end date)
+Import overwrite:
+If record exists → update
+Else → create
+App Features
+Screens:
+Import CSV
+Project List
+Monthly Forecast Grid
+Submission Review
+Approval Dashboard
+Variance Analysis
+Roles
+OPS → import &amp; manage
+EDL / PDL / PM → update forecast
+Practice Lead → validate
+Practice Head → approve
+Admin → unlock periods
+Automation
+CSV upload → parse → validate → load Dataverse
+Notify EDL/PDL/PM
+Reminder emails
+Approval workflow (PL → Practice Head)
+Output Required
+Generate:
+Dataverse schema
+Relationships
+Canvas app screens
+Sample forms
+Business rules
+Power Fx formulas for:
+edit locking
+variance calculation
+Import flow design
+Use prefix: mbg_</msdyn_prompt>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_plan>

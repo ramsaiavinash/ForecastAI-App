@@ -1,0 +1,30 @@
+{
+  "name": "Ops Forecast Advisor",
+  "description": "Agent for Operations users to intelligently validate imports, auto-flag errors, suggest corrections, and summarize batch status for review.",
+  "typesOfUsers": [
+    "Operations user"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_ImportBatch",
+    "cr5c7_ProjectMaster",
+    "cr5c7_MonthlyRevenue"
+  ],
+  "userStories": [
+    {
+      "id": "us02",
+      "description": "Preview the imported data before finalizing the batch so that I can verify accuracy.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us03",
+      "description": "Validate data for mandatory fields such as Project ID and Project End Date so that missing or incorrect records are flagged.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us08",
+      "description": "Flag estimated values in the monthly revenue entries so that estimated forecasts are clearly identified.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

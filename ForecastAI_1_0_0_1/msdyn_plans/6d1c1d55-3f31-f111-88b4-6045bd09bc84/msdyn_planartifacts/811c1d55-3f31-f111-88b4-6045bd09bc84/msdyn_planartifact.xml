@@ -1,0 +1,12 @@
+<msdyn_planartifact msdyn_planartifactid="811c1d55-3f31-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_artifactmetadataschemaversion>1.0</msdyn_artifactmetadataschemaversion>
+  <msdyn_artifactstatus>419550000</msdyn_artifactstatus>
+  <msdyn_description>Scheduled flow that sends HR coordinators periodic onboarding completion and delay reports across departments.</msdyn_description>
+  <msdyn_name>Onboarding progress reporting</msdyn_name>
+  <msdyn_proposal mimetype="application/octet-stream">content</msdyn_proposal>
+  <msdyn_proposalschemaversion>1.0</msdyn_proposalschemaversion>
+  <msdyn_type>CopilotStudioFlows</msdyn_type>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_planartifact>

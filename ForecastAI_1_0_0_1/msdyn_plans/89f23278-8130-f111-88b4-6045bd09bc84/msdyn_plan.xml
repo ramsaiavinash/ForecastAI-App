@@ -1,0 +1,138 @@
+<msdyn_plan msdyn_planid="89f23278-8130-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_content mimetype="application/octet-stream">content</msdyn_content>
+  <msdyn_contentschemaversion>3.0</msdyn_contentschemaversion>
+  <msdyn_description>A Dataverse-based revenue forecasting solution that lets operations, practice leaders, and finance teams import, review, approve, and analyze monthly project revenue.</msdyn_description>
+  <msdyn_languagecode>1033</msdyn_languagecode>
+  <msdyn_name>Revenue forecast manager</msdyn_name>
+  <msdyn_prompt>Create a Revenue Forecast App using Dataverse   Canvas App   Power Automate.
+
+Objective
+
+Import an Excel file into Dataverse using the given schema.
+Import all columns and rows except columns Y to AK.
+The Excel contains project data, monthly actuals (past months), and forecasts (future months).
+
+Dataverse Tables
+1. Import Batch
+Batch Name, File Name
+Import Month, Year, Date
+Status = Draft, Under Review, Approved PL, Approved PH, Locked
+Current Total, Last Total, Variance
+2. Project Master
+
+(Store all Excel master columns)
+
+Project ID (key)
+Project Description
+Customer ID, Customer Description
+Tower, Market, BU, Vertical
+Sub Practice, Category
+EDL/PDL/PM IDs &amp; Names
+Opportunity ID/Name
+SO ID
+Project End Date
+Jan PPM
+3. Monthly Revenue
+
+(one row per project per month)
+
+Project lookup
+Batch lookup
+Year
+Month (1–12)
+Amount
+Type = Actual / Forecast / Estimated
+Is Estimated (Yes/No)
+Locked (Yes/No)
+
+Key = Project   Year   Month
+
+4. Submission Summary
+Project lookup
+Batch lookup
+Current Total
+Last Total
+Variance
+Variance %
+Trend = Up / Down / Same
+Import Logic
+Import all fields except columns Y–AK
+Create/update Project Master
+For each month:
+→ create/update Monthly Revenue records
+Business Rules
+1. Forecast logic
+Actuals exist for (current month - 2)
+Forecast exists for future months
+
+If forecast is blank:
+→ use (current month - 2) value as Estimated Forecast
+
+Example:
+If current month = April
+→ use February value for all empty forecast months
+
+2. Forecast limit
+
+Fill forecast only until:
+
+Project End Date month (if within current year)
+Else until December (current year)
+3. Monthly import
+Each upload = new Import Batch
+Previous approved batch = Last Submission
+New batch = Current Submission
+4. Totals
+Current Total = sum Jan–Dec
+Last Total = from previous batch
+5. Variance
+Variance = Current - Last
+Show:
+↑ green = increase
+↓ red = decrease
+neutral = no change
+6. Approval flow
+OPS imports batch
+Practice Lead reviews
+Practice Head approves
+Status = Locked (no edits)
+7. Export
+Export locked batch to Excel
+Must match original format (including totals)
+UI Screens
+Dashboard (totals   variance charts)
+Import Screen (upload   preview)
+Batch Review
+Practice Lead Approval
+Practice Head Approval
+Project Detail (monthly view)
+Export Screen
+Power Automate
+Flow 1: Import
+Upload → validate → ignore Y–AK
+Create Batch   Project   Monthly data
+Apply forecast estimation
+Flow 2: Approval
+Notify Practice Lead → Practice Head
+On approval → Lock batch
+Flow 3: Comparison
+Get previous batch
+Calculate totals   variance
+Flow 4: Export
+Generate Excel in source format
+Key Rules
+Project ID mandatory
+Project End Date required
+Numeric validation for revenue
+Locked batches cannot be edited
+Estimated values must be flagged
+Output Required
+Dataverse schema
+Canvas screens
+Power Automate flows
+Business rules
+Power Fx formulas (forecast, totals, variance)</msdyn_prompt>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_plan>

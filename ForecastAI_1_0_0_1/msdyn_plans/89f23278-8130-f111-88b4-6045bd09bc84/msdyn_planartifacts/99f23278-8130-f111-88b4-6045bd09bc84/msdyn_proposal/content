@@ -1,0 +1,22 @@
+{
+  "name": "Batch comparison totals",
+  "description": "Computes current versus prior batch totals, variances, percentages, and trends for dashboards and executive review.",
+  "typesOfUsers": [
+    "Practice head",
+    "Finance analyst"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us11",
+      "description": "Review variance against the last approved batch so that I can assess revenue movement.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us13",
+      "description": "View dashboards showing totals, variances, and trends so that I can monitor performance.",
+      "userType": "Finance analyst"
+    }
+  ],
+  "version": 1
+}

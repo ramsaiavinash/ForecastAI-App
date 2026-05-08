@@ -1,0 +1,12 @@
+<msdyn_planartifact msdyn_planartifactid="33c49ade-2331-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_artifactmetadataschemaversion>1.0</msdyn_artifactmetadataschemaversion>
+  <msdyn_artifactstatus>419550000</msdyn_artifactstatus>
+  <msdyn_description>Routes submissions from project managers to practice leads and practice heads with status updates, ensuring controlled review and approval.</msdyn_description>
+  <msdyn_name>Submission approval workflow</msdyn_name>
+  <msdyn_proposal mimetype="application/octet-stream">content</msdyn_proposal>
+  <msdyn_proposalschemaversion>1.0</msdyn_proposalschemaversion>
+  <msdyn_type>CopilotStudioFlows</msdyn_type>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_planartifact>

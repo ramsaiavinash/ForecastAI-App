@@ -1,0 +1,30 @@
+{
+  "name": "HR onboarding agent",
+  "description": "Agent for HR coordinators to create templates, define mandatory tasks, and get summarized onboarding progress across departments.",
+  "typesOfUsers": [
+    "HR coordinator"
+  ],
+  "tableSchemaNames": [
+    "mbg_OnboardingTemplate",
+    "mbg_OnboardingTask",
+    "mbg_OnboardingPlan"
+  ],
+  "userStories": [
+    {
+      "id": "us06",
+      "description": "Create and maintain onboarding templates so that managers can start from a standardized process.",
+      "userType": "HR coordinator"
+    },
+    {
+      "id": "us07",
+      "description": "Define mandatory onboarding tasks so that compliance requirements are met.",
+      "userType": "HR coordinator"
+    },
+    {
+      "id": "us08",
+      "description": "Monitor onboarding completion across departments so that HR has visibility into overall progress.",
+      "userType": "HR coordinator"
+    }
+  ],
+  "version": 1
+}

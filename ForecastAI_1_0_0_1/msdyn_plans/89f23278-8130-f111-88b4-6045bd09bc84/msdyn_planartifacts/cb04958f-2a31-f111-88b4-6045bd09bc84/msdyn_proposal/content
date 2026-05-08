@@ -1,0 +1,21 @@
+{
+  "name": "Excel mapping assistant",
+  "description": "Guides operations users through Excel-to-Dataverse column mapping with auto-suggestions, mandatory field checks, and mapping validation before import.",
+  "typesOfUsers": [
+    "Operations user"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us16",
+      "description": "Map Excel columns to Dataverse fields after file upload and before import, so that I can ensure data aligns with the Dataverse schema.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us17",
+      "description": "See system-suggested automatic mappings between Excel columns and Dataverse fields, and adjust the mappings if needed, so that the import process is flexible and accurate.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

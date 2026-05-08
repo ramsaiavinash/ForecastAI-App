@@ -1,0 +1,13 @@
+<msdyn_planartifact msdyn_planartifactid="711c1d55-3f31-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_artifactmetadata mimetype="application/octet-stream">content</msdyn_artifactmetadata>
+  <msdyn_artifactmetadataschemaversion>1.0</msdyn_artifactmetadataschemaversion>
+  <msdyn_artifactstatus>419550002</msdyn_artifactstatus>
+  <msdyn_description>A Power App used by hiring managers to create, track, and manage onboarding plans for new hires.</msdyn_description>
+  <msdyn_name>Manager onboarding app</msdyn_name>
+  <msdyn_proposal mimetype="application/octet-stream">content</msdyn_proposal>
+  <msdyn_proposalschemaversion>1.0</msdyn_proposalschemaversion>
+  <msdyn_type>PowerAppsCodeApp</msdyn_type>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_planartifact>

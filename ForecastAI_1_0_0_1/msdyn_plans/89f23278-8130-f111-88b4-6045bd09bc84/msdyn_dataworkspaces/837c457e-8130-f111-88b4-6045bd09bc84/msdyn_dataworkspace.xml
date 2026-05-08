@@ -1,0 +1,9 @@
+<msdyn_dataworkspace msdyn_dataworkspaceid="837c457e-8130-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_content mimetype="application/octet-stream">content</msdyn_content>
+  <msdyn_contentschemaversion>2.0</msdyn_contentschemaversion>
+  <msdyn_description>Data workspace for - Revenue forecast manager</msdyn_description>
+  <msdyn_name>Revenue forecast manager</msdyn_name>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_dataworkspace>

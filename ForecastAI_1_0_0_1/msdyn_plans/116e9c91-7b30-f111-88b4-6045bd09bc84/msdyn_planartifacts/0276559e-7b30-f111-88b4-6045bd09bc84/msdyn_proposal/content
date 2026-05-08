@@ -1,0 +1,40 @@
+{
+  "name": "Variance and Summary Calculation",
+  "description": "Flow to fetch previous submission, calculate totals and variance, and update Submission Summary for reporting and review.",
+  "typesOfUsers": [
+    "Operations user",
+    "Practice lead"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_ImportBatch",
+    "cr5c7_SubmissionSummary"
+  ],
+  "userStories": [
+    {
+      "id": "us06",
+      "description": "View dashboard with total revenues and variance charts so that I can monitor financial performance at a glance.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us07",
+      "description": "Track and review all previous and current import batches so that I can reference historical submissions.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us10",
+      "description": "Review imported batches and view project details so that I can ensure the revenue data is accurate and complete before approval.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us11",
+      "description": "Approve or reject batches and provide feedback so that only correct batches move forward in the process.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us12",
+      "description": "See variance calculations compared to last submissions so that I understand trends and key changes.",
+      "userType": "Practice lead"
+    }
+  ],
+  "version": 1
+}

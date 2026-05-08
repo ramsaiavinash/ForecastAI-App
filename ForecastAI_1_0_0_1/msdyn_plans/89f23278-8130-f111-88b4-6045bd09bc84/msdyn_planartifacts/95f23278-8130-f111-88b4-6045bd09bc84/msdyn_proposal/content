@@ -1,0 +1,22 @@
+{
+  "name": "Batch approval workflow",
+  "description": "Handles practice lead and head approvals, records comments, updates batch status, and locks approved revenue submissions.",
+  "typesOfUsers": [
+    "Practice lead",
+    "Practice head"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us10",
+      "description": "Approve or reject a batch with comments so that issues can be resolved by operations.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us12",
+      "description": "Approve the batch and lock it so that no further edits are possible.",
+      "userType": "Practice head"
+    }
+  ],
+  "version": 1
+}

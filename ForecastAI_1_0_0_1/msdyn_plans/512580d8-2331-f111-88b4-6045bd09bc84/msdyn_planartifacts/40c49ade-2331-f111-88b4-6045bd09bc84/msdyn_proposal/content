@@ -1,0 +1,16 @@
+{
+  "name": "Reference data assistant",
+  "description": "Helps administrators maintain customers, org structure, and related master data through guided prompts and validations.",
+  "typesOfUsers": [
+    "System administrator"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us13",
+      "description": "Maintain reference data such as customers and org structure so that reporting remains consistent.",
+      "userType": "System administrator"
+    }
+  ],
+  "version": 1
+}

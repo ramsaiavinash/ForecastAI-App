@@ -1,0 +1,27 @@
+{
+  "name": "Submission approval workflow",
+  "description": "Routes submissions from project managers to practice leads and practice heads with status updates, ensuring controlled review and approval.",
+  "typesOfUsers": [
+    "Practice lead",
+    "Practice head"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us08",
+      "description": "Review monthly submissions for projects in my practice so that I can validate data accuracy.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us09",
+      "description": "Send submissions back for correction so that issues are resolved before approval.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us10",
+      "description": "Approve validated submissions so that financials are finalized for the period.",
+      "userType": "Practice head"
+    }
+  ],
+  "version": 1
+}

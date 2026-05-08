@@ -1,0 +1,17 @@
+{
+  "name": "Locked batch export",
+  "description": "Exports locked and approved revenue batches to Excel in the original source format with monthly values and totals.",
+  "typesOfUsers": [
+    "Finance analyst",
+    "Practice head"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us15",
+      "description": "Export a locked batch to Excel in the original format so that it can be shared externally.",
+      "userType": "Finance analyst"
+    }
+  ],
+  "version": 1
+}

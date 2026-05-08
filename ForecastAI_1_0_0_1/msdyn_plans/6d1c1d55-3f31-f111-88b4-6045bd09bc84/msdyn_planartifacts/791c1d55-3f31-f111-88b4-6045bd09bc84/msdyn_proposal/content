@@ -1,0 +1,24 @@
+{
+  "name": "New hire onboarding agent",
+  "description": "Agent that helps new hires view assigned onboarding tasks and update task status using natural language.",
+  "typesOfUsers": [
+    "New hire"
+  ],
+  "tableSchemaNames": [
+    "mbg_NewHire",
+    "mbg_TaskAssignment"
+  ],
+  "userStories": [
+    {
+      "id": "us09",
+      "description": "View my assigned onboarding tasks so that I know what is expected of me.",
+      "userType": "New hire"
+    },
+    {
+      "id": "us10",
+      "description": "Update the status of my onboarding tasks so that my manager can track my progress.",
+      "userType": "New hire"
+    }
+  ],
+  "version": 1
+}

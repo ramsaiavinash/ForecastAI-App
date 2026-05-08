@@ -1,0 +1,18 @@
+{
+  "name": "Locked Batch Exporter",
+  "description": "Flow to export locked batch to Excel, matching source format for Operations users exporting financials externally.",
+  "typesOfUsers": [
+    "Operations user"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_ImportBatch"
+  ],
+  "userStories": [
+    {
+      "id": "us09",
+      "description": "Generate and export a locked batch to an Excel file matching the original format so that data can be shared externally as needed.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

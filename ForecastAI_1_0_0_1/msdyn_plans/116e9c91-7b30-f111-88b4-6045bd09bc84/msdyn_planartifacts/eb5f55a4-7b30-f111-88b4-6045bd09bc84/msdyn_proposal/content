@@ -1,0 +1,30 @@
+{
+  "name": "Lead Approval Companion",
+  "description": "Agent for Practice Leads to summarize batch variances, trends, help decision-making, and facilitate feedback to Operations users.",
+  "typesOfUsers": [
+    "Practice lead"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_SubmissionSummary",
+    "cr5c7_ImportBatch",
+    "cr5c7_MonthlyRevenue"
+  ],
+  "userStories": [
+    {
+      "id": "us10",
+      "description": "Review imported batches and view project details so that I can ensure the revenue data is accurate and complete before approval.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us11",
+      "description": "Approve or reject batches and provide feedback so that only correct batches move forward in the process.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us12",
+      "description": "See variance calculations compared to last submissions so that I understand trends and key changes.",
+      "userType": "Practice lead"
+    }
+  ],
+  "version": 1
+}

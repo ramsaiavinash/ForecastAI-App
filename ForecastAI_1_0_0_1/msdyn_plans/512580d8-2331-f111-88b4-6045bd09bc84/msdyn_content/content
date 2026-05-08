@@ -1,0 +1,492 @@
+{
+  "personasAndUserStories": [
+    {
+      "user": {
+        "id": "Operations user",
+        "name": "Operations user",
+        "description": "Imports CSV files, manages master data, and monitors data load status",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us01",
+          "description": "Import a CSV file with project, forecast, actuals, and submission data so that monthly records are created or updated correctly.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us02",
+          "description": "View import batch status and row counts so that data load issues can be identified quickly.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us03",
+          "description": "Correct and reprocess failed imports so that data completeness is ensured.",
+          "userType": "Operations user"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Project manager",
+        "name": "Project manager",
+        "description": "Maintains monthly forecasts and submissions for assigned projects",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us04",
+          "description": "View my projects in a month-wise grid so that I can understand forecasts, actuals, and submissions per month.",
+          "userType": "Project manager"
+        },
+        {
+          "id": "us05",
+          "description": "Edit forecast and current submission values for the current and next month so that plans stay up to date.",
+          "userType": "Project manager"
+        },
+        {
+          "id": "us06",
+          "description": "Enter reasons for changes so that variances are properly explained.",
+          "userType": "Project manager"
+        },
+        {
+          "id": "us07",
+          "description": "See auto-estimated values when forecasts are blank so that I can validate or adjust them.",
+          "userType": "Project manager"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Practice lead",
+        "name": "Practice lead",
+        "description": "Reviews and validates project submissions before approval",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us08",
+          "description": "Review monthly submissions for projects in my practice so that I can validate data accuracy.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us09",
+          "description": "Send submissions back for correction so that issues are resolved before approval.",
+          "userType": "Practice lead"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Practice head",
+        "name": "Practice head",
+        "description": "Approves validated submissions and monitors variances",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us10",
+          "description": "Approve validated submissions so that financials are finalized for the period.",
+          "userType": "Practice head"
+        },
+        {
+          "id": "us11",
+          "description": "View variance summaries by project and month so that risks are identified early.",
+          "userType": "Practice head"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "System administrator",
+        "name": "System administrator",
+        "description": "Manages periods, unlocks months, and configures rules",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us12",
+          "description": "Lock or unlock specific months so that edit rules can be controlled centrally.",
+          "userType": "System administrator"
+        },
+        {
+          "id": "us13",
+          "description": "Maintain reference data such as customers and org structure so that reporting remains consistent.",
+          "userType": "System administrator"
+        }
+      ]
+    }
+  ],
+  "entitiesAndRelationships": {
+    "entities": [
+      {
+        "entityMetadataId": "74023a50-d42c-f111-88b4-0022480b1e6c",
+        "entityName": "Project",
+        "description": "Master data for projects including descriptions, billability, end dates, and related lookups",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "Customer",
+          "EDL",
+          "Opportunity",
+          "Org Structure",
+          "PDL",
+          "PM",
+          "Project",
+          "Project Billability",
+          "Project Description",
+          "Project End Date",
+          "Sales Order",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us01",
+          "us04",
+          "us05",
+          "us06",
+          "us07",
+          "us13"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "e5473b2c-d42c-f111-88b4-0022480b1e6c",
+        "entityName": "Submission",
+        "description": "Submission records for projects by financial year and type with status and audit information",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Exchange Rate",
+          "Import Sequence Number",
+          "Financial Year",
+          "Project",
+          "Status",
+          "Submission Date",
+          "Submission",
+          "Submission Name",
+          "Submitted By",
+          "Total Value",
+          "Total Value (Base)",
+          "Type",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "Currency",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us01",
+          "us08",
+          "us09",
+          "us10",
+          "us11"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "7013257e-86ef-f011-8406-000d3a31dc47",
+        "entityName": "Customer",
+        "description": "Customer master data",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "Customer",
+          "Customer Name",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us13"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "562e569e-dfe4-f011-8406-7c1e528d4f3f",
+        "entityName": "Resource Person",
+        "description": "Persons related to projects such as EDL, PDL, and PM",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "Email",
+          "Full Name",
+          "Phone",
+          "Resource Person",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us06",
+          "us07",
+          "us13"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "f6a5cae7-bd2b-f111-88b4-0022480b1e6c",
+        "entityName": "Revenue Record",
+        "description": "Monthly financial data per project including forecast, actuals, submissions, and variance tracking",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Exchange Rate",
+          "Import Sequence Number",
+          "Actual Amount",
+          "Actual Amount (Base)",
+          "Current Submission Amount",
+          "Current Submission Amount (Base)",
+          "Financial Year",
+          "Forecast Amount",
+          "Forecast Amount (Base)",
+          "Is Auto Estimated",
+          "Is Locked",
+          "Last Submission Amount",
+          "Last Submission Amount (Base)",
+          "Month Name",
+          "Month Number",
+          "Project",
+          "Reason",
+          "Revenue Record",
+          "Variance Amount",
+          "Variance Amount (Base)",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "Currency",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us01",
+          "us04",
+          "us05",
+          "us06",
+          "us07",
+          "us11"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "01988ce7-37e4-f011-8406-7c1e528d4f3f",
+        "entityName": "Opportunity",
+        "description": "Sales opportunities related to projects",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "Opportunity",
+          "Opportunity Name",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us01",
+          "us13"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "e46585c6-51f0-f011-8406-0022480a49f2",
+        "entityName": "Sales Order",
+        "description": "Sales orders related to projects",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "Sales Order",
+          "Sales Order Number",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us01",
+          "us13"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "5c97b659-bee4-f011-8406-7ced8d3cd2cc",
+        "entityName": "Org Structure",
+        "description": "Organizational structure details including Tower, Market, BU, Vertical, Sub Practice, and Category",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "BU",
+          "Category",
+          "Market",
+          "Org Structure",
+          "Org Structure Name",
+          "Sub Practice",
+          "Tower",
+          "Vertical",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us13"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      },
+      {
+        "entityMetadataId": "f56e7523-50e4-f011-8406-7ced8d70a631",
+        "entityName": "Import Batch",
+        "description": "Records of CSV import batches with file details, status, and row counts",
+        "columns": [
+          "Created By",
+          "Created On",
+          "Created By (Delegate)",
+          "Import Sequence Number",
+          "File Name",
+          "Import Batch",
+          "Import Date",
+          "Status",
+          "Total Rows",
+          "Modified By",
+          "Modified On",
+          "Modified By (Delegate)",
+          "Record Created On",
+          "Owner",
+          "Owning Business Unit",
+          "Owning Team",
+          "Owning User",
+          "Status",
+          "Status Reason",
+          "Time Zone Rule Version Number",
+          "UTC Conversion Time Zone Code",
+          "Version Number"
+        ],
+        "userStories": [
+          "us01",
+          "us02",
+          "us03"
+        ],
+        "userConfirmed": false,
+        "generated": true,
+        "isExisting": true
+      }
+    ],
+    "relationships": []
+  },
+  "entitiesCollection": [],
+  "artifactIds": [
+    "552580d8-2331-f111-88b4-6045bd09bc84",
+    "592580d8-2331-f111-88b4-6045bd09bc84",
+    "33c49ade-2331-f111-88b4-6045bd09bc84",
+    "37c49ade-2331-f111-88b4-6045bd09bc84",
+    "3bc49ade-2331-f111-88b4-6045bd09bc84",
+    "40c49ade-2331-f111-88b4-6045bd09bc84"
+  ],
+  "solutionUniqueName": "ForecastAI",
+  "planProcessDiagrams": [],
+  "securityRoles": []
+}

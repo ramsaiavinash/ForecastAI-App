@@ -1,0 +1,24 @@
+{
+  "name": "Manager onboarding assistant",
+  "description": "Agent for hiring managers to review blockers, summarize onboarding progress, and get recommendations to resolve issues.",
+  "typesOfUsers": [
+    "Hiring manager"
+  ],
+  "tableSchemaNames": [
+    "mbg_OnboardingPlan",
+    "mbg_TaskAssignment"
+  ],
+  "userStories": [
+    {
+      "id": "us03",
+      "description": "View onboarding progress for each new hire so that I can identify delays early.",
+      "userType": "Hiring manager"
+    },
+    {
+      "id": "us05",
+      "description": "Review outstanding issues or blockers so that I can take action to resolve them.",
+      "userType": "Hiring manager"
+    }
+  ],
+  "version": 1
+}

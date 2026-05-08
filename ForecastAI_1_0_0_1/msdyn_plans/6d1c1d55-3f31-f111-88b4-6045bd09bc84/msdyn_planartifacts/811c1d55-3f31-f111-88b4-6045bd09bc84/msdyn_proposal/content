@@ -1,0 +1,19 @@
+{
+  "name": "Onboarding progress reporting",
+  "description": "Scheduled flow that sends HR coordinators periodic onboarding completion and delay reports across departments.",
+  "typesOfUsers": [
+    "HR coordinator"
+  ],
+  "tableSchemaNames": [
+    "mbg_OnboardingPlan",
+    "mbg_NewHire"
+  ],
+  "userStories": [
+    {
+      "id": "us08",
+      "description": "Monitor onboarding completion across departments so that HR has visibility into overall progress.",
+      "userType": "HR coordinator"
+    }
+  ],
+  "version": 1
+}

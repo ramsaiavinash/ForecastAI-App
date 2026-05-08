@@ -1,0 +1,16 @@
+{
+  "name": "Period lock management",
+  "description": "Applies central month lock or unlock rules and updates revenue records, enabling admins to control editable periods.",
+  "typesOfUsers": [
+    "System administrator"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us12",
+      "description": "Lock or unlock specific months so that edit rules can be controlled centrally.",
+      "userType": "System administrator"
+    }
+  ],
+  "version": 1
+}

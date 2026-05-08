@@ -1,0 +1,40 @@
+{
+  "name": "Manager onboarding app",
+  "description": "A Power App used by hiring managers to create, track, and manage onboarding plans for new hires.",
+  "typesOfUsers": [
+    "Hiring manager"
+  ],
+  "tableSchemaNames": [
+    "mbg_NewHire",
+    "mbg_OnboardingPlan",
+    "mbg_TaskAssignment"
+  ],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Create an onboarding plan for a new hire so that all required steps are clearly defined from day one.",
+      "userType": "Hiring manager"
+    },
+    {
+      "id": "us02",
+      "description": "Assign onboarding tasks to team members so that responsibilities are clear and work is shared.",
+      "userType": "Hiring manager"
+    },
+    {
+      "id": "us03",
+      "description": "View onboarding progress for each new hire so that I can identify delays early.",
+      "userType": "Hiring manager"
+    },
+    {
+      "id": "us04",
+      "description": "Update task statuses and due dates so that the onboarding plan stays accurate.",
+      "userType": "Hiring manager"
+    },
+    {
+      "id": "us05",
+      "description": "Review outstanding issues or blockers so that I can take action to resolve them.",
+      "userType": "Hiring manager"
+    }
+  ],
+  "version": 1
+}

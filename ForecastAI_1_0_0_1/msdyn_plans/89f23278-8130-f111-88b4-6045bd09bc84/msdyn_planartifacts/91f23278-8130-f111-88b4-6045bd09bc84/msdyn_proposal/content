@@ -1,0 +1,41 @@
+{
+  "name": "Excel import and forecast",
+  "description": "Validates and imports Excel data, enforcing mandatory fields, numeric and date rules, duplicate checks, ignoring Y–AK columns, and surfacing clear preview errors.",
+  "typesOfUsers": [
+    "Operations user"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Upload an Excel file and create a new import batch so that project and monthly revenue data is loaded into Dataverse.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us02",
+      "description": "Preview imported data with invalid rows highlighted so that I can correct issues before submission.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us03",
+      "description": "Automatically ignore Excel columns Y to AK during import so that only relevant data is processed.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us04",
+      "description": "Create or update project master records during import so that project attributes stay current.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us05",
+      "description": "Generate monthly revenue records per project and month so that actuals and forecasts are stored consistently.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us06",
+      "description": "Automatically fill missing forecast months using estimated values so that future revenue is complete.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

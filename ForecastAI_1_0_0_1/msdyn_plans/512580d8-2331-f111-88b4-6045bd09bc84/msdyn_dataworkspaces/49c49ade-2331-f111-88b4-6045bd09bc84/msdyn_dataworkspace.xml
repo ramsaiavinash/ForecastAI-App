@@ -1,0 +1,9 @@
+<msdyn_dataworkspace msdyn_dataworkspaceid="49c49ade-2331-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_content mimetype="application/octet-stream">content</msdyn_content>
+  <msdyn_contentschemaversion>2.0</msdyn_contentschemaversion>
+  <msdyn_description>Data workspace for - Monthly billing governance</msdyn_description>
+  <msdyn_name>Monthly billing governance</msdyn_name>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_dataworkspace>

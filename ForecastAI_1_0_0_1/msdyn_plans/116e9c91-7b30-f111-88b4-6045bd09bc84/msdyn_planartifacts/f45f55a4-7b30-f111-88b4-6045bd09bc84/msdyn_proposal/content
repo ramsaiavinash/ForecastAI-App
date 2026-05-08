@@ -1,0 +1,24 @@
+{
+  "name": "Head Lock Advisor",
+  "description": "Agent for Practice Heads to guide final review, highlight locked status, confirm approvals, and ensure report consistency.",
+  "typesOfUsers": [
+    "Practice head"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_ImportBatch",
+    "cr5c7_SubmissionSummary"
+  ],
+  "userStories": [
+    {
+      "id": "us15",
+      "description": "Approve or reject submitted batches so that financials are locked for reporting.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us16",
+      "description": "Lock approved batches to prevent further changes so that the data remains consistent for reports.",
+      "userType": "Practice head"
+    }
+  ],
+  "version": 1
+}

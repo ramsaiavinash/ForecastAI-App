@@ -1,0 +1,56 @@
+{
+  "name": "CSV import and forecast",
+  "description": "Validates imported files, applies forecast rules, persists data, and generates a CSV export of validation warnings and errors on demand.",
+  "typesOfUsers": [
+    "Operations user"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Upload an Excel file and create a new import batch so that project and monthly revenue data is loaded into Dataverse.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us02",
+      "description": "Preview imported data with invalid rows highlighted so that I can correct issues before submission.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us03",
+      "description": "Automatically ignore Excel columns Y to AK during import so that only relevant data is processed.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us04",
+      "description": "Create or update project master records during import so that project attributes stay current.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us05",
+      "description": "Generate monthly revenue records per project and month so that actuals and forecasts are stored consistently.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us06",
+      "description": "Automatically fill missing forecast months using estimated values so that future revenue is complete.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us16",
+      "description": "Map Excel columns to Dataverse fields after file upload and before import, so that I can ensure data aligns with the Dataverse schema.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us17",
+      "description": "See system-suggested automatic mappings between Excel columns and Dataverse fields, and adjust the mappings if needed, so that the import process is flexible and accurate.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us18",
+      "description": "When selecting Export CSV in the data validation section, generate a CSV file where each validation warning and each validation error is exported as its own row, with columns for batch, project (showing the actual project name from Project Master where applicable), row reference (containing the original source row number), field/column name, message, and severity (warning or error), so that data issues can be reviewed clearly.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,64 @@
+{
+  "name": "Monthly revenue manager",
+  "description": "Used by OPS, project managers, and practice leaders to import data, update monthly forecasts, submit values, and review approvals.",
+  "typesOfUsers": [
+    "Operations user",
+    "Project manager",
+    "Practice lead",
+    "Practice head"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Import a CSV file with project, forecast, actuals, and submission data so that monthly records are created or updated correctly.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us02",
+      "description": "View import batch status and row counts so that data load issues can be identified quickly.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us04",
+      "description": "View my projects in a month-wise grid so that I can understand forecasts, actuals, and submissions per month.",
+      "userType": "Project manager"
+    },
+    {
+      "id": "us05",
+      "description": "Edit forecast and current submission values for the current and next month so that plans stay up to date.",
+      "userType": "Project manager"
+    },
+    {
+      "id": "us06",
+      "description": "Enter reasons for changes so that variances are properly explained.",
+      "userType": "Project manager"
+    },
+    {
+      "id": "us07",
+      "description": "See auto-estimated values when forecasts are blank so that I can validate or adjust them.",
+      "userType": "Project manager"
+    },
+    {
+      "id": "us08",
+      "description": "Review monthly submissions for projects in my practice so that I can validate data accuracy.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us09",
+      "description": "Send submissions back for correction so that issues are resolved before approval.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us10",
+      "description": "Approve validated submissions so that financials are finalized for the period.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us11",
+      "description": "View variance summaries by project and month so that risks are identified early.",
+      "userType": "Practice head"
+    }
+  ],
+  "version": 1
+}

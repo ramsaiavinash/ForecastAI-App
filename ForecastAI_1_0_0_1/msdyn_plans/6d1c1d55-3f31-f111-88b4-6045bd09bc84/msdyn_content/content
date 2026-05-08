@@ -1,0 +1,190 @@
+{
+  "personasAndUserStories": [
+    {
+      "user": {
+        "id": "Hiring manager",
+        "name": "Hiring manager",
+        "description": "Managers responsible for onboarding new employees within their teams.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us01",
+          "description": "Create an onboarding plan for a new hire so that all required steps are clearly defined from day one.",
+          "userType": "Hiring manager"
+        },
+        {
+          "id": "us02",
+          "description": "Assign onboarding tasks to team members so that responsibilities are clear and work is shared.",
+          "userType": "Hiring manager"
+        },
+        {
+          "id": "us03",
+          "description": "View onboarding progress for each new hire so that I can identify delays early.",
+          "userType": "Hiring manager"
+        },
+        {
+          "id": "us04",
+          "description": "Update task statuses and due dates so that the onboarding plan stays accurate.",
+          "userType": "Hiring manager"
+        },
+        {
+          "id": "us05",
+          "description": "Review outstanding issues or blockers so that I can take action to resolve them.",
+          "userType": "Hiring manager"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "HR coordinator",
+        "name": "HR coordinator",
+        "description": "HR staff who define onboarding templates, tasks, and policies.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us06",
+          "description": "Create and maintain onboarding templates so that managers can start from a standardized process.",
+          "userType": "HR coordinator"
+        },
+        {
+          "id": "us07",
+          "description": "Define mandatory onboarding tasks so that compliance requirements are met.",
+          "userType": "HR coordinator"
+        },
+        {
+          "id": "us08",
+          "description": "Monitor onboarding completion across departments so that HR has visibility into overall progress.",
+          "userType": "HR coordinator"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "New hire",
+        "name": "New hire",
+        "description": "Employees who are being onboarded and complete assigned tasks.",
+        "image": ""
+      },
+      "userStories": [
+        {
+          "id": "us09",
+          "description": "View my assigned onboarding tasks so that I know what is expected of me.",
+          "userType": "New hire"
+        },
+        {
+          "id": "us10",
+          "description": "Update the status of my onboarding tasks so that my manager can track my progress.",
+          "userType": "New hire"
+        }
+      ]
+    }
+  ],
+  "entitiesAndRelationships": {
+    "entities": [
+      {
+        "entityMetadataId": "ca3e448f-bf07-4dd8-b5b8-167f69a3cdf0",
+        "entityName": "Onboarding Template",
+        "description": "Templates defining standardized onboarding processes",
+        "columns": [
+          "Template Name",
+          "Description"
+        ],
+        "userStories": [
+          "us06",
+          "us07"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "87ddd606-be8d-4b8a-a401-285502afa59d",
+        "entityName": "Onboarding Task",
+        "description": "Tasks defined within onboarding templates",
+        "columns": [
+          "Task Name",
+          "Template Name",
+          "Is Mandatory",
+          "Due Days After Start"
+        ],
+        "userStories": [
+          "us06",
+          "us07"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "fae9de86-4809-43d5-a30c-ece1819d5f16",
+        "entityName": "New Hire",
+        "description": "Employees who are being onboarded",
+        "columns": [
+          "New Hire Name",
+          "Email",
+          "Start Date"
+        ],
+        "userStories": [
+          "us01",
+          "us03",
+          "us09",
+          "us10"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "0547ae69-6ed8-4c63-894a-8b3fd02f13d4",
+        "entityName": "Onboarding Plan",
+        "description": "Plans created for new hires based on templates",
+        "columns": [
+          "Plan Name",
+          "New Hire Name",
+          "Template Name",
+          "Created Date"
+        ],
+        "userStories": [
+          "us01",
+          "us03",
+          "us04",
+          "us05"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "5ed170d4-120d-4a39-a97a-8e84a11a5c88",
+        "entityName": "Task Assignment",
+        "description": "Assignments of onboarding tasks to team members",
+        "columns": [
+          "Assignment Name",
+          "Onboarding Task Name",
+          "Assigned To",
+          "Status",
+          "Due Date"
+        ],
+        "userStories": [
+          "us02",
+          "us04",
+          "us09",
+          "us10"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      }
+    ],
+    "relationships": [],
+    "isFinalResult": true
+  },
+  "entitiesCollection": [],
+  "artifactIds": [
+    "711c1d55-3f31-f111-88b4-6045bd09bc84",
+    "751c1d55-3f31-f111-88b4-6045bd09bc84",
+    "791c1d55-3f31-f111-88b4-6045bd09bc84",
+    "7d1c1d55-3f31-f111-88b4-6045bd09bc84",
+    "811c1d55-3f31-f111-88b4-6045bd09bc84"
+  ],
+  "solutionUniqueName": "ForecastAI",
+  "planProcessDiagrams": [],
+  "securityRoles": []
+}

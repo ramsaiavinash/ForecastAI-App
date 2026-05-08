@@ -1,0 +1,93 @@
+{
+  "name": "Revenue Forecast Workspace",
+  "description": "A custom app for Operations, Practice Lead, and Practice Head to import, review, and approve batches, view dashboards, and export locked data.",
+  "typesOfUsers": [
+    "Operations user",
+    "Practice lead",
+    "Practice head"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_ImportBatch",
+    "cr5c7_ProjectMaster",
+    "cr5c7_MonthlyRevenue",
+    "cr5c7_SubmissionSummary"
+  ],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Import an Excel file into Dataverse while excluding specified columns so that only valid project and revenue data is captured.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us02",
+      "description": "Preview the imported data before finalizing the batch so that I can verify accuracy.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us03",
+      "description": "Validate data for mandatory fields such as Project ID and Project End Date so that missing or incorrect records are flagged.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us04",
+      "description": "Auto-apply forecast logic for future months using actuals when forecast columns are blank so that revenue data is always complete.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us05",
+      "description": "Attach all related monthly revenue records to the proper project and batch so that monthly details are correctly tracked.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us06",
+      "description": "View dashboard with total revenues and variance charts so that I can monitor financial performance at a glance.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us07",
+      "description": "Track and review all previous and current import batches so that I can reference historical submissions.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us08",
+      "description": "Flag estimated values in the monthly revenue entries so that estimated forecasts are clearly identified.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us09",
+      "description": "Generate and export a locked batch to an Excel file matching the original format so that data can be shared externally as needed.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us10",
+      "description": "Review imported batches and view project details so that I can ensure the revenue data is accurate and complete before approval.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us11",
+      "description": "Approve or reject batches and provide feedback so that only correct batches move forward in the process.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us12",
+      "description": "See variance calculations compared to last submissions so that I understand trends and key changes.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us14",
+      "description": "Receive notifications when a batch is approved by the Practice Lead so that I can perform my approval in a timely manner.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us15",
+      "description": "Approve or reject submitted batches so that financials are locked for reporting.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us16",
+      "description": "Lock approved batches to prevent further changes so that the data remains consistent for reports.",
+      "userType": "Practice head"
+    }
+  ],
+  "version": 1
+}

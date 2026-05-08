@@ -1,0 +1,99 @@
+{
+  "name": "Revenue forecast app_202604041153",
+  "description": "Used by operations, practice leaders, and finance teams to import revenue data, review validations, export validation issues to CSV, approve batches, and analyze forecasts.",
+  "typesOfUsers": [
+    "Operations user",
+    "Practice lead",
+    "Practice head",
+    "Finance analyst"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Upload an Excel file and create a new import batch so that project and monthly revenue data is loaded into Dataverse.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us02",
+      "description": "Preview imported data with invalid rows highlighted so that I can correct issues before submission.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us03",
+      "description": "Automatically ignore Excel columns Y to AK during import so that only relevant data is processed.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us04",
+      "description": "Create or update project master records during import so that project attributes stay current.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us05",
+      "description": "Generate monthly revenue records per project and month so that actuals and forecasts are stored consistently.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us06",
+      "description": "Automatically fill missing forecast months using estimated values so that future revenue is complete.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us07",
+      "description": "Submit the batch for review so that approval workflow can begin.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us08",
+      "description": "Review batch totals and project-level monthly details so that I can validate forecast accuracy.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us09",
+      "description": "See estimated values clearly flagged so that I understand where assumptions were applied.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us10",
+      "description": "Approve or reject a batch with comments so that issues can be resolved by operations.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us11",
+      "description": "Review variance against the last approved batch so that I can assess revenue movement.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us12",
+      "description": "Approve the batch and lock it so that no further edits are possible.",
+      "userType": "Practice head"
+    },
+    {
+      "id": "us14",
+      "description": "Drill into project monthly revenue details so that I can analyze actuals versus forecasts.",
+      "userType": "Finance analyst"
+    },
+    {
+      "id": "us15",
+      "description": "Export a locked batch to Excel in the original format so that it can be shared externally.",
+      "userType": "Finance analyst"
+    },
+    {
+      "id": "us16",
+      "description": "Map Excel columns to Dataverse fields after file upload and before import, so that I can ensure data aligns with the Dataverse schema.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us17",
+      "description": "See system-suggested automatic mappings between Excel columns and Dataverse fields, and adjust the mappings if needed, so that the import process is flexible and accurate.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us18",
+      "description": "When selecting Export CSV in the data validation section, generate a CSV file where each validation warning and each validation error is exported as its own row, with columns for batch, project (showing the actual project name from Project Master where applicable), row reference (containing the original source row number), field/column name, message, and severity (warning or error), so that data issues can be reviewed clearly.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

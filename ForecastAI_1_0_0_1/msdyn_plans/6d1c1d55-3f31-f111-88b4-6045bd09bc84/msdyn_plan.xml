@@ -1,0 +1,11 @@
+<msdyn_plan msdyn_planid="6d1c1d55-3f31-f111-88b4-6045bd09bc84">
+  <iscustomizable>1</iscustomizable>
+  <msdyn_content mimetype="application/octet-stream">content</msdyn_content>
+  <msdyn_contentschemaversion>3.0</msdyn_contentschemaversion>
+  <msdyn_description>A manager-focused onboarding solution that helps track tasks, progress, and responsibilities, giving managers and HR clear visibility into every new hire’s journey.</msdyn_description>
+  <msdyn_languagecode>1033</msdyn_languagecode>
+  <msdyn_name>Onboarding manager hub</msdyn_name>
+  <msdyn_prompt>I want to create an app for managers that helps manage onboarding processes.</msdyn_prompt>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</msdyn_plan>

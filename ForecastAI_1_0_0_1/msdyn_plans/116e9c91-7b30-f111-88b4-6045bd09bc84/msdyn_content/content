@@ -1,0 +1,4936 @@
+{
+  "personasAndUserStories": [
+    {
+      "user": {
+        "id": "Operations user",
+        "name": "Operations user",
+        "description": "Person responsible for importing and validating project revenue data using Excel imports.",
+        "image": "https://content.powerapps.com/resource/makerx/static/media/PersonNote.bac78e19.svg"
+      },
+      "userStories": [
+        {
+          "id": "us01",
+          "description": "Import an Excel file into Dataverse while excluding specified columns so that only valid project and revenue data is captured.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us02",
+          "description": "Preview the imported data before finalizing the batch so that I can verify accuracy.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us03",
+          "description": "Validate data for mandatory fields such as Project ID and Project End Date so that missing or incorrect records are flagged.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us04",
+          "description": "Auto-apply forecast logic for future months using actuals when forecast columns are blank so that revenue data is always complete.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us05",
+          "description": "Attach all related monthly revenue records to the proper project and batch so that monthly details are correctly tracked.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us06",
+          "description": "View dashboard with total revenues and variance charts so that I can monitor financial performance at a glance.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us07",
+          "description": "Track and review all previous and current import batches so that I can reference historical submissions.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us08",
+          "description": "Flag estimated values in the monthly revenue entries so that estimated forecasts are clearly identified.",
+          "userType": "Operations user"
+        },
+        {
+          "id": "us09",
+          "description": "Generate and export a locked batch to an Excel file matching the original format so that data can be shared externally as needed.",
+          "userType": "Operations user"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Practice lead",
+        "name": "Practice lead",
+        "description": "Person who reviews uploaded revenue batches and provides initial approval.",
+        "image": "https://content.powerapps.com/resource/makerx/static/media/PersonLightning.42f126d5.svg"
+      },
+      "userStories": [
+        {
+          "id": "us10",
+          "description": "Review imported batches and view project details so that I can ensure the revenue data is accurate and complete before approval.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us11",
+          "description": "Approve or reject batches and provide feedback so that only correct batches move forward in the process.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us12",
+          "description": "See variance calculations compared to last submissions so that I understand trends and key changes.",
+          "userType": "Practice lead"
+        },
+        {
+          "id": "us13",
+          "description": "Receive notifications when a batch is ready for review so that I can act promptly.",
+          "userType": "Practice lead"
+        }
+      ]
+    },
+    {
+      "user": {
+        "id": "Practice head",
+        "name": "Practice head",
+        "description": "Person who gives final approval and locks the revenue batch for official reporting.",
+        "image": "https://content.powerapps.com/resource/makerx/static/media/PersonAccounts.bd1e9daf.svg"
+      },
+      "userStories": [
+        {
+          "id": "us14",
+          "description": "Receive notifications when a batch is approved by the Practice Lead so that I can perform my approval in a timely manner.",
+          "userType": "Practice head"
+        },
+        {
+          "id": "us15",
+          "description": "Approve or reject submitted batches so that financials are locked for reporting.",
+          "userType": "Practice head"
+        },
+        {
+          "id": "us16",
+          "description": "Lock approved batches to prevent further changes so that the data remains consistent for reports.",
+          "userType": "Practice head"
+        }
+      ]
+    }
+  ],
+  "entitiesAndRelationships": {
+    "entities": [
+      {
+        "entityMetadataId": "b9601da2-0a75-4b09-883d-934f5cb0b990",
+        "entityName": "Import Batch",
+        "description": "This table contains records of import batches with file and status details",
+        "columns": [
+          "Batch Name",
+          "File Name",
+          "Import Month",
+          "Import Year",
+          "Import Date",
+          "Status",
+          "Current Total",
+          "Last Total",
+          "Variance"
+        ],
+        "userStories": [
+          "us01",
+          "us02",
+          "us03",
+          "us07",
+          "us09",
+          "us10",
+          "us13",
+          "us14",
+          "us16"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "874884d4-efec-4afa-aa90-c8474275d9d6",
+        "entityName": "Project Master",
+        "description": "This table contains master data for projects imported from Excel",
+        "columns": [
+          "Project Description",
+          "Tower",
+          "Markets Description",
+          "Market Unit Description",
+          "Business Unit Description",
+          "Vertical Description",
+          "Parent Customer",
+          "Customer ID",
+          "Customer Description",
+          "Project Billability",
+          "Sub Practice Desc",
+          "Category",
+          "Jan PPM",
+          "EDL ID",
+          "EDL Name",
+          "PDL ID",
+          "PDL Name",
+          "PM ID",
+          "PM Name",
+          "Opportunity ID",
+          "Opportunity Name",
+          "Project End Date",
+          "SO ID"
+        ],
+        "userStories": [
+          "us01",
+          "us03",
+          "us05",
+          "us10"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "501e4351-a53e-46c5-957f-3781b97480f7",
+        "entityName": "Monthly Revenue",
+        "description": "This table contains monthly revenue records linked to projects and batches",
+        "columns": [
+          "Monthly Revenue Name",
+          "Project",
+          "Batch",
+          "Year",
+          "Month",
+          "Amount",
+          "Type",
+          "Is Estimated",
+          "Locked"
+        ],
+        "userStories": [
+          "us01",
+          "us04",
+          "us05",
+          "us08",
+          "us10"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      },
+      {
+        "entityMetadataId": "a2fdf981-9204-42f7-aa5d-a2898faf12c6",
+        "entityName": "Submission Summary",
+        "description": "This table contains summary of revenue submissions per project and batch",
+        "columns": [
+          "Submission Summary Name",
+          "Project",
+          "Batch",
+          "Current Total",
+          "Last Total",
+          "Variance",
+          "Variance %",
+          "Trend"
+        ],
+        "userStories": [
+          "us06",
+          "us07",
+          "us10",
+          "us11",
+          "us12",
+          "us15"
+        ],
+        "userConfirmed": false,
+        "generated": true
+      }
+    ],
+    "relationships": [],
+    "isFinalResult": true
+  },
+  "entitiesCollection": [
+    {
+      "EntityDefinition": {
+        "MetadataId": "b9601da2-0a75-4b09-883d-934f5cb0b990",
+        "Attributes": [
+          {
+            "MetadataId": "690bd486-494e-456f-871d-31918146ad8a",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_BatchName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Batch Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "37c32f3a-7034-40c5-a892-f43d24655090",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_FileName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "File Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "33c4aedd-d24c-498f-ac95-ef6d1e57f602",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ImportMonth",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Import Month",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Integer",
+            "AttributeTypeName": {
+              "Value": "IntegerType"
+            },
+            "MaxValue": 2147483647,
+            "MinValue": -2147483648,
+            "Format": "None",
+            "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata"
+          },
+          {
+            "MetadataId": "9a89d78d-273d-4476-894a-a32c2bf22b6d",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ImportYear",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Import Year",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Integer",
+            "AttributeTypeName": {
+              "Value": "IntegerType"
+            },
+            "MaxValue": 2147483647,
+            "MinValue": -2147483648,
+            "Format": "None",
+            "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata"
+          },
+          {
+            "MetadataId": "461f4cc1-3f47-4334-a171-406843cc3759",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ImportDate",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Import Date",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "DateTime",
+            "AttributeTypeName": {
+              "Value": "DateTimeType"
+            },
+            "ImeMode": "Auto",
+            "Format": "DateOnly",
+            "DateTimeBehavior": {
+              "Value": "UserLocal"
+            },
+            "CanChangeDateTimeBehavior": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "canmodifybehavior"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata"
+          },
+          {
+            "MetadataId": "90486dd7-32da-4a99-9130-d48e00cab4d9",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Status",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Status",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Picklist",
+            "AttributeTypeName": {
+              "Value": "PicklistType"
+            },
+            "DefaultFormValue": -1,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "ExternalTypeName": "",
+              "OptionSetType": "Picklist",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Status",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "Options": [
+                {
+                  "Value": 861140000,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Draft",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140001,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Under Review",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140002,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Approved PL",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140003,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Approved PH",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140004,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Locked",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Name": ""
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata"
+          },
+          {
+            "MetadataId": "7816e024-a3db-49e5-ae87-643a398fb121",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_CurrentTotal",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Current Total",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          },
+          {
+            "MetadataId": "043c9100-112e-4be9-8284-3c9c4dec5661",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_LastTotal",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Last Total",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          },
+          {
+            "MetadataId": "c145a977-a6e4-44d8-9b25-de8e9dfdf1a1",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Variance",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Variance",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "cr5c7_ImportBatch",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "This table contains records of import batches with file and status details",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Import Batches",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Import Batch",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "SampleData": []
+    },
+    {
+      "EntityDefinition": {
+        "MetadataId": "874884d4-efec-4afa-aa90-c8474275d9d6",
+        "Attributes": [
+          {
+            "MetadataId": "05c035e3-a574-473d-94d7-3bb77da35951",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ProjectDescription",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Project Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "5e8d1787-c8ea-4f77-aa96-fd7afdbdae87",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Tower",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Tower",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "192bcc5f-d5fd-42a2-844a-54b13ca59fff",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_MarketsDescription",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Markets Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "613aa03b-2944-44ee-99c4-b8b8d8c36d1b",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_MarketUnitDescription",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Market Unit Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "883cff33-c749-4374-98c5-51e2e9125726",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_BusinessUnitDescription",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Business Unit Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "ab643bfd-8f54-41aa-97d6-a7d63be51ac3",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_VerticalDescription",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Vertical Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "193410ed-83e6-4a1c-b855-9720f3f1feee",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ParentCustomer",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Parent Customer",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "38b00390-71fb-4be5-bdbd-3d2c481642a9",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_CustomerID",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Customer ID",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "2c793a60-d6b1-4904-ae4a-366ac69f2072",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_CustomerDescription",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Customer Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "5a650e05-5326-4e70-8002-c87354e780b2",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ProjectBillability",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Project Billability",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "be51253d-e726-479d-89d5-ab4c89cfd72e",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_SubPracticeDesc",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Sub Practice Desc",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "4815a52a-0f1f-48b2-9415-d5bdc4b4e639",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Category",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Category",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "4137d227-58b7-44cc-8f3b-32ade90d45a8",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_JanPPM",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Jan PPM",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "be8fe51f-8ded-4889-8632-af0f23b6eec9",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_EDLID",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "EDL ID",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "f29c84d0-fc06-48d6-b35a-9d32f53ec153",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_EDLName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "EDL Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "069029ac-5d32-4fb6-baa3-8caa0308ec6d",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_PDLID",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "PDL ID",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "d559248f-4b66-406f-8b2c-4f9a38251522",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_PDLName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "PDL Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "506d0443-87bf-478b-890d-2ae79f31ddf3",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_PMID",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "PM ID",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "72ef25c2-6a18-4571-b4aa-b5ee982da883",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_PMName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "PM Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "c9e968c6-1f92-4fc0-b531-058fc017f4f4",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_OpportunityID",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Opportunity ID",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "e0e9812c-12d8-4f0e-9b1b-94c7af36948d",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_OpportunityName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Opportunity Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "8b030c47-1a41-43d9-9f5b-7263890acbb9",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_ProjectEndDate",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Project End Date",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "DateTime",
+            "AttributeTypeName": {
+              "Value": "DateTimeType"
+            },
+            "ImeMode": "Auto",
+            "Format": "DateOnly",
+            "DateTimeBehavior": {
+              "Value": "UserLocal"
+            },
+            "CanChangeDateTimeBehavior": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "canmodifybehavior"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata"
+          },
+          {
+            "MetadataId": "6d72a873-0b5c-4c48-ae6c-ec0c26712c53",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_SOID",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "SO ID",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "cr5c7_ProjectMaster",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "This table contains master data for projects imported from Excel",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Project Masters",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Project Master",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "SampleData": []
+    },
+    {
+      "EntityDefinition": {
+        "MetadataId": "501e4351-a53e-46c5-957f-3781b97480f7",
+        "Attributes": [
+          {
+            "MetadataId": "82389765-5ed0-4083-83c9-2dfc5a2d4130",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_MonthlyRevenueName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Monthly Revenue Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "69c8e31c-ebf0-46d6-a209-aef26b5e247b",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Project",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Project",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "cr5c7_projectmaster"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "6e0063b9-2aad-4fd9-a39f-4ac0f2cf1bc4",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Batch",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Batch",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "cr5c7_importbatch"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "8ebd47ae-4570-4cc8-8ef2-9258ad274a20",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Year",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Year",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "Integer",
+            "AttributeTypeName": {
+              "Value": "IntegerType"
+            },
+            "MaxValue": 2147483647,
+            "MinValue": -2147483648,
+            "Format": "None",
+            "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata"
+          },
+          {
+            "MetadataId": "368e6a72-236a-4dd0-aa1f-fbde8fa16e62",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Month",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Month",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "Integer",
+            "AttributeTypeName": {
+              "Value": "IntegerType"
+            },
+            "MaxValue": 2147483647,
+            "MinValue": -2147483648,
+            "Format": "None",
+            "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata"
+          },
+          {
+            "MetadataId": "863dba91-2c48-4b16-be69-210b656f804a",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Amount",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Amount",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          },
+          {
+            "MetadataId": "c2a54adf-99c7-4eb9-9901-9e5455dbe45c",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Type",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Type",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Picklist",
+            "AttributeTypeName": {
+              "Value": "PicklistType"
+            },
+            "DefaultFormValue": -1,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "ExternalTypeName": "",
+              "OptionSetType": "Picklist",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Type",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "Options": [
+                {
+                  "Value": 861140000,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Actual",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140001,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Forecast",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140002,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Estimated",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Name": ""
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata"
+          },
+          {
+            "MetadataId": "257ccf34-df66-4790-8c2c-0b32bfc77003",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_IsEstimated",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Is Estimated",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Boolean",
+            "AttributeTypeName": {
+              "Value": "BooleanType"
+            },
+            "DefaultValue": false,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "IsManaged": false,
+              "ExternalTypeName": "",
+              "OptionSetType": "Boolean",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Is Estimated",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "TrueOption": {
+                "Value": 1,
+                "IsManaged": false,
+                "ExternalValue": "",
+                "Label": {
+                  "LocalizedLabels": [
+                    {
+                      "Label": "Yes",
+                      "LanguageCode": 1033
+                    }
+                  ]
+                },
+                "Description": {
+                  "LocalizedLabels": []
+                }
+              },
+              "FalseOption": {
+                "Value": 0,
+                "IsManaged": false,
+                "ExternalValue": "",
+                "Label": {
+                  "LocalizedLabels": [
+                    {
+                      "Label": "No",
+                      "LanguageCode": 1033
+                    }
+                  ]
+                },
+                "Description": {
+                  "LocalizedLabels": []
+                }
+              },
+              "Name": ""
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.BooleanAttributeMetadata"
+          },
+          {
+            "MetadataId": "4e8959ee-a643-43e6-a605-851ca5f3afc4",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Locked",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Locked",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Boolean",
+            "AttributeTypeName": {
+              "Value": "BooleanType"
+            },
+            "DefaultValue": false,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "IsManaged": false,
+              "ExternalTypeName": "",
+              "OptionSetType": "Boolean",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Locked",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "TrueOption": {
+                "Value": 1,
+                "IsManaged": false,
+                "ExternalValue": "",
+                "Label": {
+                  "LocalizedLabels": [
+                    {
+                      "Label": "Yes",
+                      "LanguageCode": 1033
+                    }
+                  ]
+                },
+                "Description": {
+                  "LocalizedLabels": []
+                }
+              },
+              "FalseOption": {
+                "Value": 0,
+                "IsManaged": false,
+                "ExternalValue": "",
+                "Label": {
+                  "LocalizedLabels": [
+                    {
+                      "Label": "No",
+                      "LanguageCode": 1033
+                    }
+                  ]
+                },
+                "Description": {
+                  "LocalizedLabels": []
+                }
+              },
+              "Name": ""
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.BooleanAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "cr5c7_MonthlyRevenue",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "This table contains monthly revenue records linked to projects and batches",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Monthly Revenues",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Monthly Revenue",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [
+          {
+            "MetadataId": "dbbbc421-b4b0-421c-97dc-64656d9a0ea0",
+            "SchemaName": "cr5c7_MonthlyRevenue_cr5c7_Project_cr5c7_ProjectMaster",
+            "ReferencingAttribute": "cr5c7_project",
+            "ReferencedEntity": "cr5c7_projectmaster",
+            "ReferencingEntity": "cr5c7_monthlyrevenue",
+            "ReferencedAttribute": "cr5c7_projectmasterid",
+            "ReferencingEntityNavigationPropertyName": "cr5c7_Project",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          },
+          {
+            "MetadataId": "a276d10a-66f3-4406-b723-6f13a18b533e",
+            "SchemaName": "cr5c7_MonthlyRevenue_cr5c7_Batch_cr5c7_ImportBatch",
+            "ReferencingAttribute": "cr5c7_batch",
+            "ReferencedEntity": "cr5c7_importbatch",
+            "ReferencingEntity": "cr5c7_monthlyrevenue",
+            "ReferencedAttribute": "cr5c7_importbatchid",
+            "ReferencingEntityNavigationPropertyName": "cr5c7_Batch",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          }
+        ],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "SampleData": []
+    },
+    {
+      "EntityDefinition": {
+        "MetadataId": "a2fdf981-9204-42f7-aa5d-a2898faf12c6",
+        "Attributes": [
+          {
+            "MetadataId": "0793345d-dece-4942-b445-376550c225a2",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_SubmissionSummaryName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Submission Summary Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "5e215936-09a3-474f-b429-7e28092ed5da",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Project",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Project",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "cr5c7_projectmaster"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "6ce6cbd8-3652-479e-a10e-d399a19d31ae",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Batch",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Batch",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "cr5c7_importbatch"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "ae30a770-0242-456d-85b1-9c84c579e5b6",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_CurrentTotal",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Current Total",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          },
+          {
+            "MetadataId": "d58b1516-b20b-45a1-8426-71320cd7fade",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_LastTotal",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Last Total",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          },
+          {
+            "MetadataId": "949186ba-4264-436d-85e6-3424deff0a08",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Variance",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Variance",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Money",
+            "AttributeTypeName": {
+              "Value": "MoneyType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 922337203685477,
+            "MinValue": -922337203685477,
+            "PrecisionSource": 2,
+            "Precision": 2,
+            "IsBaseCurrency": false,
+            "@odata.type": "Microsoft.Dynamics.CRM.MoneyAttributeMetadata"
+          },
+          {
+            "MetadataId": "8fd0b33b-39b4-491c-bbc2-4d11d455ca5d",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Variance1",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Variance %",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Decimal",
+            "AttributeTypeName": {
+              "Value": "DecimalType"
+            },
+            "ImeMode": "Auto",
+            "MaxValue": 100000000000,
+            "MinValue": -100000000000,
+            "Precision": 2,
+            "@odata.type": "Microsoft.Dynamics.CRM.DecimalAttributeMetadata"
+          },
+          {
+            "MetadataId": "de8881f9-1034-4f92-9333-75d5e80b174c",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "cr5c7_Trend",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Trend",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Picklist",
+            "AttributeTypeName": {
+              "Value": "PicklistType"
+            },
+            "DefaultFormValue": -1,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "ExternalTypeName": "",
+              "OptionSetType": "Picklist",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Trend",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "Options": [
+                {
+                  "Value": 861140000,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Up",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140001,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Down",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140002,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Same",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Name": ""
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "cr5c7_SubmissionSummary",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "This table contains summary of revenue submissions per project and batch",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Submission Summaries",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Submission Summary",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [
+          {
+            "MetadataId": "837dac41-92d6-4d38-9a9f-fb83e6c2ca4c",
+            "SchemaName": "cr5c7_SubmissionSummary_cr5c7_Project_cr5c7_ProjectMaster",
+            "ReferencingAttribute": "cr5c7_project",
+            "ReferencedEntity": "cr5c7_projectmaster",
+            "ReferencingEntity": "cr5c7_submissionsummary",
+            "ReferencedAttribute": "cr5c7_projectmasterid",
+            "ReferencingEntityNavigationPropertyName": "cr5c7_Project",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          },
+          {
+            "MetadataId": "e093f110-9944-49d1-b971-b22629ee5edf",
+            "SchemaName": "cr5c7_SubmissionSummary_cr5c7_Batch_cr5c7_ImportBatch",
+            "ReferencingAttribute": "cr5c7_batch",
+            "ReferencedEntity": "cr5c7_importbatch",
+            "ReferencingEntity": "cr5c7_submissionsummary",
+            "ReferencedAttribute": "cr5c7_importbatchid",
+            "ReferencingEntityNavigationPropertyName": "cr5c7_Batch",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          }
+        ],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "SampleData": []
+    }
+  ],
+  "artifactIds": [
+    "f675559e-7b30-f111-88b4-6045bd09bc84",
+    "fa75559e-7b30-f111-88b4-6045bd09bc84",
+    "fe75559e-7b30-f111-88b4-6045bd09bc84",
+    "0276559e-7b30-f111-88b4-6045bd09bc84",
+    "0776559e-7b30-f111-88b4-6045bd09bc84",
+    "0d76559e-7b30-f111-88b4-6045bd09bc84",
+    "eb5f55a4-7b30-f111-88b4-6045bd09bc84",
+    "f45f55a4-7b30-f111-88b4-6045bd09bc84"
+  ],
+  "solutionUniqueName": "RevenueForecastManager",
+  "planProcessDiagrams": [
+    {
+      "name": "Import and Prepare Revenue Data",
+      "description": "This process covers importing Excel files into Dataverse, validating and preparing project and monthly revenue data, applying forecast logic, and flagging estimated values. It ensures that all required fields are present, forecast estimation is applied, and data is ready for review.",
+      "userStoryIds": [
+        "us01",
+        "us02",
+        "us03",
+        "us04",
+        "us05",
+        "us08"
+      ],
+      "nodes": [
+        {
+          "id": "87124b6e-ddc9-4587-ac10-abaf1e46ed5a",
+          "position": {
+            "x": 362,
+            "y": 8
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Operations user uploads Excel file for revenue import",
+            "userStoryId": "",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "87124b6e-ddc9-4587-ac10-abaf1e46ed5a",
+            "label": "Operations user uploads Excel file for revenue import",
+            "resources": {},
+            "traceability": {},
+            "type": "Start"
+          }
+        },
+        {
+          "id": "4e246176-a866-4235-922b-15f3046d5cc3",
+          "position": {
+            "x": 258,
+            "y": 118
+          },
+          "data": {
+            "actor": "Operations user",
+            "actionName": "Operations user previews imported data",
+            "userStoryId": "us02",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "4e246176-a866-4235-922b-15f3046d5cc3",
+            "label": "Operations user previews imported data",
+            "resources": {
+              "actor": "Operations user"
+            },
+            "traceability": {
+              "userStories": [
+                "us02"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1",
+          "position": {
+            "x": 258,
+            "y": 298
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System imports Excel file into Dataverse, excluding columns Y–AK",
+            "userStoryId": "us01",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1",
+            "label": "System imports Excel file into Dataverse, excluding columns Y–AK",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us01"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7",
+          "position": {
+            "x": 258,
+            "y": 478
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System validates mandatory fields: Project ID and Project End Date",
+            "userStoryId": "us03",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7",
+            "label": "System validates mandatory fields: Project ID and Project End Date",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us03"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+          "position": {
+            "x": 410,
+            "y": 658
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Check for missing or invalid mandatory fields",
+            "userStoryId": "",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": "Exclusive"
+          },
+          "type": "gateway",
+          "cfgNode": {
+            "id": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+            "label": "Check for missing or invalid mandatory fields",
+            "resources": {},
+            "traceability": {},
+            "isSplit": true,
+            "type": "DecisionStep",
+            "isMutuallyExclusive": true
+          }
+        },
+        {
+          "id": "3ecc7774-a24e-498e-91a7-583a5a137d96",
+          "position": {
+            "x": 8,
+            "y": 848
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System flags missing or incorrect records for review",
+            "userStoryId": "us03",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "3ecc7774-a24e-498e-91a7-583a5a137d96",
+            "label": "System flags missing or incorrect records for review",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us03"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "97d1b5e0-4b97-4ad4-a97a-65af05672c1b",
+          "position": {
+            "x": 112,
+            "y": 1063
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Import halted due to validation errors",
+            "userStoryId": "",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "97d1b5e0-4b97-4ad4-a97a-65af05672c1b",
+            "label": "Import halted due to validation errors",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        },
+        {
+          "id": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0",
+          "position": {
+            "x": 508,
+            "y": 848
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System creates new Import Batch record with batch metadata",
+            "userStoryId": "us01",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0",
+            "label": "System creates new Import Batch record with batch metadata",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us01"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9",
+          "position": {
+            "x": 508,
+            "y": 1028
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System creates or updates Project Master records for each project",
+            "userStoryId": "us01",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9",
+            "label": "System creates or updates Project Master records for each project",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us01"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "c9f1e21f-1347-46f9-842a-5562031931ec",
+          "position": {
+            "x": 660,
+            "y": 1208
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Process monthly revenue for each project",
+            "userStoryId": "",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": "Exclusive"
+          },
+          "type": "gateway",
+          "cfgNode": {
+            "id": "c9f1e21f-1347-46f9-842a-5562031931ec",
+            "label": "Process monthly revenue for each project",
+            "resources": {},
+            "traceability": {},
+            "isSplit": true,
+            "type": "DecisionStep",
+            "isMutuallyExclusive": true
+          }
+        },
+        {
+          "id": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7",
+          "position": {
+            "x": 258,
+            "y": 1398
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System creates Monthly Revenue records for actuals and forecasts, attaches to project and batch",
+            "userStoryId": "us05",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7",
+            "label": "System creates Monthly Revenue records for actuals and forecasts, attaches to project and batch",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us05"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "582a9cb4-0f9f-4308-b60f-667cf1f07eef",
+          "position": {
+            "x": 258,
+            "y": 1578
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System flags estimated values in monthly revenue entries if forecast is blank and estimation applied",
+            "userStoryId": "us08",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "582a9cb4-0f9f-4308-b60f-667cf1f07eef",
+            "label": "System flags estimated values in monthly revenue entries if forecast is blank and estimation applied",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us08"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "57d02349-789f-46b8-96bd-c192f7e1fee8",
+          "position": {
+            "x": 758,
+            "y": 1398
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System auto-applies forecast logic: uses (current month - 2) actuals for blank forecast months, flags as estimated",
+            "userStoryId": "us04",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "57d02349-789f-46b8-96bd-c192f7e1fee8",
+            "label": "System auto-applies forecast logic: uses (current month - 2) actuals for blank forecast months, flags as estimated",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us04",
+                "us08"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "c150a3f7-0e68-47bf-9aaa-606c3219d730",
+          "position": {
+            "x": 758,
+            "y": 1578
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System creates Monthly Revenue records with estimated values, attaches to project and batch",
+            "userStoryId": "us05",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "c150a3f7-0e68-47bf-9aaa-606c3219d730",
+            "label": "System creates Monthly Revenue records with estimated values, attaches to project and batch",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us05"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+          "position": {
+            "x": 660,
+            "y": 1758
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Process monthly revenue for each project",
+            "userStoryId": "",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": "Exclusive"
+          },
+          "type": "gateway",
+          "cfgNode": {
+            "id": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+            "label": "Process monthly revenue for each project",
+            "resources": {},
+            "traceability": {},
+            "isSplit": false,
+            "type": "DecisionStep",
+            "isMutuallyExclusive": true
+          }
+        },
+        {
+          "id": "0f23f668-40aa-4732-ad22-c978a83713b5",
+          "position": {
+            "x": 508,
+            "y": 1948
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System applies forecast limit: fills forecast only until Project End Date month (if within current year) or December (current year)",
+            "userStoryId": "us04",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "0f23f668-40aa-4732-ad22-c978a83713b5",
+            "label": "System applies forecast limit: fills forecast only until Project End Date month (if within current year) or December (current year)",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us04"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "2a10ff8b-3e64-4fc3-bbef-2b84ac17d9d2",
+          "position": {
+            "x": 612,
+            "y": 2128
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Revenue data import and preparation completed, ready for review",
+            "userStoryId": "",
+            "processName": "Import and Prepare Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "2a10ff8b-3e64-4fc3-bbef-2b84ac17d9d2",
+            "label": "Revenue data import and preparation completed, ready for review",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "3ecc7774-a24e-498e-91a7-583a5a137d96-97d1b5e0-4b97-4ad4-a97a-65af05672c1b-0",
+          "sourceNodeId": "3ecc7774-a24e-498e-91a7-583a5a137d96",
+          "targetNodeId": "97d1b5e0-4b97-4ad4-a97a-65af05672c1b",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "3ecc7774-a24e-498e-91a7-583a5a137d96",
+            "target": "97d1b5e0-4b97-4ad4-a97a-65af05672c1b",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b-3ecc7774-a24e-498e-91a7-583a5a137d96-1",
+          "sourceNodeId": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+          "targetNodeId": "3ecc7774-a24e-498e-91a7-583a5a137d96",
+          "data": {
+            "label": "Missing or invalid Project ID or Project End Date detected",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "Missing or invalid Project ID or Project End Date detected",
+            "source": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+            "target": "3ecc7774-a24e-498e-91a7-583a5a137d96",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7-582a9cb4-0f9f-4308-b60f-667cf1f07eef-2",
+          "sourceNodeId": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7",
+          "targetNodeId": "582a9cb4-0f9f-4308-b60f-667cf1f07eef",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7",
+            "target": "582a9cb4-0f9f-4308-b60f-667cf1f07eef",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "c9f1e21f-1347-46f9-842a-5562031931ec-fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7-3",
+          "sourceNodeId": "c9f1e21f-1347-46f9-842a-5562031931ec",
+          "targetNodeId": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7",
+          "data": {
+            "label": "Monthly actuals and forecasts available for project",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "Monthly actuals and forecasts available for project",
+            "source": "c9f1e21f-1347-46f9-842a-5562031931ec",
+            "target": "fa09ac01-29e6-4ef6-ae58-5d6f50bd31e7",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "57d02349-789f-46b8-96bd-c192f7e1fee8-c150a3f7-0e68-47bf-9aaa-606c3219d730-4",
+          "sourceNodeId": "57d02349-789f-46b8-96bd-c192f7e1fee8",
+          "targetNodeId": "c150a3f7-0e68-47bf-9aaa-606c3219d730",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "57d02349-789f-46b8-96bd-c192f7e1fee8",
+            "target": "c150a3f7-0e68-47bf-9aaa-606c3219d730",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "c9f1e21f-1347-46f9-842a-5562031931ec-57d02349-789f-46b8-96bd-c192f7e1fee8-5",
+          "sourceNodeId": "c9f1e21f-1347-46f9-842a-5562031931ec",
+          "targetNodeId": "57d02349-789f-46b8-96bd-c192f7e1fee8",
+          "data": {
+            "label": "Forecast columns are blank for future months",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "Forecast columns are blank for future months",
+            "source": "c9f1e21f-1347-46f9-842a-5562031931ec",
+            "target": "57d02349-789f-46b8-96bd-c192f7e1fee8",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "582a9cb4-0f9f-4308-b60f-667cf1f07eef-Merge_c9f1e21f-1347-46f9-842a-5562031931ec-6",
+          "sourceNodeId": "582a9cb4-0f9f-4308-b60f-667cf1f07eef",
+          "targetNodeId": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "582a9cb4-0f9f-4308-b60f-667cf1f07eef",
+            "target": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "c150a3f7-0e68-47bf-9aaa-606c3219d730-Merge_c9f1e21f-1347-46f9-842a-5562031931ec-7",
+          "sourceNodeId": "c150a3f7-0e68-47bf-9aaa-606c3219d730",
+          "targetNodeId": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "c150a3f7-0e68-47bf-9aaa-606c3219d730",
+            "target": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0-bc9bf831-9eef-4ada-a626-2e3cfa43c1e9-8",
+          "sourceNodeId": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0",
+          "targetNodeId": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0",
+            "target": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9-c9f1e21f-1347-46f9-842a-5562031931ec-9",
+          "sourceNodeId": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9",
+          "targetNodeId": "c9f1e21f-1347-46f9-842a-5562031931ec",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "bc9bf831-9eef-4ada-a626-2e3cfa43c1e9",
+            "target": "c9f1e21f-1347-46f9-842a-5562031931ec",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec-0f23f668-40aa-4732-ad22-c978a83713b5-10",
+          "sourceNodeId": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+          "targetNodeId": "0f23f668-40aa-4732-ad22-c978a83713b5",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "Merge_c9f1e21f-1347-46f9-842a-5562031931ec",
+            "target": "0f23f668-40aa-4732-ad22-c978a83713b5",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "0f23f668-40aa-4732-ad22-c978a83713b5-2a10ff8b-3e64-4fc3-bbef-2b84ac17d9d2-11",
+          "sourceNodeId": "0f23f668-40aa-4732-ad22-c978a83713b5",
+          "targetNodeId": "2a10ff8b-3e64-4fc3-bbef-2b84ac17d9d2",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "0f23f668-40aa-4732-ad22-c978a83713b5",
+            "target": "2a10ff8b-3e64-4fc3-bbef-2b84ac17d9d2",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b-a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0-12",
+          "sourceNodeId": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+          "targetNodeId": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0",
+          "data": {
+            "label": "All mandatory fields valid",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "All mandatory fields valid",
+            "source": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+            "target": "a7b0bd06-2c0d-44fc-8bb7-d49bbedfdfa0",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "87124b6e-ddc9-4587-ac10-abaf1e46ed5a-4e246176-a866-4235-922b-15f3046d5cc3-13",
+          "sourceNodeId": "87124b6e-ddc9-4587-ac10-abaf1e46ed5a",
+          "targetNodeId": "4e246176-a866-4235-922b-15f3046d5cc3",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "87124b6e-ddc9-4587-ac10-abaf1e46ed5a",
+            "target": "4e246176-a866-4235-922b-15f3046d5cc3",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "4e246176-a866-4235-922b-15f3046d5cc3-5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1-14",
+          "sourceNodeId": "4e246176-a866-4235-922b-15f3046d5cc3",
+          "targetNodeId": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "4e246176-a866-4235-922b-15f3046d5cc3",
+            "target": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1-376e6f50-1ac9-4f14-8c56-f02892d3c7c7-15",
+          "sourceNodeId": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1",
+          "targetNodeId": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "5d7eb1c8-f045-4fe7-a04c-671eb78e8eb1",
+            "target": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7-623365d0-d617-45fa-9ae8-6bc3b9f8e19b-16",
+          "sourceNodeId": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7",
+          "targetNodeId": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+          "data": {
+            "label": "",
+            "processName": "Import and Prepare Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "376e6f50-1ac9-4f14-8c56-f02892d3c7c7",
+            "target": "623365d0-d617-45fa-9ae8-6bc3b9f8e19b",
+            "type": "SequenceFlow"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Batch Review and Approval",
+      "description": "This process involves reviewing imported batches, analyzing variance and trends, providing feedback, and progressing batches through Practice Lead and Practice Head approvals. It includes locking batches for reporting and ensuring compliance with business rules.",
+      "userStoryIds": [
+        "us10",
+        "us11",
+        "us12",
+        "us13",
+        "us14",
+        "us15",
+        "us16"
+      ],
+      "nodes": [
+        {
+          "id": "09feed6a-a8bc-4312-8c64-ab63d81119a4",
+          "position": {
+            "x": 1612,
+            "y": 8
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "OPS imports new batch and triggers review workflow",
+            "userStoryId": "",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "09feed6a-a8bc-4312-8c64-ab63d81119a4",
+            "label": "OPS imports new batch and triggers review workflow",
+            "resources": {},
+            "traceability": {},
+            "type": "Start"
+          }
+        },
+        {
+          "id": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054",
+          "position": {
+            "x": 1508,
+            "y": 118
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System calculates variance and trend for all projects in the imported batch",
+            "userStoryId": "us12",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054",
+            "label": "System calculates variance and trend for all projects in the imported batch",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us12"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089",
+          "position": {
+            "x": 1508,
+            "y": 303
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System notifies Practice lead that batch is ready for review",
+            "userStoryId": "us13",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089",
+            "label": "System notifies Practice lead that batch is ready for review",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us13"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "dab10079-1a73-45ad-9c08-029a67c15b30",
+          "position": {
+            "x": 1508,
+            "y": 488
+          },
+          "data": {
+            "actor": "Practice lead",
+            "actionName": "Practice lead reviews imported batch and project details",
+            "userStoryId": "us10",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "dab10079-1a73-45ad-9c08-029a67c15b30",
+            "label": "Practice lead reviews imported batch and project details",
+            "resources": {
+              "actor": "Practice lead"
+            },
+            "traceability": {
+              "userStories": [
+                "us10"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca",
+          "position": {
+            "x": 1508,
+            "y": 668
+          },
+          "data": {
+            "actor": "Practice lead",
+            "actionName": "Practice lead views variance calculations and trends",
+            "userStoryId": "us12",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca",
+            "label": "Practice lead views variance calculations and trends",
+            "resources": {
+              "actor": "Practice lead"
+            },
+            "traceability": {
+              "userStories": [
+                "us12"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+          "position": {
+            "x": 1410,
+            "y": 848
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Practice lead decides to approve or reject batch",
+            "userStoryId": "",
+            "processName": "Batch Review and Approval",
+            "subtype": "Exclusive"
+          },
+          "type": "gateway",
+          "cfgNode": {
+            "id": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+            "label": "Practice lead decides to approve or reject batch",
+            "resources": {},
+            "traceability": {},
+            "isSplit": true,
+            "type": "DecisionStep",
+            "isMutuallyExclusive": true
+          }
+        },
+        {
+          "id": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c",
+          "position": {
+            "x": 1508,
+            "y": 1038
+          },
+          "data": {
+            "actor": "Practice lead",
+            "actionName": "Practice lead approves batch and provides feedback",
+            "userStoryId": "us11",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c",
+            "label": "Practice lead approves batch and provides feedback",
+            "resources": {
+              "actor": "Practice lead"
+            },
+            "traceability": {
+              "userStories": [
+                "us11"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "f2ebea81-1cfa-4929-bff1-ceb073d01585",
+          "position": {
+            "x": 1508,
+            "y": 1218
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System notifies Practice head that batch is ready for approval",
+            "userStoryId": "us14",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "f2ebea81-1cfa-4929-bff1-ceb073d01585",
+            "label": "System notifies Practice head that batch is ready for approval",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us14"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "3c8720e6-d8f7-4755-8f99-44c5494a2abf",
+          "position": {
+            "x": 1008,
+            "y": 1398
+          },
+          "data": {
+            "actor": "Practice head",
+            "actionName": "Practice head reviews submitted batch",
+            "userStoryId": "us14",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "3c8720e6-d8f7-4755-8f99-44c5494a2abf",
+            "label": "Practice head reviews submitted batch",
+            "resources": {
+              "actor": "Practice head"
+            },
+            "traceability": {
+              "userStories": [
+                "us14"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+          "position": {
+            "x": 660,
+            "y": 298
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Practice head decides to approve or reject batch",
+            "userStoryId": "",
+            "processName": "Batch Review and Approval",
+            "subtype": "Exclusive"
+          },
+          "type": "gateway",
+          "cfgNode": {
+            "id": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+            "label": "Practice head decides to approve or reject batch",
+            "resources": {},
+            "traceability": {},
+            "isSplit": true,
+            "type": "DecisionStep",
+            "isMutuallyExclusive": true
+          }
+        },
+        {
+          "id": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a",
+          "position": {
+            "x": 8,
+            "y": 488
+          },
+          "data": {
+            "actor": "Practice head",
+            "actionName": "Practice head approves batch",
+            "userStoryId": "us15",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a",
+            "label": "Practice head approves batch",
+            "resources": {
+              "actor": "Practice head"
+            },
+            "traceability": {
+              "userStories": [
+                "us15"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "56073512-e003-4b88-8459-b453c834c638",
+          "position": {
+            "x": 8,
+            "y": 668
+          },
+          "data": {
+            "actor": "Practice head",
+            "actionName": "Practice head locks the approved batch to prevent further changes",
+            "userStoryId": "us16",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "56073512-e003-4b88-8459-b453c834c638",
+            "label": "Practice head locks the approved batch to prevent further changes",
+            "resources": {
+              "actor": "Practice head"
+            },
+            "traceability": {
+              "userStories": [
+                "us16"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "3430d710-18da-4ba6-b806-03d4298890e2",
+          "position": {
+            "x": 112,
+            "y": 888
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Batch approved and locked for reporting",
+            "userStoryId": "",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "3430d710-18da-4ba6-b806-03d4298890e2",
+            "label": "Batch approved and locked for reporting",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        },
+        {
+          "id": "743aa6e0-b5fb-4adb-a2da-9c59f720948f",
+          "position": {
+            "x": 1008,
+            "y": 488
+          },
+          "data": {
+            "actor": "Practice head",
+            "actionName": "Practice head rejects batch",
+            "userStoryId": "us15",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "743aa6e0-b5fb-4adb-a2da-9c59f720948f",
+            "label": "Practice head rejects batch",
+            "resources": {
+              "actor": "Practice head"
+            },
+            "traceability": {
+              "userStories": [
+                "us15"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "918e97f3-0b60-4c82-a533-c242e5f4a01e",
+          "position": {
+            "x": 1008,
+            "y": 668
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System returns batch to Practice lead with feedback for correction",
+            "userStoryId": "us14",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "918e97f3-0b60-4c82-a533-c242e5f4a01e",
+            "label": "System returns batch to Practice lead with feedback for correction",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us14"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "6651be8b-1b1b-4e41-b472-2a4e017544e5",
+          "position": {
+            "x": 1008,
+            "y": 1038
+          },
+          "data": {
+            "actor": "Practice lead",
+            "actionName": "Practice lead rejects batch and provides feedback",
+            "userStoryId": "us11",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "6651be8b-1b1b-4e41-b472-2a4e017544e5",
+            "label": "Practice lead rejects batch and provides feedback",
+            "resources": {
+              "actor": "Practice lead"
+            },
+            "traceability": {
+              "userStories": [
+                "us11"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "b749e496-8dd7-4b23-859c-e39732111aa3",
+          "position": {
+            "x": 1112,
+            "y": 1253
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Batch rejected by Practice lead and sent back for correction",
+            "userStoryId": "",
+            "processName": "Batch Review and Approval",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "b749e496-8dd7-4b23-859c-e39732111aa3",
+            "label": "Batch rejected by Practice lead and sent back for correction",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a-56073512-e003-4b88-8459-b453c834c638-0",
+          "sourceNodeId": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a",
+          "targetNodeId": "56073512-e003-4b88-8459-b453c834c638",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a",
+            "target": "56073512-e003-4b88-8459-b453c834c638",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "56073512-e003-4b88-8459-b453c834c638-3430d710-18da-4ba6-b806-03d4298890e2-1",
+          "sourceNodeId": "56073512-e003-4b88-8459-b453c834c638",
+          "targetNodeId": "3430d710-18da-4ba6-b806-03d4298890e2",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "56073512-e003-4b88-8459-b453c834c638",
+            "target": "3430d710-18da-4ba6-b806-03d4298890e2",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "94a06155-06f0-49cd-9848-9fbd20be3bd9-85c4737d-c61b-4bf2-811a-21b5b71f5b3a-2",
+          "sourceNodeId": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+          "targetNodeId": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a",
+          "data": {
+            "label": "Practice head approves batch",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "Practice head approves batch",
+            "source": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+            "target": "85c4737d-c61b-4bf2-811a-21b5b71f5b3a",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "743aa6e0-b5fb-4adb-a2da-9c59f720948f-918e97f3-0b60-4c82-a533-c242e5f4a01e-3",
+          "sourceNodeId": "743aa6e0-b5fb-4adb-a2da-9c59f720948f",
+          "targetNodeId": "918e97f3-0b60-4c82-a533-c242e5f4a01e",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "743aa6e0-b5fb-4adb-a2da-9c59f720948f",
+            "target": "918e97f3-0b60-4c82-a533-c242e5f4a01e",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "94a06155-06f0-49cd-9848-9fbd20be3bd9-743aa6e0-b5fb-4adb-a2da-9c59f720948f-4",
+          "sourceNodeId": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+          "targetNodeId": "743aa6e0-b5fb-4adb-a2da-9c59f720948f",
+          "data": {
+            "label": "Practice head rejects batch",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "Practice head rejects batch",
+            "source": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+            "target": "743aa6e0-b5fb-4adb-a2da-9c59f720948f",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c-f2ebea81-1cfa-4929-bff1-ceb073d01585-5",
+          "sourceNodeId": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c",
+          "targetNodeId": "f2ebea81-1cfa-4929-bff1-ceb073d01585",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c",
+            "target": "f2ebea81-1cfa-4929-bff1-ceb073d01585",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "f2ebea81-1cfa-4929-bff1-ceb073d01585-3c8720e6-d8f7-4755-8f99-44c5494a2abf-6",
+          "sourceNodeId": "f2ebea81-1cfa-4929-bff1-ceb073d01585",
+          "targetNodeId": "3c8720e6-d8f7-4755-8f99-44c5494a2abf",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "f2ebea81-1cfa-4929-bff1-ceb073d01585",
+            "target": "3c8720e6-d8f7-4755-8f99-44c5494a2abf",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "3c8720e6-d8f7-4755-8f99-44c5494a2abf-94a06155-06f0-49cd-9848-9fbd20be3bd9-7",
+          "sourceNodeId": "3c8720e6-d8f7-4755-8f99-44c5494a2abf",
+          "targetNodeId": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "3c8720e6-d8f7-4755-8f99-44c5494a2abf",
+            "target": "94a06155-06f0-49cd-9848-9fbd20be3bd9",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac-24de6b88-cbf8-44d4-bb56-9de355fd6b0c-8",
+          "sourceNodeId": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+          "targetNodeId": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c",
+          "data": {
+            "label": "Practice lead approves batch",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "Practice lead approves batch",
+            "source": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+            "target": "24de6b88-cbf8-44d4-bb56-9de355fd6b0c",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "6651be8b-1b1b-4e41-b472-2a4e017544e5-b749e496-8dd7-4b23-859c-e39732111aa3-9",
+          "sourceNodeId": "6651be8b-1b1b-4e41-b472-2a4e017544e5",
+          "targetNodeId": "b749e496-8dd7-4b23-859c-e39732111aa3",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "6651be8b-1b1b-4e41-b472-2a4e017544e5",
+            "target": "b749e496-8dd7-4b23-859c-e39732111aa3",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac-6651be8b-1b1b-4e41-b472-2a4e017544e5-10",
+          "sourceNodeId": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+          "targetNodeId": "6651be8b-1b1b-4e41-b472-2a4e017544e5",
+          "data": {
+            "label": "Practice lead rejects batch",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "Practice lead rejects batch",
+            "source": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+            "target": "6651be8b-1b1b-4e41-b472-2a4e017544e5",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "09feed6a-a8bc-4312-8c64-ab63d81119a4-6dbe7ed3-09a4-47d7-a9f8-06bc3072b054-11",
+          "sourceNodeId": "09feed6a-a8bc-4312-8c64-ab63d81119a4",
+          "targetNodeId": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "09feed6a-a8bc-4312-8c64-ab63d81119a4",
+            "target": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054-4dfa5978-2c70-4c2d-9e01-ae08a34c4089-12",
+          "sourceNodeId": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054",
+          "targetNodeId": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "6dbe7ed3-09a4-47d7-a9f8-06bc3072b054",
+            "target": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089-dab10079-1a73-45ad-9c08-029a67c15b30-13",
+          "sourceNodeId": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089",
+          "targetNodeId": "dab10079-1a73-45ad-9c08-029a67c15b30",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "4dfa5978-2c70-4c2d-9e01-ae08a34c4089",
+            "target": "dab10079-1a73-45ad-9c08-029a67c15b30",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "dab10079-1a73-45ad-9c08-029a67c15b30-5096e5d6-b786-4fd7-9d16-72e0fcd8eeca-14",
+          "sourceNodeId": "dab10079-1a73-45ad-9c08-029a67c15b30",
+          "targetNodeId": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "dab10079-1a73-45ad-9c08-029a67c15b30",
+            "target": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca-3b61e7f1-7c47-4f5d-addd-0c578493f1ac-15",
+          "sourceNodeId": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca",
+          "targetNodeId": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+          "data": {
+            "label": "",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "5096e5d6-b786-4fd7-9d16-72e0fcd8eeca",
+            "target": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "918e97f3-0b60-4c82-a533-c242e5f4a01e-3b61e7f1-7c47-4f5d-addd-0c578493f1ac-16",
+          "sourceNodeId": "918e97f3-0b60-4c82-a533-c242e5f4a01e",
+          "targetNodeId": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+          "data": {
+            "label": "Practice lead receives rejected batch for further review and correction",
+            "processName": "Batch Review and Approval"
+          },
+          "cfgEdge": {
+            "label": "Practice lead receives rejected batch for further review and correction",
+            "source": "918e97f3-0b60-4c82-a533-c242e5f4a01e",
+            "target": "3b61e7f1-7c47-4f5d-addd-0c578493f1ac",
+            "type": "SequenceFlow"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monitor, Export, and Analyze Revenue Data",
+      "description": "This process focuses on monitoring financial performance via dashboards, tracking historical and current batches, and exporting locked batches to Excel for external sharing. It supports ongoing analysis and reporting needs.",
+      "userStoryIds": [
+        "us06",
+        "us07",
+        "us09"
+      ],
+      "nodes": [
+        {
+          "id": "5629eeef-b2cb-464d-8f85-4565583d45df",
+          "position": {
+            "x": 612,
+            "y": 8
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Operations user accesses dashboard, tracks batches, or requests export",
+            "userStoryId": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "5629eeef-b2cb-464d-8f85-4565583d45df",
+            "label": "Operations user accesses dashboard, tracks batches, or requests export",
+            "resources": {},
+            "traceability": {},
+            "type": "Start"
+          }
+        },
+        {
+          "id": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+          "position": {
+            "x": 660,
+            "y": 118
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Select monitoring, tracking, or export action",
+            "userStoryId": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": "Exclusive"
+          },
+          "type": "gateway",
+          "cfgNode": {
+            "id": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+            "label": "Select monitoring, tracking, or export action",
+            "resources": {},
+            "traceability": {},
+            "isSplit": true,
+            "type": "DecisionStep",
+            "isMutuallyExclusive": true
+          }
+        },
+        {
+          "id": "e337ba2e-411a-462c-a485-0ff4f2efb9e7",
+          "position": {
+            "x": 8,
+            "y": 308
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System retrieves total revenues and variance data for dashboard",
+            "userStoryId": "us06",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "e337ba2e-411a-462c-a485-0ff4f2efb9e7",
+            "label": "System retrieves total revenues and variance data for dashboard",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us06"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "4c2f9017-28a1-4ebf-9236-354ee0a2888c",
+          "position": {
+            "x": 8,
+            "y": 488
+          },
+          "data": {
+            "actor": "Operations user",
+            "actionName": "Operations user views dashboard with total revenues and variance charts",
+            "userStoryId": "us06",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "4c2f9017-28a1-4ebf-9236-354ee0a2888c",
+            "label": "Operations user views dashboard with total revenues and variance charts",
+            "resources": {
+              "actor": "Operations user"
+            },
+            "traceability": {
+              "userStories": [
+                "us06"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "4d592efc-975d-4520-800d-dca13cb8f73e",
+          "position": {
+            "x": 112,
+            "y": 668
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Dashboard viewed",
+            "userStoryId": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "4d592efc-975d-4520-800d-dca13cb8f73e",
+            "label": "Dashboard viewed",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        },
+        {
+          "id": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3",
+          "position": {
+            "x": 508,
+            "y": 308
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System retrieves all previous and current import batches",
+            "userStoryId": "us07",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3",
+            "label": "System retrieves all previous and current import batches",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us07"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "6f039534-acf4-4ede-912b-f792e5f12425",
+          "position": {
+            "x": 508,
+            "y": 488
+          },
+          "data": {
+            "actor": "Operations user",
+            "actionName": "Operations user reviews historical and current batches",
+            "userStoryId": "us07",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "6f039534-acf4-4ede-912b-f792e5f12425",
+            "label": "Operations user reviews historical and current batches",
+            "resources": {
+              "actor": "Operations user"
+            },
+            "traceability": {
+              "userStories": [
+                "us07"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "225a37f3-f7a5-4c20-94f0-f8dd1fd7d36a",
+          "position": {
+            "x": 612,
+            "y": 668
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Batch tracking completed",
+            "userStoryId": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "225a37f3-f7a5-4c20-94f0-f8dd1fd7d36a",
+            "label": "Batch tracking completed",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        },
+        {
+          "id": "3dd16818-e581-4d2d-bcb9-3dca16286263",
+          "position": {
+            "x": 1008,
+            "y": 308
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "System generates Excel file for locked batch matching original format",
+            "userStoryId": "us09",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "3dd16818-e581-4d2d-bcb9-3dca16286263",
+            "label": "System generates Excel file for locked batch matching original format",
+            "resources": {
+              "actor": "System"
+            },
+            "traceability": {
+              "userStories": [
+                "us09"
+              ]
+            },
+            "type": "ServiceTask"
+          }
+        },
+        {
+          "id": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f",
+          "position": {
+            "x": 1008,
+            "y": 488
+          },
+          "data": {
+            "actor": "Operations user",
+            "actionName": "Operations user downloads exported Excel file",
+            "userStoryId": "us09",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "activity",
+          "cfgNode": {
+            "id": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f",
+            "label": "Operations user downloads exported Excel file",
+            "resources": {
+              "actor": "Operations user"
+            },
+            "traceability": {
+              "userStories": [
+                "us09"
+              ]
+            },
+            "type": "UserTask"
+          }
+        },
+        {
+          "id": "6745f5da-3c63-4f90-87e9-a6c64e4efad4",
+          "position": {
+            "x": 1112,
+            "y": 668
+          },
+          "data": {
+            "actor": "System",
+            "actionName": "Locked batch exported",
+            "userStoryId": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data",
+            "subtype": ""
+          },
+          "type": "event",
+          "cfgNode": {
+            "id": "6745f5da-3c63-4f90-87e9-a6c64e4efad4",
+            "label": "Locked batch exported",
+            "resources": {},
+            "traceability": {},
+            "type": "End"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e337ba2e-411a-462c-a485-0ff4f2efb9e7-4c2f9017-28a1-4ebf-9236-354ee0a2888c-0",
+          "sourceNodeId": "e337ba2e-411a-462c-a485-0ff4f2efb9e7",
+          "targetNodeId": "4c2f9017-28a1-4ebf-9236-354ee0a2888c",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "e337ba2e-411a-462c-a485-0ff4f2efb9e7",
+            "target": "4c2f9017-28a1-4ebf-9236-354ee0a2888c",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "4c2f9017-28a1-4ebf-9236-354ee0a2888c-4d592efc-975d-4520-800d-dca13cb8f73e-1",
+          "sourceNodeId": "4c2f9017-28a1-4ebf-9236-354ee0a2888c",
+          "targetNodeId": "4d592efc-975d-4520-800d-dca13cb8f73e",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "4c2f9017-28a1-4ebf-9236-354ee0a2888c",
+            "target": "4d592efc-975d-4520-800d-dca13cb8f73e",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "0415e91e-2bd4-45ab-9f24-0104403637f0-e337ba2e-411a-462c-a485-0ff4f2efb9e7-2",
+          "sourceNodeId": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+          "targetNodeId": "e337ba2e-411a-462c-a485-0ff4f2efb9e7",
+          "data": {
+            "label": "Operations user selects dashboard view",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "Operations user selects dashboard view",
+            "source": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+            "target": "e337ba2e-411a-462c-a485-0ff4f2efb9e7",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3-6f039534-acf4-4ede-912b-f792e5f12425-3",
+          "sourceNodeId": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3",
+          "targetNodeId": "6f039534-acf4-4ede-912b-f792e5f12425",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3",
+            "target": "6f039534-acf4-4ede-912b-f792e5f12425",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "6f039534-acf4-4ede-912b-f792e5f12425-225a37f3-f7a5-4c20-94f0-f8dd1fd7d36a-4",
+          "sourceNodeId": "6f039534-acf4-4ede-912b-f792e5f12425",
+          "targetNodeId": "225a37f3-f7a5-4c20-94f0-f8dd1fd7d36a",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "6f039534-acf4-4ede-912b-f792e5f12425",
+            "target": "225a37f3-f7a5-4c20-94f0-f8dd1fd7d36a",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "0415e91e-2bd4-45ab-9f24-0104403637f0-705d7fd9-2dab-4de8-a46b-6d8388dd1ed3-5",
+          "sourceNodeId": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+          "targetNodeId": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3",
+          "data": {
+            "label": "Operations user selects batch tracking",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "Operations user selects batch tracking",
+            "source": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+            "target": "705d7fd9-2dab-4de8-a46b-6d8388dd1ed3",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "3dd16818-e581-4d2d-bcb9-3dca16286263-638c1498-91b1-4dd0-ba8f-d5b3287d4d4f-6",
+          "sourceNodeId": "3dd16818-e581-4d2d-bcb9-3dca16286263",
+          "targetNodeId": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "3dd16818-e581-4d2d-bcb9-3dca16286263",
+            "target": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f-6745f5da-3c63-4f90-87e9-a6c64e4efad4-7",
+          "sourceNodeId": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f",
+          "targetNodeId": "6745f5da-3c63-4f90-87e9-a6c64e4efad4",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "638c1498-91b1-4dd0-ba8f-d5b3287d4d4f",
+            "target": "6745f5da-3c63-4f90-87e9-a6c64e4efad4",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "0415e91e-2bd4-45ab-9f24-0104403637f0-3dd16818-e581-4d2d-bcb9-3dca16286263-8",
+          "sourceNodeId": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+          "targetNodeId": "3dd16818-e581-4d2d-bcb9-3dca16286263",
+          "data": {
+            "label": "Operations user requests export of locked batch",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "Operations user requests export of locked batch",
+            "source": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+            "target": "3dd16818-e581-4d2d-bcb9-3dca16286263",
+            "type": "SequenceFlow"
+          }
+        },
+        {
+          "id": "5629eeef-b2cb-464d-8f85-4565583d45df-0415e91e-2bd4-45ab-9f24-0104403637f0-9",
+          "sourceNodeId": "5629eeef-b2cb-464d-8f85-4565583d45df",
+          "targetNodeId": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+          "data": {
+            "label": "",
+            "processName": "Monitor, Export, and Analyze Revenue Data"
+          },
+          "cfgEdge": {
+            "label": "",
+            "source": "5629eeef-b2cb-464d-8f85-4565583d45df",
+            "target": "0415e91e-2bd4-45ab-9f24-0104403637f0",
+            "type": "SequenceFlow"
+          }
+        }
+      ]
+    }
+  ],
+  "securityRoles": []
+}

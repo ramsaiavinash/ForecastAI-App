@@ -1,0 +1,1578 @@
+{
+  "inMemoryTables": [
+    {
+      "data": [
+        {
+          "mbg_onboardingtemplateid": "eb7cef12-ddb8-411d-96cb-55ea23bc0242",
+          "mbg_templatename": "Standard Plan",
+          "mbg_description": "Basic onboarding process for all new hires"
+        },
+        {
+          "mbg_onboardingtemplateid": "a83f7a23-3729-4c9a-9d01-002a13d4325e",
+          "mbg_templatename": "Engineering Plan",
+          "mbg_description": "Onboarding for engineering department"
+        },
+        {
+          "mbg_onboardingtemplateid": "4d7bcba5-047a-4199-860d-c253548076b3",
+          "mbg_templatename": "Sales Plan",
+          "mbg_description": "Onboarding for sales team"
+        },
+        {
+          "mbg_onboardingtemplateid": "cadefcc1-eb05-4f3d-a79d-e47e977107d5",
+          "mbg_templatename": "HR Plan",
+          "mbg_description": "Onboarding for HR department"
+        },
+        {
+          "mbg_onboardingtemplateid": "ef903edb-0bd2-41d2-aebb-02ef0fb3efe8",
+          "mbg_templatename": "Intern Plan",
+          "mbg_description": "Onboarding for interns"
+        }
+      ],
+      "entity": {
+        "MetadataId": "ca3e448f-bf07-4dd8-b5b8-167f69a3cdf0",
+        "Attributes": [
+          {
+            "MetadataId": "e78d3725-3dd6-4116-8a4f-95123b9b3a54",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_TemplateName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Template Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "42e303e4-df42-4873-a81c-00f27c0d9d8b",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_Description",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Description",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Memo",
+            "AttributeTypeName": {
+              "Value": "MemoType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 2000,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.MemoAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "mbg_OnboardingTemplate",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "Templates defining standardized onboarding processes",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Onboarding Templates",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Onboarding Template",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "dataPayloadFormat": "Dataverse",
+      "additionalMetadata": {},
+      "tableSourceType": "DataModelProposal",
+      "updatedByCopilotSessionId": "e46b204e-0882-4e8d-ac30-7682998b83b0"
+    },
+    {
+      "data": [
+        {
+          "mbg_onboardingtaskid": "655309ee-3ad4-4d84-aa46-8c4cd0d97092",
+          "mbg_taskname": "Setup Email",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(eb7cef12-ddb8-411d-96cb-55ea23bc0242)",
+          "mbg_ismandatory": true,
+          "mbg_duedaysafterstart": 1
+        },
+        {
+          "mbg_onboardingtaskid": "9635a31f-cb8b-4a22-be46-5819fade4d47",
+          "mbg_taskname": "Complete Paperwork",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(eb7cef12-ddb8-411d-96cb-55ea23bc0242)",
+          "mbg_ismandatory": true,
+          "mbg_duedaysafterstart": 3
+        },
+        {
+          "mbg_onboardingtaskid": "5edaabfa-f262-4219-8990-866b870569aa",
+          "mbg_taskname": "Team Introduction",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(a83f7a23-3729-4c9a-9d01-002a13d4325e)",
+          "mbg_ismandatory": false,
+          "mbg_duedaysafterstart": 2
+        },
+        {
+          "mbg_onboardingtaskid": "8449aba1-f304-4a15-bdfb-416b8f2c3cac",
+          "mbg_taskname": "Security Training",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(4d7bcba5-047a-4199-860d-c253548076b3)",
+          "mbg_ismandatory": true,
+          "mbg_duedaysafterstart": 5
+        },
+        {
+          "mbg_onboardingtaskid": "e62f4585-3cc2-4b5b-9aa2-d247bc7bf3a2",
+          "mbg_taskname": "Equipment Setup",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(cadefcc1-eb05-4f3d-a79d-e47e977107d5)",
+          "mbg_ismandatory": true,
+          "mbg_duedaysafterstart": 2
+        }
+      ],
+      "entity": {
+        "MetadataId": "87ddd606-be8d-4b8a-a401-285502afa59d",
+        "Attributes": [
+          {
+            "MetadataId": "627fa224-919c-41ad-afa3-f8445c976d93",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_TaskName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Task Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "fa5da48c-a3a8-4020-82b6-30cd3f99c21f",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_TemplateName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Template Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "mbg_onboardingtemplate"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "62fb964a-cd11-47b2-87b5-28c6ee6fede1",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_IsMandatory",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Is Mandatory",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Boolean",
+            "AttributeTypeName": {
+              "Value": "BooleanType"
+            },
+            "DefaultValue": false,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "IsManaged": false,
+              "ExternalTypeName": "",
+              "OptionSetType": "Boolean",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Is Mandatory",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "TrueOption": {
+                "Value": 1,
+                "IsManaged": false,
+                "ExternalValue": "",
+                "Label": {
+                  "LocalizedLabels": [
+                    {
+                      "Label": "Yes",
+                      "LanguageCode": 1033
+                    }
+                  ]
+                },
+                "Description": {
+                  "LocalizedLabels": []
+                }
+              },
+              "FalseOption": {
+                "Value": 0,
+                "IsManaged": false,
+                "ExternalValue": "",
+                "Label": {
+                  "LocalizedLabels": [
+                    {
+                      "Label": "No",
+                      "LanguageCode": 1033
+                    }
+                  ]
+                },
+                "Description": {
+                  "LocalizedLabels": []
+                }
+              }
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.BooleanAttributeMetadata"
+          },
+          {
+            "MetadataId": "b1cec510-f822-40eb-9035-1d97c7c5ce0a",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_DueDaysAfterStart",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Due Days After Start",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Integer",
+            "AttributeTypeName": {
+              "Value": "IntegerType"
+            },
+            "MaxValue": 2147483647,
+            "MinValue": -2147483648,
+            "Format": "None",
+            "@odata.type": "Microsoft.Dynamics.CRM.IntegerAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "mbg_OnboardingTask",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "Tasks defined within onboarding templates",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Onboarding Tasks",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Onboarding Task",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [
+          {
+            "MetadataId": "219c0dcc-9bf2-41c3-8b99-4dc7de8b21b0",
+            "SchemaName": "mbg_OnboardingTask_mbg_TemplateName_mbg_OnboardingTemplate",
+            "ReferencingAttribute": "mbg_templatename",
+            "ReferencedEntity": "mbg_onboardingtemplate",
+            "ReferencingEntity": "mbg_onboardingtask",
+            "ReferencedAttribute": "mbg_onboardingtemplateid",
+            "ReferencingEntityNavigationPropertyName": "mbg_TemplateName",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          }
+        ],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "dataPayloadFormat": "Dataverse",
+      "additionalMetadata": {},
+      "tableSourceType": "DataModelProposal",
+      "updatedByCopilotSessionId": "e46b204e-0882-4e8d-ac30-7682998b83b0"
+    },
+    {
+      "data": [
+        {
+          "mbg_newhireid": "ffd99c1e-4ba8-4f9f-a1a4-a53b0b6a3da3",
+          "mbg_newhirename": "John Smith",
+          "mbg_email": "john.smith@example.com",
+          "mbg_startdate": "2026-01-09T18:30:00.000Z"
+        },
+        {
+          "mbg_newhireid": "c7b39458-6dc9-45c6-b021-bf4929521165",
+          "mbg_newhirename": "Maria Rodriguez",
+          "mbg_email": "maria.rodriguez@example.com",
+          "mbg_startdate": "2026-02-14T18:30:00.000Z"
+        },
+        {
+          "mbg_newhireid": "9527749a-3399-4715-9a20-ef57f9f42858",
+          "mbg_newhirename": "David Johnson",
+          "mbg_email": "david.johnson@example.com",
+          "mbg_startdate": "2026-02-28T18:30:00.000Z"
+        },
+        {
+          "mbg_newhireid": "d2775e1a-18db-4253-9082-3e79293864c4",
+          "mbg_newhirename": "Sarah Williams",
+          "mbg_email": "sarah.williams@example.com",
+          "mbg_startdate": "2026-01-19T18:30:00.000Z"
+        },
+        {
+          "mbg_newhireid": "4855fe19-38a8-4109-84d6-ffc364a4cfb7",
+          "mbg_newhirename": "James Chen",
+          "mbg_email": "james.chen@example.com",
+          "mbg_startdate": "2026-02-04T18:30:00.000Z"
+        }
+      ],
+      "entity": {
+        "MetadataId": "fae9de86-4809-43d5-a30c-ece1819d5f16",
+        "Attributes": [
+          {
+            "MetadataId": "3f06b056-ba0d-4312-b973-976f939ded1f",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_NewHireName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "New Hire Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "29998276-7d69-4d3f-868b-6da5d32c1074",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_Email",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Email",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Email"
+            },
+            "Format": "Email",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "d91fe86b-c5e3-4123-8402-18cb03873b67",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_StartDate",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Start Date",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "DateTime",
+            "AttributeTypeName": {
+              "Value": "DateTimeType"
+            },
+            "ImeMode": "Auto",
+            "Format": "DateOnly",
+            "DateTimeBehavior": {
+              "Value": "UserLocal"
+            },
+            "CanChangeDateTimeBehavior": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "canmodifybehavior"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "mbg_NewHire",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "Employees who are being onboarded",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "New Hires",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "New Hire",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "dataPayloadFormat": "Dataverse",
+      "additionalMetadata": {},
+      "tableSourceType": "DataModelProposal",
+      "updatedByCopilotSessionId": "e46b204e-0882-4e8d-ac30-7682998b83b0"
+    },
+    {
+      "data": [
+        {
+          "mbg_onboardingplanid": "0d6086b3-8123-4ea2-892e-5b5d415dc69d",
+          "mbg_planname": "Plan for John Smith",
+          "mbg_NewHireName@odata.bind": "/mbg_newhires(ffd99c1e-4ba8-4f9f-a1a4-a53b0b6a3da3)",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(eb7cef12-ddb8-411d-96cb-55ea23bc0242)",
+          "mbg_createddate": "2026-01-04T18:30:00.000Z"
+        },
+        {
+          "mbg_onboardingplanid": "bace48ec-469b-4b91-b1aa-6cc974f55b57",
+          "mbg_planname": "Plan for Maria Rodriguez",
+          "mbg_NewHireName@odata.bind": "/mbg_newhires(c7b39458-6dc9-45c6-b021-bf4929521165)",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(a83f7a23-3729-4c9a-9d01-002a13d4325e)",
+          "mbg_createddate": "2026-02-09T18:30:00.000Z"
+        },
+        {
+          "mbg_onboardingplanid": "eee4434b-2845-45de-9750-3ac2d6258bb5",
+          "mbg_planname": "Plan for David Johnson",
+          "mbg_NewHireName@odata.bind": "/mbg_newhires(9527749a-3399-4715-9a20-ef57f9f42858)",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(4d7bcba5-047a-4199-860d-c253548076b3)",
+          "mbg_createddate": "2026-02-24T18:30:00.000Z"
+        },
+        {
+          "mbg_onboardingplanid": "9a68f2e2-c824-41c7-8d2e-c98f6151c454",
+          "mbg_planname": "Plan for Sarah Williams",
+          "mbg_NewHireName@odata.bind": "/mbg_newhires(d2775e1a-18db-4253-9082-3e79293864c4)",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(cadefcc1-eb05-4f3d-a79d-e47e977107d5)",
+          "mbg_createddate": "2026-01-14T18:30:00.000Z"
+        },
+        {
+          "mbg_onboardingplanid": "6d240552-21e9-4d39-bc53-97c36bb9cd67",
+          "mbg_planname": "Plan for James Chen",
+          "mbg_NewHireName@odata.bind": "/mbg_newhires(4855fe19-38a8-4109-84d6-ffc364a4cfb7)",
+          "mbg_TemplateName@odata.bind": "/mbg_onboardingtemplates(ef903edb-0bd2-41d2-aebb-02ef0fb3efe8)",
+          "mbg_createddate": "2026-01-29T18:30:00.000Z"
+        }
+      ],
+      "entity": {
+        "MetadataId": "0547ae69-6ed8-4c63-894a-8b3fd02f13d4",
+        "Attributes": [
+          {
+            "MetadataId": "fb0796a1-44c0-40c0-95cb-a9f54344fb29",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_PlanName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Plan Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "0c985c9d-f949-4f5d-b45a-d7d66781733d",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_NewHireName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "New Hire Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "mbg_newhire"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "9f2c5ed5-01bb-45b5-8991-435f3f30e32f",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_TemplateName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Template Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "mbg_onboardingtemplate"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "e45f1280-e3ff-4426-a7ed-060544d7b827",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_CreatedDate",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Created Date",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "DateTime",
+            "AttributeTypeName": {
+              "Value": "DateTimeType"
+            },
+            "ImeMode": "Auto",
+            "Format": "DateOnly",
+            "DateTimeBehavior": {
+              "Value": "UserLocal"
+            },
+            "CanChangeDateTimeBehavior": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "canmodifybehavior"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "mbg_OnboardingPlan",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "Plans created for new hires based on templates",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Onboarding Plans",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Onboarding Plan",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [
+          {
+            "MetadataId": "e69b1ccf-fd21-4b6c-940a-93d27c2ecda2",
+            "SchemaName": "mbg_OnboardingPlan_mbg_NewHireName_mbg_NewHire",
+            "ReferencingAttribute": "mbg_newhirename",
+            "ReferencedEntity": "mbg_newhire",
+            "ReferencingEntity": "mbg_onboardingplan",
+            "ReferencedAttribute": "mbg_newhireid",
+            "ReferencingEntityNavigationPropertyName": "mbg_NewHireName",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          },
+          {
+            "MetadataId": "268c3ffd-0a0e-4fb9-acf2-f54f44be84dd",
+            "SchemaName": "mbg_OnboardingPlan_mbg_TemplateName_mbg_OnboardingTemplate",
+            "ReferencingAttribute": "mbg_templatename",
+            "ReferencedEntity": "mbg_onboardingtemplate",
+            "ReferencingEntity": "mbg_onboardingplan",
+            "ReferencedAttribute": "mbg_onboardingtemplateid",
+            "ReferencingEntityNavigationPropertyName": "mbg_TemplateName",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          }
+        ],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "dataPayloadFormat": "Dataverse",
+      "additionalMetadata": {},
+      "tableSourceType": "DataModelProposal",
+      "updatedByCopilotSessionId": "e46b204e-0882-4e8d-ac30-7682998b83b0"
+    },
+    {
+      "data": [
+        {
+          "mbg_taskassignmentid": "bf0f8a66-aeb0-4ffc-b58f-490fd0400f17",
+          "mbg_assignmentname": "Assign Setup Email to IT",
+          "mbg_OnboardingTaskName@odata.bind": "/mbg_onboardingtasks(655309ee-3ad4-4d84-aa46-8c4cd0d97092)",
+          "mbg_assignedto": "IT Team",
+          "mbg_status": 861140000,
+          "mbg_duedate": "2026-01-10T18:30:00.000Z"
+        },
+        {
+          "mbg_taskassignmentid": "d9853fc7-25b1-4f42-a857-ffec11f427cd",
+          "mbg_assignmentname": "Assign Paperwork to HR",
+          "mbg_OnboardingTaskName@odata.bind": "/mbg_onboardingtasks(9635a31f-cb8b-4a22-be46-5819fade4d47)",
+          "mbg_assignedto": "HR Coordinator",
+          "mbg_status": 861140001,
+          "mbg_duedate": "2026-01-12T18:30:00.000Z"
+        },
+        {
+          "mbg_taskassignmentid": "8d579027-9caa-41a1-9f12-1eac168aba25",
+          "mbg_assignmentname": "Assign Team Intro to Manager",
+          "mbg_OnboardingTaskName@odata.bind": "/mbg_onboardingtasks(5edaabfa-f262-4219-8990-866b870569aa)",
+          "mbg_assignedto": "Hiring Manager",
+          "mbg_status": 861140000,
+          "mbg_duedate": "2026-02-16T18:30:00.000Z"
+        },
+        {
+          "mbg_taskassignmentid": "8fde031f-fcec-4c5e-b83d-64ad2375e020",
+          "mbg_assignmentname": "Assign Security Training to Compliance",
+          "mbg_OnboardingTaskName@odata.bind": "/mbg_onboardingtasks(8449aba1-f304-4a15-bdfb-416b8f2c3cac)",
+          "mbg_assignedto": "Compliance Team",
+          "mbg_status": 861140002,
+          "mbg_duedate": "2026-03-05T18:30:00.000Z"
+        },
+        {
+          "mbg_taskassignmentid": "7d84730b-eba9-4c3e-9ee2-b327450d67ac",
+          "mbg_assignmentname": "Assign Equipment Setup to IT",
+          "mbg_OnboardingTaskName@odata.bind": "/mbg_onboardingtasks(e62f4585-3cc2-4b5b-9aa2-d247bc7bf3a2)",
+          "mbg_assignedto": "IT Team",
+          "mbg_status": 861140001,
+          "mbg_duedate": "2026-01-21T18:30:00.000Z"
+        }
+      ],
+      "entity": {
+        "MetadataId": "5ed170d4-120d-4a39-a97a-8e84a11a5c88",
+        "Attributes": [
+          {
+            "MetadataId": "52092c98-508b-4352-b229-62c9e2d47d05",
+            "IsPrimaryName": true,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_AssignmentName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Assignment Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "ApplicationRequired"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 850,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "efc8e9f1-9976-4f1b-ace6-d728c4badead",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_OnboardingTaskName",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Onboarding Task Name",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Lookup",
+            "AttributeTypeName": {
+              "Value": "LookupType"
+            },
+            "Targets": [
+              "mbg_onboardingtask"
+            ],
+            "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata"
+          },
+          {
+            "MetadataId": "f1470ef1-a5b0-4227-a605-ee4669dafa36",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_AssignedTo",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Assigned To",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "String",
+            "AttributeTypeName": {
+              "Value": "StringType"
+            },
+            "ImeMode": "Auto",
+            "MaxLength": 100,
+            "FormatName": {
+              "Value": "Text"
+            },
+            "Format": "Text",
+            "AutoNumberFormat": null,
+            "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata"
+          },
+          {
+            "MetadataId": "ae010c7b-d36e-44ca-a5cd-ad811175e3be",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_Status",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Status",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "Picklist",
+            "AttributeTypeName": {
+              "Value": "PicklistType"
+            },
+            "DefaultFormValue": -1,
+            "OptionSet": {
+              "IsCustomOptionSet": true,
+              "IsGlobal": false,
+              "IsCustomizable": {
+                "Value": true,
+                "CanBeChanged": false,
+                "ManagedPropertyLogicalName": "iscustomizable"
+              },
+              "ExternalTypeName": "",
+              "OptionSetType": "Picklist",
+              "Description": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "DisplayName": {
+                "LocalizedLabels": [
+                  {
+                    "Label": "Status",
+                    "LanguageCode": 1033
+                  }
+                ]
+              },
+              "Options": [
+                {
+                  "Value": 861140000,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Not Started",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140001,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "In Progress",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Value": 861140002,
+                  "ExternalValue": "",
+                  "IsManaged": false,
+                  "Label": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "Completed",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  },
+                  "Description": {
+                    "LocalizedLabels": [
+                      {
+                        "Label": "",
+                        "LanguageCode": 1033
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata"
+          },
+          {
+            "MetadataId": "b5afd43a-b790-49a8-8fba-7074d6961be6",
+            "IsPrimaryName": false,
+            "IsSecured": false,
+            "IsValidForUpdate": true,
+            "IsValidForRead": true,
+            "SchemaName": "mbg_DueDate",
+            "SourceType": 0,
+            "ExternalName": null,
+            "Description": {
+              "LocalizedLabels": [
+                {
+                  "Label": "",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "DisplayName": {
+              "LocalizedLabels": [
+                {
+                  "Label": "Due Date",
+                  "LanguageCode": 1033
+                }
+              ]
+            },
+            "RequiredLevel": {
+              "Value": "None"
+            },
+            "AttributeType": "DateTime",
+            "AttributeTypeName": {
+              "Value": "DateTimeType"
+            },
+            "ImeMode": "Auto",
+            "Format": "DateOnly",
+            "DateTimeBehavior": {
+              "Value": "UserLocal"
+            },
+            "CanChangeDateTimeBehavior": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "canmodifybehavior"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.DateTimeAttributeMetadata"
+          }
+        ],
+        "OwnershipType": "UserOwned",
+        "PrimaryNameAttribute": "",
+        "SchemaName": "mbg_TaskAssignment",
+        "HasNotes": false,
+        "HasActivities": false,
+        "IsAvailableOffline": false,
+        "IsActivity": false,
+        "ActivityTypeMask": 0,
+        "IsSolutionAware": false,
+        "Description": {
+          "LocalizedLabels": [
+            {
+              "Label": "Assignments of onboarding tasks to team members",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayCollectionName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Task Assignments",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "DisplayName": {
+          "LocalizedLabels": [
+            {
+              "Label": "Task Assignment",
+              "LanguageCode": 1033
+            }
+          ]
+        },
+        "IsAuditEnabled": {
+          "Value": false
+        },
+        "IsValidForQueue": {
+          "Value": false
+        },
+        "IsConnectionsEnabled": {
+          "Value": false
+        },
+        "IsDuplicateDetectionEnabled": {
+          "Value": true
+        },
+        "IsDocumentManagementEnabled": false,
+        "EntityColor": null,
+        "IsRetentionEnabled": false,
+        "SyncToExternalSearchIndex": false,
+        "AutoRouteToOwnerQueue": false,
+        "IsSLAEnabled": false,
+        "IsQuickCreateEnabled": false,
+        "IsActivityParty": false,
+        "HasFeedback": false,
+        "AutoCreateAccessTeams": false,
+        "ChangeTrackingEnabled": false,
+        "IsKnowledgeManagementEnabled": false,
+        "EntityHelpUrlEnabled": false,
+        "EntityHelpUrl": null,
+        "IsMailMergeEnabled": {
+          "Value": true
+        },
+        "IsOfflineInMobileClient": {
+          "Value": false
+        },
+        "ManyToOneRelationships": [
+          {
+            "MetadataId": "e7b3a6a8-4f3f-4aaa-b01a-8ccc80820bf5",
+            "SchemaName": "mbg_TaskAssignment_mbg_OnboardingTaskName_mbg_OnboardingTask",
+            "ReferencingAttribute": "mbg_onboardingtaskname",
+            "ReferencedEntity": "mbg_onboardingtask",
+            "ReferencingEntity": "mbg_taskassignment",
+            "ReferencedAttribute": "mbg_onboardingtaskid",
+            "ReferencingEntityNavigationPropertyName": "mbg_OnboardingTaskName",
+            "RelationshipType": "OneToManyRelationship",
+            "IsCustomRelationship": true,
+            "IsValidForAdvancedFind": true,
+            "IsCustomizable": {
+              "Value": true,
+              "CanBeChanged": true,
+              "ManagedPropertyLogicalName": "iscustomizable"
+            },
+            "CascadeConfiguration": {
+              "Assign": "NoCascade",
+              "Delete": "RemoveLink",
+              "Merge": "NoCascade",
+              "Reparent": "NoCascade",
+              "Share": "NoCascade",
+              "Unshare": "NoCascade",
+              "RollupView": "NoCascade",
+              "Archive": "RemoveLink"
+            },
+            "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata"
+          }
+        ],
+        "@odata.type": "Microsoft.Dynamics.CRM.EntityMetadata"
+      },
+      "dataPayloadFormat": "Dataverse",
+      "additionalMetadata": {},
+      "tableSourceType": "DataModelProposal",
+      "updatedByCopilotSessionId": "e46b204e-0882-4e8d-ac30-7682998b83b0"
+    }
+  ],
+  "positionMap": {
+    "ca3e448f-bf07-4dd8-b5b8-167f69a3cdf0": {
+      "x": 0,
+      "y": 30
+    },
+    "87ddd606-be8d-4b8a-a401-285502afa59d": {
+      "x": 440,
+      "y": 30
+    },
+    "fae9de86-4809-43d5-a30c-ece1819d5f16": {
+      "x": 0,
+      "y": 238
+    },
+    "0547ae69-6ed8-4c63-894a-8b3fd02f13d4": {
+      "x": 440,
+      "y": 286
+    },
+    "5ed170d4-120d-4a39-a97a-8e84a11a5c88": {
+      "x": 860,
+      "y": 30
+    }
+  },
+  "viewPort": {
+    "x": 91.5,
+    "y": 69.5,
+    "zoom": 1
+  }
+}

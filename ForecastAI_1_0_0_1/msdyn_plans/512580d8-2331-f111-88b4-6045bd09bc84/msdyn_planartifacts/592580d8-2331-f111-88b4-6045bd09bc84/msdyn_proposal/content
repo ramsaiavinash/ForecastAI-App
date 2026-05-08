@@ -1,0 +1,26 @@
+{
+  "name": "CSV import to Dataverse",
+  "description": "Automates CSV parsing, validation, and upsert of projects, revenue records, and submissions, giving OPS users reliable monthly data loads.",
+  "typesOfUsers": [
+    "Operations user"
+  ],
+  "tableSchemaNames": [],
+  "userStories": [
+    {
+      "id": "us01",
+      "description": "Import a CSV file with project, forecast, actuals, and submission data so that monthly records are created or updated correctly.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us02",
+      "description": "View import batch status and row counts so that data load issues can be identified quickly.",
+      "userType": "Operations user"
+    },
+    {
+      "id": "us03",
+      "description": "Correct and reprocess failed imports so that data completeness is ensured.",
+      "userType": "Operations user"
+    }
+  ],
+  "version": 1
+}

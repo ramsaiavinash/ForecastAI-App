@@ -1,0 +1,24 @@
+{
+  "name": "Batch Approval Notification",
+  "description": "Flow to notify Practice Leads and Practice Heads when a batch is ready for review or approval, improving response times.",
+  "typesOfUsers": [
+    "Practice lead",
+    "Practice head"
+  ],
+  "tableSchemaNames": [
+    "cr5c7_ImportBatch"
+  ],
+  "userStories": [
+    {
+      "id": "us13",
+      "description": "Receive notifications when a batch is ready for review so that I can act promptly.",
+      "userType": "Practice lead"
+    },
+    {
+      "id": "us14",
+      "description": "Receive notifications when a batch is approved by the Practice Lead so that I can perform my approval in a timely manner.",
+      "userType": "Practice head"
+    }
+  ],
+  "version": 1
+}
