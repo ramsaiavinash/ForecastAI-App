@@ -42,8 +42,8 @@ export default function Export() {
 
     const projectMap = new Map<string, Record<number, any>>();
     for (const rev of revenues) {
-      if (!projectMap.has(rev.projectMasterId)) projectMap.set(rev.projectMasterId, {});
-      projectMap.get(rev.projectMasterId)![rev.month] = rev;
+      if (!projectMap.has(rev.projectId)) projectMap.set(rev.projectId, {});
+      projectMap.get(rev.projectId)![rev.month] = rev;
     }
 
     const headers = [
@@ -60,10 +60,10 @@ export default function Export() {
       const months = projectMap.get(project.id) || {};
       const monthValues = MONTH_KEYS.map((_, i) => {
         const rev = months[i + 1];
-        return rev?.currentSubmissionAmount || rev?.forecastAmount || 0;
+        return Number(rev?.amount || 0);
       });
       const currentTotal = monthValues.reduce((a, b) => a + b, 0);
-      const lastTotal = MONTH_KEYS.reduce((sum, _, i) => sum + (months[i + 1]?.lastSubmissionAmount || 0), 0);
+      const lastTotal = MONTH_KEYS.reduce((sum, _, i) => sum + (0), 0);
       const variance = currentTotal - lastTotal;
 
       return [

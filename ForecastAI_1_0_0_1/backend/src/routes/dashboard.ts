@@ -3,6 +3,7 @@ import { prisma } from "../prisma";
 const router = Router();
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const SR: any = {1:"Draft",2:"Under Review",3:"Approved PL",4:"Approved PH",5:"Locked"};
+const ACTUAL_MONTHS = [1, 2, 3, 4]; // Jan-Apr are actuals
 
 router.get("/", async (req, res) => {
   try {
@@ -21,6 +22,8 @@ router.get("/", async (req, res) => {
     });
 
     const formatted = allBatches.map(fmt);
+
+    // Use the most recent batch for stats
     const latest = formatted[0];
     let totalRevenue = 0, variance = 0, variancePercent = 0;
     let monthlyData = MONTHS.map(m => ({ month: m, actuals: 0, forecast: 0 }));
@@ -30,16 +33,22 @@ router.get("/", async (req, res) => {
       variance = latest.variance;
       variancePercent = latest.lastTotal > 0 ? (variance / latest.lastTotal) * 100 : 0;
 
-      // Get monthly revenues for latest batch - use correct field names
+      // Get monthly revenues for latest batch
       const revenues = await prisma.monthlyRevenue.findMany({
         where: { batchId: latest.id },
       });
 
-      // Aggregate by month manually
+      // Split into actuals (Jan-Apr) and forecast (May-Dec)
       monthlyData = MONTHS.map((name, idx) => {
-        const monthRevs = revenues.filter((r: any) => r.month === idx + 1);
+        const month = idx + 1;
+        const monthRevs = revenues.filter((r: any) => r.month === month);
         const total = monthRevs.reduce((sum: number, r: any) => sum + Number(r.amount || 0), 0);
-        return { month: name, actuals: 0, forecast: total };
+
+        if (ACTUAL_MONTHS.includes(month)) {
+          return { month: name, actuals: total, forecast: 0 };
+        } else {
+          return { month: name, actuals: 0, forecast: total };
+        }
       });
     }
 

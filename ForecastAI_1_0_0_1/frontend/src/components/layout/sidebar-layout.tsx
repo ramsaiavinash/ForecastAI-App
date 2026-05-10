@@ -2,17 +2,8 @@ import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard,
-  Upload,
-  FileText,
-  CheckCircle,
-  Shield,
-  FolderOpen,
-  Download,
-  ChevronLeft,
-  Menu,
-  X,
-  TrendingUp,
+  LayoutDashboard, Upload, FileText, CheckCircle,
+  Shield, FolderOpen, Download, ChevronLeft, Menu, X, TrendingUp,
 } from "lucide-react";
 
 const navItems = [
@@ -34,112 +25,92 @@ export function SidebarLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Mobile overlay */}
+    <div className="flex h-screen bg-slate-50">
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={() => setIsMobileOpen(false)}
             className="fixed inset-0 bg-black/50 z-30 md:hidden"
           />
         )}
       </AnimatePresence>
 
-      {/* Desktop Sidebar */}
       <motion.div
         initial={false}
-        animate={{
-          width: isCollapsed ? "80px" : "280px",
-        }}
-        transition={{ duration: 0.3 }}
-        className="relative hidden md:flex flex-col border-r border-slate-800"
-        style={{ backgroundColor: "#0f172a" }}
+        animate={{ width: isCollapsed ? "64px" : "260px" }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+        className="relative hidden md:flex flex-col flex-shrink-0"
+        style={{ backgroundColor: "#0a0f1e" }}
       >
-        {/* Logo Area */}
-        <motion.div
-          className="flex flex-col items-center justify-center py-8 px-4 border-b border-slate-800"
-          animate={{ gap: isCollapsed ? 0 : 12 }}
-        >
-          <motion.div
-            animate={{
-              scale: isCollapsed ? 1 : 1,
-            }}
-            className="w-10 h-10 bg-emerald-500 rounded flex items-center justify-center text-white font-bold text-lg"
-          >
-            <TrendingUp className="w-6 h-6 text-white" />
-          </motion.div>
+        <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-700/50">
+          <div className="w-9 h-9 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <TrendingUp className="w-5 h-5 text-white" />
+          </div>
           <AnimatePresence>
             {!isCollapsed && (
               <motion.div
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: "auto" }}
-                exit={{ opacity: 0, width: 0 }}
-                className="text-center"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <div className="text-sm font-bold text-white">Revenue Forecast</div>
-                <div className="text-xs text-emerald-500">FY 2026</div>
+                <div className="text-sm font-bold text-white leading-tight">Revenue Forecast</div>
+                <div className="text-xs text-green-400 font-medium">FY 2026</div>
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </div>
 
-        {/* Nav Items */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
           {navItems.map(({ icon: Icon, label, path }) => (
             <NavLink
               key={path}
               to={path}
               onClick={handleNavClick}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-4 py-3 rounded-lg transition-colors relative group border-l-4 ${
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 relative group ${
                   isActive
-                    ? "border-l-emerald-500 bg-slate-900/30 text-emerald-500"
-                    : "border-l-transparent text-slate-400 hover:text-white hover:bg-slate-900/20"
+                    ? "bg-slate-700/60 text-white"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
                 }`
               }
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
-              <AnimatePresence>
-                {!isCollapsed && (
-                  <motion.span
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "auto" }}
-                    exit={{ opacity: 0, width: 0 }}
-                    className="text-sm font-medium whitespace-nowrap"
-                  >
-                    {label}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-              {isCollapsed && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-slate-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
-                  {label}
-                </div>
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-green-400 rounded-r-full" />
+                  )}
+                  <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-green-400" : ""}`} />
+                  <AnimatePresence>
+                    {!isCollapsed && (
+                      <motion.span
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        className={`text-sm whitespace-nowrap ${isActive ? "font-semibold text-white" : "font-medium"}`}
+                      >
+                        {label}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                  {isCollapsed && (
+                    <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg border border-slate-700">
+                      {label}
+                    </div>
+                  )}
+                </>
               )}
             </NavLink>
           ))}
         </nav>
 
-        {/* Collapse Button */}
-        <div className="px-4 py-4 border-t border-slate-800">
+        <div className="px-2 py-3 border-t border-slate-700/50">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900/20 transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all"
           >
-            <ChevronLeft
-              className={`w-5 h-5 transition-transform ${
-                isCollapsed ? "rotate-180" : ""
-              }`}
-            />
+            <ChevronLeft className={`w-5 h-5 transition-transform flex-shrink-0 ${isCollapsed ? "rotate-180" : ""}`} />
             <AnimatePresence>
               {!isCollapsed && (
                 <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
-                  exit={{ opacity: 0, width: 0 }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   className="text-sm font-medium whitespace-nowrap"
                 >
                   Collapse
@@ -150,55 +121,45 @@ export function SidebarLayout() {
         </div>
       </motion.div>
 
-      {/* Mobile Sidebar Drawer */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            initial={{ x: -280 }}
-            animate={{ x: 0 }}
-            exit={{ x: -280 }}
-            transition={{ duration: 0.3 }}
-            className="fixed left-0 top-0 bottom-0 w-72 border-r border-slate-800 z-40 md:hidden flex flex-col"
-            style={{ backgroundColor: "#0f172a" }}
+            initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }}
+            transition={{ duration: 0.25 }}
+            className="fixed left-0 top-0 bottom-0 w-56 z-40 md:hidden flex flex-col"
+            style={{ backgroundColor: "#0a0f1e" }}
           >
-            {/* Logo Area */}
-            <div className="flex flex-col items-center justify-center py-8 px-4 border-b border-slate-800">
-              <div className="w-10 h-10 bg-emerald-500 rounded flex items-center justify-center text-white font-bold text-lg">
-                <TrendingUp className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-700/50">
+              <div className="w-9 h-9 bg-green-600 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-white" />
               </div>
-              <div className="text-center mt-3">
+              <div>
                 <div className="text-sm font-bold text-white">Revenue Forecast</div>
-                <div className="text-xs text-emerald-500">FY 2026</div>
+                <div className="text-xs text-green-400 font-medium">FY 2026</div>
               </div>
             </div>
-
-            {/* Nav Items */}
-            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
               {navItems.map(({ icon: Icon, label, path }) => (
                 <NavLink
-                  key={path}
-                  to={path}
-                  onClick={handleNavClick}
+                  key={path} to={path} onClick={handleNavClick}
                   className={({ isActive }) =>
-                    `flex items-center gap-4 px-4 py-3 rounded-lg transition-colors border-l-4 ${
-                      isActive
-                        ? "border-l-emerald-500 bg-slate-900/30 text-emerald-500"
-                        : "border-l-transparent text-slate-400 hover:text-white hover:bg-slate-900/20"
+                    `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all relative ${
+                      isActive ? "bg-slate-700/60 text-white" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
                     }`
                   }
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-sm font-medium">{label}</span>
+                  {({ isActive }) => (
+                    <>
+                      {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-green-400 rounded-r-full" />}
+                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-green-400" : ""}`} />
+                      <span className={`text-sm ${isActive ? "font-semibold text-white" : "font-medium"}`}>{label}</span>
+                    </>
+                  )}
                 </NavLink>
               ))}
             </nav>
-
-            {/* Close Button */}
-            <div className="px-4 py-4 border-t border-slate-800">
-              <button
-                onClick={() => setIsMobileOpen(false)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900/20 transition-colors"
-              >
+            <div className="px-2 py-3 border-t border-slate-700/50">
+              <button onClick={() => setIsMobileOpen(false)} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-all">
                 <X className="w-5 h-5" />
                 <span className="text-sm font-medium">Close</span>
               </button>
@@ -207,23 +168,21 @@ export function SidebarLayout() {
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between px-4 py-4 bg-white border-b border-gray-200 sticky top-0 z-20">
-          <button
-            onClick={() => setIsMobileOpen(true)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <Menu className="w-6 h-6 text-slate-900" />
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
+          <button onClick={() => setIsMobileOpen(true)} className="p-2 hover:bg-slate-100 rounded-lg">
+            <Menu className="w-5 h-5 text-slate-700" />
           </button>
-          <div className="text-lg font-bold text-slate-900">Revenue Forecast</div>
-          <div className="w-10" />
+          <div className="text-base font-bold text-slate-900">Revenue Forecast</div>
+          <div className="w-9" />
         </div>
-
-        {/* Content Area */}
-        <main className="flex-1 overflow-auto bg-slate-50 p-8">
+        <main className="flex-1 overflow-auto p-8 relative" style={{ backgroundColor: "#f8fafc" }}>
+          {/* Subtle green patches in corners only */}
+          <div className="fixed top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(209,250,229,0.4) 0%, transparent 70%)", zIndex: 0 }} />
+          <div className="fixed bottom-0 left-64 w-80 h-80 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(209,250,229,0.25) 0%, transparent 70%)", zIndex: 0 }} />
+          <div className="relative" style={{ zIndex: 1 }}>
           <Outlet />
+          </div>
         </main>
       </div>
     </div>
