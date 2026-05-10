@@ -40,7 +40,7 @@ export function SidebarLayout() {
         initial={false}
         animate={{ width: isCollapsed ? "64px" : "260px" }}
         transition={{ duration: 0.25, ease: "easeInOut" }}
-        className="relative hidden md:flex flex-col flex-shrink-0"
+        className="fixed left-0 top-0 bottom-0 hidden md:flex flex-col flex-shrink-0"
         style={{ backgroundColor: "#0a0f1e" }}
       >
         <div className="flex items-center gap-3 px-4 py-5 border-b border-slate-700/50">
@@ -168,7 +168,7 @@ export function SidebarLayout() {
         )}
       </AnimatePresence>
 
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 ml-[260px]">
         <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-20">
           <button onClick={() => setIsMobileOpen(true)} className="p-2 hover:bg-slate-100 rounded-lg">
             <Menu className="w-5 h-5 text-slate-700" />
@@ -176,13 +176,8 @@ export function SidebarLayout() {
           <div className="text-base font-bold text-slate-900">Revenue Forecast</div>
           <div className="w-9" />
         </div>
-        <main className="flex-1 overflow-auto p-8 relative" style={{ backgroundColor: "#f8fafc" }}>
-          {/* Subtle green patches in corners only */}
-          <div className="fixed top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(209,250,229,0.4) 0%, transparent 70%)", zIndex: 0 }} />
-          <div className="fixed bottom-0 left-64 w-80 h-80 rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(209,250,229,0.25) 0%, transparent 70%)", zIndex: 0 }} />
-          <div className="relative" style={{ zIndex: 1 }}>
+        <main className="flex-1 overflow-auto px-4 py-4" style={{ backgroundColor: "#f1f5f9" }}>
           <Outlet />
-          </div>
         </main>
       </div>
     </div>

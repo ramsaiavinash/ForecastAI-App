@@ -113,7 +113,11 @@ router.post("/csv", async (req: Request, res: Response) => {
       return sum + (row.jan||0)+(row.feb||0)+(row.mar||0)+(row.apr||0)+(row.may||0)+(row.jun||0)+(row.jul||0)+(row.aug||0)+(row.sep||0)+(row.oct||0)+(row.nov||0)+(row.dec||0);
     }, 0);
 
-    const lastTotal = rows.reduce((sum: number, row: any) => sum + (row.lastSubmissionTotal || 0), 0);
+    // Get the previous batch total for variance calculation
+    const previousBatch = await prisma.importBatch.findFirst({
+      orderBy: { importDate: "desc" },
+    });
+    const lastTotal = previousBatch ? Number(previousBatch.currentTotal || 0) : 0;
 
     // Create ImportBatch
     const batch = await prisma.importBatch.create({

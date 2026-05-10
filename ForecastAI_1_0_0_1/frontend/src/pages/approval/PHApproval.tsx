@@ -45,7 +45,7 @@ export default function PHApproval() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-8 py-6">
       {/* Page Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-slate-900">Practice Head Approval</h1>
@@ -60,12 +60,12 @@ export default function PHApproval() {
           {[1, 2].map(i => <div key={i} className="h-32 bg-gradient-to-r from-slate-100 to-slate-50 rounded-2xl animate-pulse" />)}
         </div>
       ) : batches.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden py-20">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden py-10">
           <div className="text-center px-8">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center mx-auto mb-6 shadow-md">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-slate-100 flex items-center justify-center mx-auto mb-4 shadow-md">
               <Shield className="w-10 h-10 text-blue-600" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-3">No batches awaiting final approval</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">No batches awaiting final approval</h2>
             <p className="text-slate-600 mb-8 max-w-md mx-auto">
               All Practice Lead approved batches have been processed. Check back later for new submissions awaiting Practice Head review.
             </p>

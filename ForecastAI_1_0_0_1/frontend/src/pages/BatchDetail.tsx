@@ -156,7 +156,7 @@ export default function BatchDetail() {
   }, 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-8 py-6">
       {/* Premium Gradient Header Card */}
       <div className="relative overflow-hidden rounded-3xl shadow-xl">
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700" />
@@ -204,7 +204,7 @@ export default function BatchDetail() {
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-emerald-300/10 blur-2xl" />
           <div className="absolute bottom-2 right-4 w-24 h-24 rounded-full bg-emerald-200/8 blur-xl" />
           <div className="relative">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Current Total</p>
+            <p className="text-xs font-bold text-slate-700 uppercase tracking-wide font-boldst">Current Total</p>
             <p className="text-3xl font-extrabold text-slate-900 mt-3">{formatCompactCurrency(batch.currentTotal || 0)}</p>
             <div className="flex items-center gap-1 mt-2 text-xs text-emerald-600">
               <div className="w-2 h-2 bg-emerald-500 rounded-full" />
@@ -218,7 +218,7 @@ export default function BatchDetail() {
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-emerald-300/10 blur-2xl" />
           <div className="absolute bottom-2 right-4 w-24 h-24 rounded-full bg-emerald-200/8 blur-xl" />
           <div className="relative">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Last Total</p>
+            <p className="text-xs font-bold text-slate-700 uppercase tracking-wide font-boldst">Last Total</p>
             <p className="text-3xl font-extrabold text-slate-900 mt-3">{formatCompactCurrency(batch.lastTotal || 0)}</p>
             <div className="flex items-center gap-1 mt-2 text-xs text-emerald-600">
               <div className="w-2 h-2 bg-emerald-500 rounded-full" />
@@ -232,7 +232,7 @@ export default function BatchDetail() {
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-emerald-300/10 blur-2xl" />
           <div className="absolute bottom-2 right-4 w-24 h-24 rounded-full bg-emerald-200/8 blur-xl" />
           <div className="relative">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Variance</p>
+            <p className="text-xs font-bold text-slate-700 uppercase tracking-wide font-boldst">Variance</p>
             <div className={`flex items-center gap-2 mt-3 text-3xl font-extrabold ${variancePositive ? "text-emerald-600" : "text-red-600"}`}>
               {variancePositive ? <TrendingUp className="w-7 h-7" /> : <TrendingDown className="w-7 h-7" />}
               <span>{formatCompactCurrency(batch.variance || 0)}</span>
@@ -249,7 +249,7 @@ export default function BatchDetail() {
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-emerald-300/10 blur-2xl" />
           <div className="absolute bottom-2 right-4 w-24 h-24 rounded-full bg-emerald-200/8 blur-xl" />
           <div className="relative">
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Projects</p>
+            <p className="text-xs font-bold text-slate-700 uppercase tracking-wide font-boldst">Projects</p>
             <p className="text-3xl font-extrabold text-slate-900 mt-3">{projectRows.length}</p>
             <div className="flex items-center gap-1 mt-2 text-xs text-emerald-600">
               <div className="w-2 h-2 bg-emerald-500 rounded-full" />
@@ -274,7 +274,7 @@ export default function BatchDetail() {
           <div className="flex items-center gap-3">
             {/* Search Bar */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-700" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -348,7 +348,7 @@ export default function BatchDetail() {
             <tbody className="divide-y divide-slate-200">
               {projectRows.length === 0 ? (
                 <tr>
-                  <td colSpan={30} className="text-center py-16 text-slate-400">
+                  <td colSpan={30} className="text-center py-16 text-slate-700">
                     <div className="flex items-center justify-center gap-2">
                       <AlertCircle className="w-5 h-5" />
                       <span>{search ? "No projects match your search" : "No project data available"}</span>
@@ -366,17 +366,17 @@ export default function BatchDetail() {
                       <td className="px-3 py-3 sticky left-0 bg-white group-hover:bg-blue-50 border-r border-slate-200">
                         {project?.tower ? <span className="bg-slate-700 text-white px-2 py-1 rounded text-xs font-bold">{project.tower}</span> : "—"}
                       </td>
-                      <td className="px-3 py-3 text-slate-600 font-medium">{project?.market || "—"}</td>
-                      <td className="px-3 py-3 text-slate-600">{project?.marketUnit || "—"}</td>
-                      <td className="px-3 py-3 text-slate-600 truncate max-w-[130px]" title={project?.businessUnit}>{project?.businessUnit || "—"}</td>
-                      <td className="px-3 py-3 text-slate-600 truncate max-w-[100px]" title={project?.vertical}>{project?.vertical || "—"}</td>
-                      <td className="px-3 py-3 text-slate-600 truncate max-w-[130px]" title={project?.parentCustomer}>{project?.parentCustomer || "—"}</td>
-                      <td className="px-3 py-3 text-slate-500 font-mono text-xs">{project?.customerId || "—"}</td>
-                      <td className="px-3 py-3 text-slate-700 truncate max-w-[150px]" title={project?.customerDescription}>{project?.customerDescription || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 font-medium">{project?.market || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800">{project?.marketUnit || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 truncate max-w-[130px]" title={project?.businessUnit}>{project?.businessUnit || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 truncate max-w-[100px]" title={project?.vertical}>{project?.vertical || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 truncate max-w-[130px]" title={project?.parentCustomer}>{project?.parentCustomer || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 font-mono text-xs">{project?.customerId || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 truncate max-w-[150px]" title={project?.customerDescription}>{project?.customerDescription || "—"}</td>
                       <td className="px-3 py-3 text-emerald-600 font-mono text-xs font-bold">{project?.projectId || "—"}</td>
                       <td className="px-3 py-3 text-slate-800 font-semibold truncate max-w-[180px]" title={project?.projectDescription}>{project?.projectDescription || "—"}</td>
-                      <td className="px-3 py-3 text-slate-500 text-xs truncate max-w-[80px]" title={project?.projectBillability}>{project?.projectBillability || "—"}</td>
-                      <td className="px-3 py-3 text-slate-500 truncate max-w-[130px]" title={project?.subPractice}>{project?.subPractice || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 text-xs truncate max-w-[80px]" title={project?.projectBillability}>{project?.projectBillability || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 truncate max-w-[130px]" title={project?.subPractice}>{project?.subPractice || "—"}</td>
                       <td className="px-3 py-3">
                         {project?.category ? (
                           <span className={`px-2 py-1 rounded text-xs font-semibold ${project.category === "Backlog" ? "bg-blue-100 text-blue-700" : "bg-yellow-100 text-yellow-700"}`}>
@@ -384,10 +384,10 @@ export default function BatchDetail() {
                           </span>
                         ) : "—"}
                       </td>
-                      <td className="px-3 py-3 text-slate-500 text-xs truncate max-w-[80px]" title={project?.edlName}>{project?.edlName || "—"}</td>
-                      <td className="px-3 py-3 text-slate-500 text-xs truncate max-w-[80px]" title={project?.pdlName}>{project?.pdlName || "—"}</td>
-                      <td className="px-3 py-3 text-slate-600 truncate max-w-[100px]" title={project?.pmName}>{project?.pmName || "—"}</td>
-                      <td className="px-3 py-3 text-slate-500 whitespace-nowrap text-xs">
+                      <td className="px-3 py-3 text-slate-800 text-xs truncate max-w-[80px]" title={project?.edlName}>{project?.edlName || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 text-xs truncate max-w-[80px]" title={project?.pdlName}>{project?.pdlName || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 truncate max-w-[100px]" title={project?.pmName}>{project?.pmName || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 whitespace-nowrap text-xs">
                         {project?.projectEndDate
                           ? new Date(project.projectEndDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })
                           : "—"}
@@ -422,11 +422,11 @@ export default function BatchDetail() {
                             key={i} 
                             className={`px-2.5 py-3 text-right whitespace-nowrap font-semibold ${
                               isPast ? "bg-gradient-to-br from-blue-50 to-blue-100 text-blue-900 border-r border-blue-200" :
-                              isEstimated ? "bg-yellow-50 text-slate-400 italic border-r border-yellow-200" :
+                              isEstimated ? "bg-yellow-50 text-slate-700 italic border-r border-yellow-200" :
                               "bg-gradient-to-br from-green-50 to-green-100 text-slate-900 border-r border-green-200"
                             }`}
                           >
-                            <span className={isEstimated ? "text-slate-400 italic" : ""}>
+                            <span className={isEstimated ? "text-slate-700 italic" : ""}>
                               ${amount.toLocaleString()}
                             </span>
                           </td>
@@ -474,15 +474,15 @@ export default function BatchDetail() {
           <div className="flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-blue-200 rounded border-2 border-blue-400" />
-              <span className="text-xs text-slate-600 font-medium">Jan–Apr: Actuals</span>
+              <span className="text-xs text-slate-800 font-medium">Jan–Apr: Actuals</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-yellow-200 rounded border-2 border-yellow-400" />
-              <span className="text-xs text-slate-600 font-medium italic">Estimated (Forecast)</span>
+              <span className="text-xs text-slate-800 font-medium italic">Estimated (Forecast)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 bg-green-200 rounded border-2 border-green-400" />
-              <span className="text-xs text-slate-600 font-medium">May–Dec: Forecast</span>
+              <span className="text-xs text-slate-800 font-medium">May–Dec: Forecast</span>
             </div>
           </div>
           {canEdit &&  (

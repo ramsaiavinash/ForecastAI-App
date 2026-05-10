@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Building2, MapPin, Target, Calendar, Users, TrendingUp, TrendingDown, FolderOpen } from "lucide-react";
 import { formatCompactCurrency } from "@/lib/utils";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const API_BASE = "";
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -58,7 +59,7 @@ export default function ProjectDetail() {
   if (!project) return <div className="text-center text-slate-500 py-20">Project not found</div>;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 px-8 py-6">
       {/* Back Button */}
       <button onClick={() => navigate("/projects")} className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors text-sm font-medium">
         <ArrowLeft className="w-4 h-4" /> Back to Projects
@@ -153,13 +154,44 @@ export default function ProjectDetail() {
 
       {/* Monthly Revenue Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-5 border-b border-slate-100 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-emerald-500" />
-          <div>
-            <h2 className="font-semibold text-slate-900">Monthly Revenue by Batch</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{batches.length} batch{batches.length !== 1 ? "es" : ""} · {revenues.length} revenue records</p>
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-emerald-500" />
+            <div>
+              <h2 className="font-semibold text-slate-900">Monthly Revenue by Batch</h2>
+              <p className="text-xs text-slate-400 mt-0.5">{batches.length} batch{batches.length !== 1 ? "es" : ""} · {revenues.length} revenue records</p>
+            </div>
           </div>
         </div>
+
+        {/* Bar Chart */}
+        {revenues.length > 0 && (() => {
+          const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+          const chartData = MONTHS_SHORT.map((month, idx) => {
+            const monthRevs = revenues.filter((r: any) => r.month === idx + 1);
+            const total = monthRevs.reduce((sum: number, r: any) => sum + Number(r.amount || 0), 0);
+            return {
+              month,
+              actuals: idx < 4 ? total : 0,
+              forecast: idx >= 4 ? total : 0,
+            };
+          });
+          return (
+            <div className="p-5 border-b border-slate-100">
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }} barCategoryGap="15%">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                  <YAxis tickFormatter={(v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : v >= 1000 ? `$${(v/1000).toFixed(0)}K` : `$${v}`} axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} width={55} />
+                  <Tooltip formatter={(v: any) => [`$${Number(v).toLocaleString()}`, ""]} contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0", fontSize: "12px" }} />
+                  <Legend />
+                  <Bar dataKey="actuals" fill="#6366f1" name="Actuals" radius={[4,4,0,0]} maxBarSize={40} />
+                  <Bar dataKey="forecast" fill="#16a34a" name="Forecast" radius={[4,4,0,0]} maxBarSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          );
+        })()}
         <div className="overflow-x-auto">
           <table className="min-w-full text-xs">
             <thead>

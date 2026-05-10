@@ -24,9 +24,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   TrendingUp,
-  DiffIcon,
-  Folder,
-  ClipboardList,
+  DollarSign,
+  BarChart2,
+  Clock as ClockIcon,
   Trash2,
   Lock,
   Clock,
@@ -54,14 +54,14 @@ function StatCard({
 }) {
   if (loading) {
     return (
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
+      <div >
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <div className="h-4 bg-gray-200 rounded w-24 mb-3"></div>
             <div className="h-8 bg-gray-200 rounded w-32 mb-2"></div>
             <div className="h-3 bg-gray-200 rounded w-20"></div>
           </div>
-          <div className="w-10 h-10 bg-slate-900/8 rounded flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
             <div className="w-6 h-6 bg-gray-300 rounded"></div>
           </div>
         </div>
@@ -72,16 +72,16 @@ function StatCard({
   return (
     <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
       {/* Decorative background circle */}
-      <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-green-50 opacity-60" />
-      <div className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-emerald-100/40" />
-      <div className="absolute -bottom-4 -right-4 w-14 h-14 rounded-full bg-emerald-50/60" />
+      <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-green-50 opacity-20" />
+      <div className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-emerald-100/10" />
+      <div className="absolute -bottom-4 -right-4 w-14 h-14 rounded-full bg-emerald-50/10" />
       <div className="flex items-center justify-between mb-3 relative">
-        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{title}</p>
-        <div className="w-10 h-10 bg-slate-900/8 rounded-xl flex items-center justify-center flex-shrink-0 text-slate-800">
+        <p className="text-xs font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">{title}</p>
+        <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0 text-blue-600">
           {Icon}
         </div>
       </div>
-      <p className="text-2xl font-bold text-slate-900 mb-1 relative">{value}</p>
+      <p className="text-3xl font-extrabold text-slate-900 mb-1 relative">{value}</p>
       {change && (
         <p className={`text-xs font-semibold flex items-center gap-1 relative ${change.startsWith("+") ? "text-emerald-600" : "text-red-500"}`}>
           <span>{change.startsWith("+") ? "↗" : "↘"}</span>
@@ -142,7 +142,7 @@ export function Dashboard() {
       {/* Header */}
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 mb-1">
             Revenue Forecast Dashboard
           </h1>
           <p className="text-gray-600">
@@ -157,7 +157,7 @@ export function Dashboard() {
               Clear All Data
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent style={{ marginLeft: "-130px" }}>
             <AlertDialogHeader>
               <AlertDialogTitle>Clear All Data</AlertDialogTitle>
               <AlertDialogDescription>
@@ -179,33 +179,33 @@ export function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-4 gap-4 mb-6">
         <StatCard
           title="TOTAL REVENUE"
           value={data ? formatCurrency(data.totalRevenue) : "$0"}
           change={data ? formatPercent(data.variancePercent) : undefined}
-          icon={<TrendingUp className="w-6 h-6" />}
+          icon={<DollarSign className="w-6 h-6" />}
           loading={isLoading}
         />
         <StatCard
           title="VARIANCE"
           value={data ? formatCurrency(data.variance) : "$0"}
           changeLabel="Above last period"
-          icon={<DiffIcon className="w-6 h-6" />}
+          icon={<TrendingUp className="w-6 h-6" />}
           loading={isLoading}
         />
         <StatCard
           title="ACTIVE PROJECTS"
           value={data ? data.activeProjects.toString() : "0"}
           changeLabel="In forecast"
-          icon={<Folder className="w-6 h-6" />}
+          icon={<BarChart2 className="w-6 h-6" />}
           loading={isLoading}
         />
         <StatCard
           title="PENDING APPROVALS"
           value={data ? data.pendingApprovals.toString() : "0"}
           changeLabel="Batches awaiting review"
-          icon={<ClipboardList className="w-6 h-6" />}
+          icon={<ClockIcon className="w-6 h-6" />}
           loading={isLoading}
         />
       </div>
@@ -213,7 +213,7 @@ export function Dashboard() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         {/* Monthly Revenue Chart */}
-        <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-100 shadow-sm">
+        <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-100 shadow-sm relative overflow-hidden"><div className="absolute -bottom-8 -right-8 w-48 h-48 rounded-full bg-emerald-100/15" /><div className="absolute top-0 left-0 w-32 h-32 rounded-full bg-blue-50/20" />
           <h2 className="text-lg font-semibold text-slate-900 mb-4">
             Monthly Revenue Overview
           </h2>
@@ -226,7 +226,7 @@ export function Dashboard() {
               <BarChart data={data?.monthlyData || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }} barCategoryGap="10%" barGap={2}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
-                <YAxis tickFormatter={(v) => { if (v >= 1000000) return `$${(v/1000000).toFixed(0)}M`; if (v >= 1000000) return `$${(v/1000000).toFixed(0)}M`; return `$${(v/1000000).toFixed(0)}M`; }} width={60} axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
+                <YAxis tickFormatter={(v) => v >= 1000000 ? `$${(v/1000000).toFixed(0)}M` : v >= 1000 ? `$${(v/1000).toFixed(0)}K` : `$${v}`} width={60} axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 12 }} />
                 <Tooltip
                   formatter={(value) => formatCurrency(value as number)}
                   contentStyle={{
@@ -245,7 +245,7 @@ export function Dashboard() {
         </div>
 
         {/* Recent Batches */}
-        <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm self-start">
+        <div className="bg-white rounded-xl p-5 border border-slate-100 shadow-sm self-start relative overflow-hidden"><div className="absolute -bottom-6 -right-6 w-32 h-32 rounded-full bg-emerald-100/15" /><div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-emerald-50/20" />
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-slate-900">
               Recent Batches

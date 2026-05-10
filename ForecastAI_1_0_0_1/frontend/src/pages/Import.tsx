@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   Upload, X, CheckCircle, AlertCircle, AlertTriangle,
-  Info, FileText, Settings2, Shield, Download
+  Info, FileText, Settings2, Shield, Download, Cloud, TrendingUp
 } from "lucide-react";
 import { parseIndianNumber } from "@/lib/utils";
 import { ValidationIssue, ParsedCSVRow } from "@/types/index";
@@ -259,25 +259,39 @@ export function Import() {
   const canImport = file && parsedRows.length > 0 && errors.length === 0 && batchName.trim() !== "" && isValidated && !importMutation.isPending;
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl px-8 py-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Import Revenue Data</h1>
+        <h1 className="text-3xl font-bold text-slate-900">Import Revenue Data</h1>
         <p className="text-sm text-slate-500 mt-1">Upload your CSV file to import revenue data to Dataverse</p>
       </div>
 
       {/* Guidelines */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Info className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-semibold text-blue-700">Import Guidelines</span>
+      <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center">
+            <Info className="w-4 h-4 text-blue-600" />
+          </div>
+          <span className="font-semibold text-slate-900">Import Guidelines</span>
         </div>
-        <ul className="space-y-1 text-sm text-blue-700 ml-6 list-disc">
-          <li>Supported format: CSV (.csv)</li>
-          <li>Project ID, Project Description, and Project End Date are required for all rows</li>
-          <li>Monthly columns (Jan-Dec) must contain numeric values</li>
-          <li>All data will be saved directly to Dataverse</li>
-        </ul>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { color: "bg-blue-50 text-blue-600", icon: <FileText className="w-5 h-5" />, title: "Format", desc: "CSV (.csv) files only" },
+            { color: "bg-green-50 text-green-600", icon: <CheckCircle className="w-5 h-5" />, title: "Required Fields", desc: "Project ID, Description & End Date" },
+            { color: "bg-purple-50 text-purple-600", icon: <TrendingUp className="w-5 h-5" />, title: "Monthly Values", desc: "Jan-Dec columns must be numeric" },
+            { color: "bg-orange-50 text-orange-600", icon: <Cloud className="w-5 h-5" />, title: "Storage", desc: "Saved directly to Dataverse" },
+          ].map(({ color, icon, title, desc }) => (
+            <div key={title} className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}>
+                {icon}
+              </div>
+              <div>
+                <p className="text-sm font-bold text-slate-900">{title}</p>
+                <p className="text-sm text-slate-600 mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Upload Zone */}
@@ -290,16 +304,17 @@ export function Import() {
         {!file ? (
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
+            className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
               isDragActive ? "border-blue-400 bg-blue-50" : "border-slate-200 hover:border-blue-300 hover:bg-slate-50"
             }`}
           >
             <input {...getInputProps()} />
-            <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
               <Upload className="w-6 h-6 text-blue-500" />
             </div>
             <p className="font-semibold text-slate-700">Drop your CSV file here</p>
             <p className="text-sm text-slate-400 mt-1">or click to browse · .csv supported</p>
+
           </div>
         ) : (
           <div className="border-2 border-dashed border-green-300 bg-green-50 rounded-xl p-4 flex items-center gap-4">
