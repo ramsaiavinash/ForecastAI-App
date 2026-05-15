@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../prisma";
+import { sendPLApprovalEmail, sendPHApprovalEmail } from "../services/emailService";
 
 const router = Router();
 
@@ -91,7 +92,23 @@ router.put("/:id/status", async (req, res) => {
       where: { id },
       data: { statuscode }
     });
-    res.json(formatBatch(updated));
+    const formattedBatch = formatBatch(updated);
+
+    // Send email notifications
+    try {
+      if (status === "Under Review") {
+        await sendPLApprovalEmail(formattedBatch);
+        console.log("PL approval email sent!");
+      } else if (status === "Approved PL") {
+        await sendPHApprovalEmail(formattedBatch);
+        console.log("PH approval email sent!");
+      }
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+      // Don't fail the request if email fails
+    }
+
+    res.json(formattedBatch);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ error: "Failed to update batch status" });

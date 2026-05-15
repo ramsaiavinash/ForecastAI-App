@@ -2,6 +2,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Building2, MapPin, Target, Calendar, Users, TrendingUp, TrendingDown, FolderOpen } from "lucide-react";
 import { formatCompactCurrency } from "@/lib/utils";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { MessageSquare, Send, CheckCircle2, Clock, Trash2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const API_BASE = "";
@@ -244,6 +249,198 @@ export default function ProjectDetail() {
           <div className="flex items-center gap-1.5"><div className="w-3 h-3 bg-yellow-50 rounded border border-yellow-200" /><span className="italic">Estimated</span></div>
           <div className="flex items-center gap-1.5"><div className="w-3 h-3 bg-green-50 rounded border border-green-200" /><span>May–Dec: Forecast</span></div>
         </div>
+      </div>
+    {/* Comments Section */}
+    <CommentsSection projectId={id!} projectData={data} />
+    </div>
+  );
+}
+
+function CommentsSection({ projectId, projectData }: { projectId: string; projectData: any }) {
+  const [showForm, setShowForm] = useState(false);
+  const [comment, setComment] = useState("");
+  const [commentedBy, setCommentedBy] = useState("");
+  const queryClient = useQueryClient();
+
+  const { data: comments = [], isLoading } = useQuery({
+    queryKey: ["comments", projectId],
+    queryFn: async () => {
+      const res = await fetch(`/api/comments/project/${projectId}`);
+      if (!res.ok) throw new Error("Failed to fetch comments");
+      return res.json();
+    },
+    enabled: !!projectId,
+  });
+
+  const addComment = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId, comment, commentedBy }),
+      });
+      if (!res.ok) throw new Error("Failed to add comment");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
+      setComment("");
+      setCommentedBy("");
+      setShowForm(false);
+      toast.success("Comment added successfully!");
+    },
+    onError: () => toast.error("Failed to add comment"),
+  });
+
+  const resolveComment = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/comments/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Resolved" }),
+      });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
+      toast.success("Comment marked as resolved!");
+    },
+  });
+
+  const deleteComment = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/comments/${id}`, { method: "DELETE" });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
+      toast.success("Comment deleted!");
+    },
+  });
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      {/* Header */}
+      <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-blue-500" />
+          <div>
+            <h2 className="font-semibold text-slate-900">Revenue Comments & Feedback</h2>
+            <p className="text-xs text-slate-400 mt-0.5">{comments.length} comment{comments.length !== 1 ? "s" : ""} · Raise issues regarding revenue or forecast</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+        >
+          <MessageSquare className="w-4 h-4" />
+          Add Comment
+        </button>
+      </div>
+
+      {/* Add Comment Form */}
+      {showForm && (
+        <div className="p-5 border-b border-slate-100 bg-blue-50/50">
+          <h3 className="font-semibold text-slate-800 mb-4 text-sm">New Comment</h3>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Your Name</label>
+              <input
+                value={commentedBy}
+                onChange={e => setCommentedBy(e.target.value)}
+                placeholder="Enter your name..."
+                className="w-full mt-1 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Comment</label>
+              <textarea
+                value={comment}
+                onChange={e => setComment(e.target.value)}
+                placeholder="Describe the revenue/forecast issue in detail..."
+                rows={4}
+                className="w-full mt-1 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white resize-none"
+              />
+            </div>
+            <div className="flex items-center gap-3 justify-end">
+              <button
+                onClick={() => { setShowForm(false); setComment(""); setCommentedBy(""); }}
+                className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => addComment.mutate()}
+                disabled={!comment || !commentedBy || addComment.isPending}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Send className="w-4 h-4" />
+                {addComment.isPending ? "Submitting..." : "Submit Comment"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Comments List */}
+      <div className="divide-y divide-slate-50">
+        {isLoading ? (
+          <div className="p-8 text-center text-slate-400">Loading comments...</div>
+        ) : comments.length === 0 ? (
+          <div className="p-12 text-center">
+            <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <MessageSquare className="w-6 h-6 text-slate-400" />
+            </div>
+            <p className="font-medium text-slate-600">No comments yet</p>
+            <p className="text-sm text-slate-400 mt-1">Click "Add Comment" to raise a revenue issue</p>
+          </div>
+        ) : (
+          comments.map((c: any) => (
+            <div key={c.id} className="p-5 hover:bg-slate-50/50 transition-colors">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-blue-700 font-bold text-sm">
+                    {c.commentedBy?.charAt(0)?.toUpperCase() || "?"}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-slate-900 text-sm">{c.commentedBy}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                        c.status === "Resolved"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}>
+                        {c.status === "Resolved" ? "✅ Resolved" : "⏳ Open"}
+                      </span>
+                      <span className="text-xs text-slate-400">
+                        {new Date(c.commentedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-700 mt-1.5 leading-relaxed">{c.comment}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  {c.status !== "Resolved" && (
+                    <button
+                      onClick={() => resolveComment.mutate(c.id)}
+                      title="Mark as Resolved"
+                      className="p-1.5 rounded-lg hover:bg-emerald-50 text-emerald-600 transition-colors"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button
+                    onClick={() => deleteComment.mutate(c.id)}
+                    title="Delete"
+                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

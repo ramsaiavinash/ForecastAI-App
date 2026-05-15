@@ -130,6 +130,7 @@ model ProjectMaster {
   submissionSummaries       SubmissionSummary[] @relation("ProjectSubmissionSummary")
 
   @@map("cr5c7_projectmaster")
+  comments ProjectComment[]
 }
 
 model SubmissionSummary {
@@ -369,4 +370,16 @@ model ResourcePerson {
   submissions            Submission[] @relation("SubmissionSubmittedBy")
 
   @@map("mbg_resourceperson")
+}
+
+model ProjectComment {
+  id          String   @id @default(uuid())
+  projectId   String
+  comment     String
+  commentedBy String
+  commentedAt DateTime @default(now())
+  status      String   @default("Open")
+  project     ProjectMaster @relation(fields: [projectId], references: [id])
+
+  @@map("cr5c7_projectcomment")
 }
