@@ -8,18 +8,23 @@ import {
 import { toast } from "sonner";
 import { formatCompactCurrency, getBatchStatusColor } from "@/lib/utils";
 import { BatchStatus } from "@/types/index";
+import { useRole } from "@/context/RoleContext";
 
 const API_BASE = "";
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const CURRENT_MONTH = new Date().getMonth() + 1;
 
 export default function BatchDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { role } = useRole();
   const [isEditing, setIsEditing] = useState(false);
   const [editedAmounts, setEditedAmounts] = useState<Record<string, Record<number, number>>>({});
   const [search, setSearch] = useState("");
   const [editingCell, setEditingCell] = useState<string | null>(null);
+  const [filters, setFilters] = useState<Record<string, string[]>>({});
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["batch", id],
@@ -27,6 +32,27 @@ export default function BatchDetail() {
       const res = await fetch(`${API_BASE}/api/batches/${id}`);
       if (!res.ok) throw new Error("Failed to fetch batch");
       return res.json();
+    },
+    enabled: !!id,
+  });
+
+  const { data: projectQueryAudit = [], isLoading: isProjectQueryLoading } = useQuery({
+    queryKey: ["batch-project-query-audit", id],
+    queryFn: async () => {
+      if (!id || !projectIds.length) return [];
+      const results = await Promise.all(
+        projectIds.map(async (projectId) => {
+          const res = await fetch(`${API_BASE}/api/comments/project/${projectId}`);
+          if (!res.ok) return { projectId, open: 0, queries: [] };
+          const queries = await res.json();
+          return {
+            projectId,
+            open: queries.filter((q: any) => q.status !== "Resolved").length,
+            queries: queries as any[],
+          };
+        })
+      );
+      return results;
     },
     enabled: !!id,
   });
@@ -80,6 +106,8 @@ export default function BatchDetail() {
   const batch = data?.batch;
   const revenues: any[] = data?.revenues || [];
   const projects: any[] = data?.projects || [];
+  const projectIds = [...new Set(revenues.map((r: any) => r.projectId))];
+  const openProjectQueries = projectQueryAudit.filter((item: any) => item.open > 0);
 
   // Group revenues by projectId
   const projectMap = new Map<string, { project: any; months: Record<number, any> }>();
@@ -103,6 +131,16 @@ export default function BatchDetail() {
       project?.pmName?.toLowerCase().includes(q)
     );
   }
+
+  // Apply column filters
+  Object.entries(filters).forEach(([col, vals]) => {
+    if (vals.length > 0) {
+      projectRows = projectRows.filter(({ project }) => {
+        const val = String(project?.[col] || "");
+        return vals.includes(val);
+      });
+    }
+  });
 
   const getAmount = (projectId: string, month: number, rev: any) => {
     if (editedAmounts[projectId]?.[month] !== undefined) return editedAmounts[projectId][month];
@@ -132,6 +170,76 @@ export default function BatchDetail() {
     Locked: <Lock className="w-3.5 h-3.5" />,
   };
 
+  const getUniqueValues = (col: string) => {
+    const all = Array.from(projectMap.values()).map(({ project }) => String(project?.[col] || ""));
+    return [...new Set(all)].filter(Boolean).sort();
+  };
+
+  const toggleFilter = (col: string, val: string) => {
+    setFilters(prev => {
+      const existing = prev[col] || [];
+      const updated = existing.includes(val) ? existing.filter(v => v !== val) : [...existing, val];
+      return { ...prev, [col]: updated };
+    });
+  };
+
+  const clearFilter = (col: string) => setFilters(prev => ({ ...prev, [col]: [] }));
+
+  const FilterHeader = ({ label, col, minW, sticky = false }: { label: string; col: string; minW: string; sticky?: boolean }) => {
+    const activeFilters = filters[col] || [];
+    const isActive = activeFilters.length > 0;
+    const isOpen = openFilter === col;
+    const uniqueVals = getUniqueValues(col);
+    return (
+      <th className={`px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide ${minW} ${sticky ? "sticky left-0 bg-slate-100 border-r border-slate-300" : ""}`}>
+        <div className="flex items-center gap-1">
+          <span className="truncate">{label}</span>
+          <div className="relative flex-shrink-0">
+            <button
+              onClick={e => { e.stopPropagation(); setOpenFilter(isOpen ? null : col); }}
+              className={`p-0.5 rounded transition-colors ${isActive ? "text-blue-600 bg-blue-100" : "text-slate-400 hover:text-slate-600 hover:bg-slate-200"}`}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill={isActive ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              </svg>
+            </button>
+            {isOpen && (
+              <div
+                className="absolute top-6 left-0 z-50 bg-white border border-slate-200 rounded-xl shadow-xl p-2 min-w-[180px] max-h-[280px] overflow-y-auto"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-2 pb-2 border-b border-slate-100">
+                  <span className="text-xs font-bold text-slate-700">Filter by {label}</span>
+                  {isActive && (
+                    <button onClick={() => clearFilter(col)} className="text-xs text-red-500 hover:text-red-700 font-medium">Clear</button>
+                  )}
+                </div>
+                {uniqueVals.length === 0 ? (
+                  <p className="text-xs text-slate-400 text-center py-2">No values</p>
+                ) : (
+                  uniqueVals.map(val => (
+                    <label key={val} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={activeFilters.includes(val)}
+                        onChange={() => toggleFilter(col, val)}
+                        className="w-3.5 h-3.5 rounded text-blue-600"
+                      />
+                      <span className="text-xs text-slate-700 truncate">{val || "(blank)"}</span>
+                    </label>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+          {isActive && (
+            <span className="text-xs bg-blue-600 text-white rounded-full px-1.5 py-0.5 font-bold">{activeFilters.length}</span>
+          )}
+        </div>
+      </th>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -148,7 +256,10 @@ export default function BatchDetail() {
 
   const variancePositive = (batch.variance || 0) >= 0;
   const isLocked = batch.status === "Locked";
-  const canEdit = batch.status === "Draft" && !isLocked;
+  const isFinance = role === "Finance";
+  const isReviewRole = role === "PL" || role === "PH";
+  const canEdit = ((isFinance && batch.status === "Draft") || (isReviewRole && (batch.status === "Under Review" || batch.status === "Approved PL" || batch.status === "Approved PH"))) && !isLocked;
+  const isReadOnlyRole = role === "Forecaster" || (!isFinance && !isReviewRole);
 
   // Grand totals
   const grandTotal = projectRows.reduce((sum, { project, months }) => {
@@ -179,7 +290,15 @@ export default function BatchDetail() {
               </p>
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-right space-y-2">
+            <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+              role === "Finance" ? "bg-blue-100 text-blue-700 border-blue-200" :
+              role === "Forecaster" ? "bg-violet-100 text-violet-700 border-violet-200" :
+              role === "PL" ? "bg-amber-100 text-amber-700 border-amber-200" :
+              "bg-emerald-100 text-emerald-700 border-emerald-200"
+            }`}>
+              👤 {role}
+            </span>
             <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm ${
               batch.status === "Draft" ? "bg-amber-500/20 text-amber-200 border border-amber-500/30" :
               batch.status === "Under Review" ? "bg-blue-500/20 text-blue-200 border border-blue-500/30" :
@@ -310,31 +429,36 @@ export default function BatchDetail() {
                 </button>
               </div>
             )}
+            {isReadOnlyRole && (
+              <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
+                Read-only view for {role}
+              </span>
+            )}
           </div>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" onClick={() => setOpenFilter(null)}>
           <table className="min-w-full text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-100 border-b-2 border-slate-300">
-                {/* Project Info columns */}
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide sticky left-0 bg-slate-100 border-r border-slate-300 min-w-[60px]">Tower</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[100px]">Market</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[100px]">Mkt Unit</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[130px]">Bus Unit</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[100px]">Vertical</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[130px]">Parent Cust</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[80px]">Cust ID</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[150px]">Customer</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[100px]">Project ID</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[180px]">Project</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[80px]">Bill</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[130px]">Sub Practice</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[80px]">Category</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[80px]">EDL</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[80px]">PDL</th>
-                <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[100px]">PM</th>
+              <tr className="bg-slate-100 border-b-2 border-slate-300" onClick={() => setOpenFilter(null)}>
+                {/* Project Info columns with filters */}
+                <FilterHeader label="Tower" col="tower" minW="min-w-[80px]" sticky />
+                <FilterHeader label="Market" col="market" minW="min-w-[100px]" />
+                <FilterHeader label="Mkt Unit" col="marketUnit" minW="min-w-[100px]" />
+                <FilterHeader label="Bus Unit" col="businessUnit" minW="min-w-[130px]" />
+                <FilterHeader label="Vertical" col="vertical" minW="min-w-[100px]" />
+                <FilterHeader label="Parent Cust" col="parentCustomer" minW="min-w-[130px]" />
+                <FilterHeader label="Cust ID" col="customerId" minW="min-w-[80px]" />
+                <FilterHeader label="Customer" col="customerDescription" minW="min-w-[150px]" />
+                <FilterHeader label="Project ID" col="projectId" minW="min-w-[100px]" />
+                <FilterHeader label="Project" col="projectDescription" minW="min-w-[180px]" />
+                <FilterHeader label="Bill" col="projectBillability" minW="min-w-[80px]" />
+                <FilterHeader label="Sub Practice" col="subPractice" minW="min-w-[130px]" />
+                <FilterHeader label="Category" col="category" minW="min-w-[80px]" />
+                <FilterHeader label="EDL" col="edlName" minW="min-w-[80px]" />
+                <FilterHeader label="PDL" col="pdlName" minW="min-w-[80px]" />
+                <FilterHeader label="PM" col="pmName" minW="min-w-[100px]" />
                 <th className="px-3 py-3 text-left font-bold text-slate-700 uppercase tracking-wide min-w-[90px]">End Date</th>
                 {/* Month columns */}
                 {MONTHS.map((m, i) => (
@@ -361,7 +485,7 @@ export default function BatchDetail() {
                   const total = MONTHS.reduce((sum, _, i) => sum + getAmount(projectId, i+1, months[i+1]), 0);
 
                   return (
-                    <tr key={projectId} className="hover:bg-blue-50/30 transition-colors group">
+                    <tr key={projectId} className="hover:bg-blue-50/30 transition-colors group cursor-pointer" onClick={() => !isEditing && navigate(`/projects/${projectId}`)}>
                       {/* Info cells */}
                       <td className="px-3 py-3 sticky left-0 bg-white group-hover:bg-blue-50 border-r border-slate-200">
                         {project?.tower ? <span className="bg-slate-700 text-white px-2 py-1 rounded text-xs font-bold">{project.tower}</span> : "—"}
@@ -399,7 +523,8 @@ export default function BatchDetail() {
                         const rev = months[month];
                         const amount = getAmount(projectId, month, rev);
                         const isEstimated = rev?.isEstimated;
-                        const isPast = month <= 4;
+                        const currentMonth = new Date().getMonth() + 1; // 1=Jan, 8=Aug
+                        const isPast = month <= currentMonth;
                         const cellKey = `${projectId}-${month}`;
                         const isCurrentCell = editingCell === cellKey;
 
@@ -498,15 +623,22 @@ export default function BatchDetail() {
         <div className="text-xs text-slate-500">
           Status: <span className="font-semibold text-slate-700">{batch.status}</span>
         </div>
+
+        {batch.status === "Draft" && openProjectQueries.length > 0 && (
+          <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
+            <AlertCircle className="w-4 h-4" />
+            {openProjectQueries.length} project{openProjectQueries.length !== 1 ? "s have" : " has"} open queries. Resolve all queries before submitting.
+          </div>
+        )}
         
-        {batch.status === "Draft" && (
+        {isFinance && batch.status === "Draft" && (
           <button
             onClick={() => statusMutation.mutate("Under Review")}
-            disabled={statusMutation.isPending}
+            disabled={statusMutation.isPending || openProjectQueries.length > 0}
             className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <CheckCircle className="w-4 h-4" />
-            {statusMutation.isPending ? "Submitting..." : "Submit for PL Review"}
+            {statusMutation.isPending ? "Submitting..." : "Submit for Review"}
           </button>
         )}
         

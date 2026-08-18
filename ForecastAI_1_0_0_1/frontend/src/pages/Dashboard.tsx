@@ -112,7 +112,7 @@ export function Dashboard() {
   const handleClearData = async () => {
     setIsClearing(true);
     try {
-      const res = await fetch(`${API_BASE}/data/clear`, {
+      const res = await fetch("/api/data/clear", {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to clear data");
@@ -157,7 +157,7 @@ export function Dashboard() {
               Clear All Data
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent style={{ marginLeft: "-130px" }}>
+          <AlertDialogContent >
             <AlertDialogHeader>
               <AlertDialogTitle>Clear All Data</AlertDialogTitle>
               <AlertDialogDescription>

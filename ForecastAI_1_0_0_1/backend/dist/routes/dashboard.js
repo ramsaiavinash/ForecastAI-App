@@ -1,0 +1,68 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const prisma_1 = require("../prisma");
+const router = (0, express_1.Router)();
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const SR = { 1: "Draft", 2: "Under Review", 3: "Approved PL", 4: "Approved PH", 5: "Locked" };
+const ACTUAL_MONTHS = [1, 2, 3, 4]; // Jan-Apr are actuals
+router.get("/", async (req, res) => {
+    try {
+        const allBatches = await prisma_1.prisma.importBatch.findMany({
+            orderBy: { importDate: "desc" },
+            take: 20,
+        });
+        const fmt = (b) => ({
+            ...b,
+            status: SR[b.statuscode] || "Draft",
+            currentTotal: Number(b.currentTotal || 0),
+            lastTotal: Number(b.lastTotal || 0),
+            variance: Number(b.variance || 0),
+            createdAt: b.importDate || new Date().toISOString(),
+        });
+        const formatted = allBatches.map(fmt);
+        // Use the most recent batch for stats
+        const latest = formatted[0];
+        let totalRevenue = 0, variance = 0, variancePercent = 0;
+        let monthlyData = MONTHS.map(m => ({ month: m, actuals: 0, forecast: 0 }));
+        if (latest) {
+            totalRevenue = latest.currentTotal;
+            variance = latest.variance;
+            variancePercent = latest.lastTotal > 0 ? (variance / latest.lastTotal) * 100 : 0;
+            // Get monthly revenues for latest batch
+            const revenues = await prisma_1.prisma.monthlyRevenue.findMany({
+                where: { batchId: latest.id },
+            });
+            // Split into actuals (Jan-Apr) and forecast (May-Dec)
+            monthlyData = MONTHS.map((name, idx) => {
+                const month = idx + 1;
+                const monthRevs = revenues.filter((r) => r.month === month);
+                const total = monthRevs.reduce((sum, r) => sum + Number(r.amount || 0), 0);
+                if (ACTUAL_MONTHS.includes(month)) {
+                    return { month: name, actuals: total, forecast: 0 };
+                }
+                else {
+                    return { month: name, actuals: 0, forecast: total };
+                }
+            });
+        }
+        const activeProjects = await prisma_1.prisma.projectMaster.count();
+        const pendingApprovals = await prisma_1.prisma.importBatch.count({
+            where: { statuscode: { in: [2, 3] } },
+        });
+        res.json({
+            totalRevenue,
+            variance,
+            variancePercent,
+            activeProjects,
+            pendingApprovals,
+            monthlyData,
+            recentBatches: formatted.slice(0, 5),
+        });
+    }
+    catch (e) {
+        console.error("Dashboard error:", e);
+        res.status(500).json({ error: "Failed to fetch dashboard" });
+    }
+});
+exports.default = router;

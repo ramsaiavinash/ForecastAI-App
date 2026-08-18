@@ -5,11 +5,18 @@ const router = Router();
 
 router.delete("/clear", async (req, res) => {
   try {
-    await prisma.monthlyRevenue.deleteMany();
-    await prisma.projectMaster.deleteMany();
-    await prisma.importBatch.deleteMany();
+    await prisma.$transaction([
+      prisma.batchQuery.deleteMany(),
+      prisma.projectComment.deleteMany(),
+      prisma.submissionSummary.deleteMany(),
+      prisma.monthlyRevenue.deleteMany(),
+      prisma.importBatch.deleteMany(),
+      prisma.projectMaster.deleteMany(),
+    ]);
+
     res.status(204).end();
   } catch (error) {
+    console.error("Failed to clear data:", error);
     res.status(500).json({ error: "Failed to clear data" });
   }
 });

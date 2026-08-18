@@ -8,6 +8,132 @@ import { ImportBatch } from "@/types/index";
 
 const API_BASE = "";
 
+function BatchQueryAudit({ batchId }: { batchId: string }) {
+  const queryClient = useQueryClient();
+
+  const { data: queries = [], isLoading } = useQuery({
+    queryKey: ["batch-queries", batchId],
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE}/api/batch-queries/batch/${batchId}`);
+      if (!res.ok) throw new Error("Failed to fetch batch queries");
+      return res.json();
+    },
+  });
+
+  const [responseText, setResponseText] = useState<Record<string, string>>({});
+  const [showResponseForm, setShowResponseForm] = useState<Record<string, boolean>>({});
+
+  const responseMutation = useMutation({
+    mutationFn: async ({ id, response }: { id: string; response: string }) => {
+      const res = await fetch(`${API_BASE}/api/batch-queries/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ response, respondedBy: "PL", status: "Resolved" }),
+      });
+      if (!res.ok) throw new Error("Failed to respond to query");
+      return res.json();
+    },
+    onSuccess: (_, { id }) => {
+      toast.success("PH query responded successfully.");
+      setShowResponseForm((prev) => ({ ...prev, [id]: false }));
+      setResponseText((prev) => ({ ...prev, [id]: "" }));
+      queryClient.invalidateQueries({ queryKey: ["batch-queries", batchId] });
+      queryClient.invalidateQueries({ queryKey: ["batch-query-summary-pl"] });
+      queryClient.invalidateQueries({ queryKey: ["batch-query-summary-ph"] });
+      queryClient.invalidateQueries({ queryKey: ["batches-pl"] });
+    },
+    onError: () => toast.error("Failed to respond to PH query"),
+  });
+
+  if (isLoading) return <div className="mt-4 text-sm text-slate-500">Loading PH audit trail...</div>;
+
+  const phQueries = queries.filter((query: any) => query.raisedBy === "PH");
+
+  return (
+    <div className="mt-5 space-y-3">
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-bold uppercase tracking-wide text-slate-700">PH Queries</h4>
+        <span className="text-xs text-slate-500">{phQueries.length} total</span>
+      </div>
+
+      {phQueries.length === 0 ? (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-500">No PH queries on this batch.</div>
+      ) : (
+        phQueries.map((query: any) => (
+          <div key={query.id} className={`rounded-2xl border p-4 shadow-sm ${query.status === "Resolved" ? "border-emerald-200 bg-emerald-50/50" : "border-amber-200 bg-amber-50/80"}`}>
+            <div className="flex items-start gap-3">
+              <div className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold ${query.status === "Resolved" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                PH
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm font-semibold text-slate-800">Practice Head</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${query.status === "Resolved" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                    {query.status === "Resolved" ? "Resolved" : "Open"}
+                  </span>
+                  <span className="text-[11px] text-slate-400">{new Date(query.raisedAt).toLocaleString()}</span>
+                </div>
+
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">{query.query}</p>
+
+                {query.response && (
+                  <div className="mt-3 ml-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700">PL</div>
+                      <span className="text-xs font-semibold text-slate-700">PL Response</span>
+                      <span className="text-[10px] text-slate-400">{query.respondedAt ? new Date(query.respondedAt).toLocaleString() : ""}</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{query.response}</p>
+                  </div>
+                )}
+
+                {query.status !== "Resolved" && !showResponseForm[query.id] && (
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      onClick={() => setShowResponseForm((prev) => ({ ...prev, [query.id]: true }))}
+                      className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700"
+                    >
+                      Respond
+                    </button>
+                  </div>
+                )}
+
+                {query.status !== "Resolved" && showResponseForm[query.id] && (
+                  <div className="mt-3 ml-3 space-y-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <textarea
+                      value={responseText[query.id] || ""}
+                      onChange={(e) => setResponseText((prev) => ({ ...prev, [query.id]: e.target.value }))}
+                      rows={3}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400"
+                      placeholder="Enter your response to the PH query..."
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => setShowResponseForm((prev) => ({ ...prev, [query.id]: false }))}
+                        className="px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-800"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => responseMutation.mutate({ id: query.id, response: responseText[query.id] || "" })}
+                        disabled={!responseText[query.id] || responseMutation.isPending}
+                        className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+                      >
+                        {responseMutation.isPending ? "Responding..." : "Submit Response"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
 export default function PLApproval() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -19,6 +145,15 @@ export default function PLApproval() {
     queryFn: async () => {
       const res = await fetch(`${API_BASE}/api/batches?status=Under Review`);
       if (!res.ok) throw new Error("Failed to fetch batches");
+      return res.json();
+    },
+  });
+
+  const openBatchQueryMap = useQuery({
+    queryKey: ["batch-query-summary-pl"],
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE}/api/batch-queries/open`);
+      if (!res.ok) throw new Error("Failed to fetch open batch queries");
       return res.json();
     },
   });
@@ -83,6 +218,9 @@ export default function PLApproval() {
           {batches.map((batch) => {
             const variancePercent = batch.lastTotal ? ((batch.variance || 0) / batch.lastTotal) * 100 : 0;
             const isExpanded = selectedBatch?.id === batch.id;
+            const openPhQueries = (openBatchQueryMap.data || []).filter(
+              (query: any) => query.batchId === batch.id && query.raisedBy === "PH" && query.status !== "Resolved"
+            );
 
             return (
               <div key={batch.id} className="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">
@@ -147,6 +285,11 @@ export default function PLApproval() {
                 {/* Expandable Section */}
                 {isExpanded && (
                   <div className="border-t border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-6 space-y-4">
+                    {openPhQueries.length > 0 && (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
+                        <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {openPhQueries.length} open PH query{openPhQueries.length !== 1 ? "ies" : "y"} must be resolved before approving.</span>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">Comments (optional)</label>
                       <textarea
@@ -174,13 +317,14 @@ export default function PLApproval() {
                       </button>
                       <button
                         onClick={() => approveMutation.mutate({ id: batch.id, status: "Approved PL" })}
-                        disabled={approveMutation.isPending}
+                        disabled={approveMutation.isPending || openPhQueries.length > 0}
                         className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 shadow-md"
                       >
                         <CheckCircle className="w-4 h-4" />
                         {approveMutation.isPending ? "Approving..." : "Approve"}
                       </button>
                     </div>
+                    <BatchQueryAudit batchId={batch.id} />
                   </div>
                 )}
 

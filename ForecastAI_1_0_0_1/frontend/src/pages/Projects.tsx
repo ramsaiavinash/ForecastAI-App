@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Search, Filter, Building2, User, Calendar, Tag, FolderOpen, TrendingUp } from "lucide-react";
+import { useRole } from "@/context/RoleContext";
 
 const API_BASE = "";
 
@@ -17,6 +18,7 @@ function getStatusInfo(endDate: string) {
 
 export default function Projects() {
   const navigate = useNavigate();
+  const { role } = useRole();
   const [search, setSearch] = useState("");
   const [towerFilter, setTowerFilter] = useState("");
 
@@ -42,12 +44,22 @@ export default function Projects() {
           <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
           <p className="text-sm text-slate-500 mt-0.5">View and manage all forecast projects</p>
         </div>
-        {projects.length > 0 && (
-          <div className="bg-white border border-slate-200 rounded-xl px-4 py-2 shadow-sm">
-            <span className="text-2xl font-bold text-slate-900">{projects.length}</span>
-            <span className="text-xs text-slate-500 ml-1.5">projects</span>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+            role === "Finance" ? "bg-blue-100 text-blue-700 border-blue-200" :
+            role === "Forecaster" ? "bg-violet-100 text-violet-700 border-violet-200" :
+            role === "PL" ? "bg-amber-100 text-amber-700 border-amber-200" :
+            "bg-emerald-100 text-emerald-700 border-emerald-200"
+          }`}>
+            👤 {role}
+          </span>
+          {projects.length > 0 && (
+            <div className="bg-white border border-slate-200 rounded-xl px-4 py-2 shadow-sm">
+              <span className="text-2xl font-bold text-slate-900">{projects.length}</span>
+              <span className="text-xs text-slate-500 ml-1.5">projects</span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filters */}

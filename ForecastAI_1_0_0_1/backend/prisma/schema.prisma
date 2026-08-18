@@ -42,6 +42,7 @@ model ImportBatch {
 
   monthlyRevenues        MonthlyRevenue[]   @relation("BatchMonthlyRevenue")
   submissionSummaries    SubmissionSummary[] @relation("BatchSubmissionSummary")
+  batchQueries           BatchQuery[]
 
   @@map("cr5c7_importbatch")
 }
@@ -379,7 +380,26 @@ model ProjectComment {
   commentedBy String
   commentedAt DateTime @default(now())
   status      String   @default("Open")
+  response    String?
+  respondedBy String?
+  respondedAt DateTime?
   project     ProjectMaster @relation(fields: [projectId], references: [id])
 
   @@map("cr5c7_projectcomment")
+}
+
+model BatchQuery {
+  id          String    @id @default(uuid())
+  batchId     String
+  query       String
+  raisedBy    String
+  raisedAt    DateTime  @default(now())
+  response    String?
+  respondedBy String?
+  respondedAt DateTime?
+  status      String    @default("Open")
+
+  batch       ImportBatch @relation(fields: [batchId], references: [id])
+
+  @@map("cr5c7_batchquery")
 }

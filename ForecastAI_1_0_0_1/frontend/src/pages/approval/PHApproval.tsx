@@ -1,12 +1,121 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Lock, XCircle, Shield, TrendingUp, TrendingDown, ArrowRight, Eye } from "lucide-react";
+import { Lock, XCircle, Shield, TrendingUp, TrendingDown, ArrowRight, Eye, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { formatCompactCurrency, getBatchStatusColor } from "@/lib/utils";
 import { ImportBatch } from "@/types/index";
 
 const API_BASE = "";
+
+function BatchQueryPanel({ batchId }: { batchId: string }) {
+  const queryClient = useQueryClient();
+
+  const { data: batchQueries = [], isLoading } = useQuery({
+    queryKey: ["batch-queries", batchId],
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE}/api/batch-queries/batch/${batchId}`);
+      if (!res.ok) throw new Error("Failed to fetch batch queries");
+      return res.json();
+    },
+  });
+
+  const [newQuery, setNewQuery] = useState("");
+  const raiseMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`${API_BASE}/api/batch-queries`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ batchId, query: newQuery.trim(), raisedBy: "PH" }),
+      });
+      if (!res.ok) throw new Error("Failed to raise query");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["batch-queries", batchId] });
+      queryClient.invalidateQueries({ queryKey: ["batches-ph"] });
+      setNewQuery("");
+      toast.success("PH query raised successfully.");
+    },
+    onError: () => toast.error("Failed to raise PH query"),
+  });
+
+  const openQueries = batchQueries.filter((query: any) => query.status !== "Resolved");
+
+  return (
+    <div className="mt-5 space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="text-sm font-bold uppercase tracking-wide text-slate-700">PH Query Workflow</h4>
+          <p className="text-xs text-slate-500">Raise a query to PL and track its response</p>
+        </div>
+        {openQueries.length > 0 && (
+          <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold text-amber-700">{openQueries.length} open</span>
+        )}
+      </div>
+
+      <div className="space-y-3">
+        <textarea
+          value={newQuery}
+          onChange={(e) => setNewQuery(e.target.value)}
+          rows={3}
+          placeholder="Type a query for PL to resolve before approval..."
+          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-blue-400"
+        />
+        <div className="flex justify-end">
+          <button
+            onClick={() => raiseMutation.mutate()}
+            disabled={!newQuery.trim() || raiseMutation.isPending}
+            className="rounded-xl bg-amber-500 px-4 py-2 text-xs font-semibold text-white disabled:opacity-50"
+          >
+            {raiseMutation.isPending ? "Raising..." : "Raise Query"}
+          </button>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="text-sm text-slate-500">Loading query history...</div>
+      ) : batchQueries.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-slate-200 bg-white p-3 text-sm text-slate-500">No queries raised yet for this batch.</div>
+      ) : (
+        <div className="space-y-3">
+          {batchQueries.map((query: any) => (
+            <div key={query.id} className={`rounded-2xl border p-3 shadow-sm ${query.status === "Resolved" ? "border-emerald-200 bg-emerald-50/50" : "border-amber-200 bg-amber-50/70"}`}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-full text-[10px] font-bold ${query.status === "Resolved" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                    PH
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold text-slate-700">Practice Head</span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${query.status === "Resolved" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                        {query.status === "Resolved" ? "Resolved" : "Awaiting PL Response"}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{new Date(query.raisedAt).toLocaleString()}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-slate-700">{query.query}</p>
+                  </div>
+                </div>
+              </div>
+
+              {query.response && (
+                <div className="mt-3 ml-11 rounded-xl border border-emerald-200 bg-white p-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700">PL</div>
+                    <span className="text-xs font-semibold text-slate-700">PL Response</span>
+                    <span className="text-[10px] text-slate-400">{query.respondedAt ? new Date(query.respondedAt).toLocaleString() : ""}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">{query.response}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function PHApproval() {
   const navigate = useNavigate();
@@ -19,6 +128,15 @@ export default function PHApproval() {
     queryFn: async () => {
       const res = await fetch(`${API_BASE}/api/batches?status=Approved PL`);
       if (!res.ok) throw new Error("Failed to fetch batches");
+      return res.json();
+    },
+  });
+
+  const { data: batchQuerySummary = [] } = useQuery({
+    queryKey: ["batch-query-summary-ph"],
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE}/api/batch-queries/open`);
+      if (!res.ok) throw new Error("Failed to fetch open batch queries");
       return res.json();
     },
   });
@@ -83,6 +201,9 @@ export default function PHApproval() {
           {batches.map((batch) => {
             const variancePercent = batch.lastTotal ? ((batch.variance || 0) / batch.lastTotal) * 100 : 0;
             const isExpanded = selectedBatch?.id === batch.id;
+            const openQueries = (batchQuerySummary || []).filter(
+              (query: any) => query.batchId === batch.id && query.status !== "Resolved"
+            );
 
             return (
               <div key={batch.id} className="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">
@@ -159,6 +280,11 @@ export default function PHApproval() {
                 {/* Expandable Section */}
                 {isExpanded && (
                   <div className="border-t border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50 p-6 space-y-4">
+                    {openQueries.length > 0 && (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
+                        <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Open batch queries are blocking PH approval. Resolve them before locking the batch.</span>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">Comments (optional)</label>
                       <textarea
@@ -186,13 +312,14 @@ export default function PHApproval() {
                       </button>
                       <button
                         onClick={() => approveMutation.mutate({ id: batch.id, status: "Locked" })}
-                        disabled={approveMutation.isPending}
+                        disabled={approveMutation.isPending || openQueries.length > 0}
                         className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50 shadow-md"
                       >
                         <Lock className="w-4 h-4" />
                         {approveMutation.isPending ? "Locking..." : "Approve & Lock"}
                       </button>
                     </div>
+                    <BatchQueryPanel batchId={batch.id} />
                   </div>
                 )}
 

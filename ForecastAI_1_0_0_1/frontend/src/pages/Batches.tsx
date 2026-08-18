@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import {
   Search, Filter, Plus, FileText, Clock, Lock,
   CheckCircle, Shield, Grid, List, TrendingUp, TrendingDown
 } from "lucide-react";
 import { formatCompactCurrency, getBatchStatusColor } from "@/lib/utils";
 import { ImportBatch, BatchStatus } from "@/types/index";
+import { useRole } from "@/context/RoleContext";
 
 const API_BASE = "";
 
@@ -18,6 +20,13 @@ const STATUS_OPTIONS: { label: string; value: string }[] = [
   { label: "Approved PH", value: "Approved PH" },
   { label: "Locked", value: "Locked" },
 ];
+
+const roleStyles: Record<string, string> = {
+  Finance: "bg-blue-100 text-blue-700 border-blue-200",
+  Forecaster: "bg-violet-100 text-violet-700 border-violet-200",
+  PL: "bg-amber-100 text-amber-700 border-amber-200",
+  PH: "bg-emerald-100 text-emerald-700 border-emerald-200",
+};
 
 function StatusBadge({ status }: { status: BatchStatus }) {
   const icons: Record<BatchStatus, JSX.Element> = {
@@ -55,9 +64,11 @@ function BatchCardSkeleton() {
 
 export default function Batches() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const { role } = useRole();
 
   const { data: batches = [], isLoading } = useQuery<ImportBatch[]>({
     queryKey: ["batches"],
@@ -68,7 +79,29 @@ export default function Batches() {
     },
   });
 
-  const filtered = batches.filter((b) => {
+  const submitMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`${API_BASE}/api/batches/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Under Review" }),
+      });
+      if (!res.ok) throw new Error("Failed to submit batch");
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Batch submitted for review");
+      queryClient.invalidateQueries({ queryKey: ["batches"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+    onError: () => toast.error("Failed to submit batch for review"),
+  });
+
+  const visibleBatches = role === "Finance"
+    ? batches
+    : batches.filter((batch) => batch.status !== "Draft");
+
+  const filtered = visibleBatches.filter((b) => {
     const matchSearch =
       !search ||
       b.batchName.toLowerCase().includes(search.toLowerCase()) ||
@@ -79,22 +112,27 @@ export default function Batches() {
 
   return (
     <div className="space-y-6 px-8 py-6">
-      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Batch Review</h1>
           <p className="text-sm text-slate-500 mt-1">View and manage imported forecast batches</p>
         </div>
-        <button
-          onClick={() => navigate("/import")}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          New Import
-        </button>
+        <div className="flex items-center gap-3">
+          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${roleStyles[role]}`}>
+            👤 {role}
+          </span>
+          {role === "Finance" && (
+            <button
+              onClick={() => navigate("/import")}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              New Import
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -133,7 +171,6 @@ export default function Batches() {
         </div>
       </div>
 
-      {/* Batch List */}
       <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-3"}>
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => <BatchCardSkeleton key={i} />)
@@ -146,39 +183,78 @@ export default function Batches() {
             </p>
           </div>
         ) : (
-          filtered.map((batch) => (
-            <div
-              key={batch.id}
-              onClick={() => navigate(`/batches/${batch.id}`)}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-300 transition-all cursor-pointer"
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-slate-900 truncate">{batch.batchName}</h3>
-                    <p className="text-sm text-slate-500 mt-1">
-                      {new Date(batch.importDate || batch.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                      {batch.fileName ? ` · ${batch.fileName}` : ""}
-                    </p>
+          filtered.map((batch) => {
+            const isFinance = role === "Finance";
+            const canSubmit = isFinance && batch.status === "Draft";
+
+            return (
+              <div
+                key={batch.id}
+                onClick={() => navigate(`/batches/${batch.id}`)}
+                className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:border-blue-300 transition-all cursor-pointer"
+              >
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-bold text-slate-900 truncate">{batch.batchName}</h3>
+                      <p className="text-sm text-slate-500 mt-1">
+                        {new Date(batch.importDate || batch.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        {batch.fileName ? ` · ${batch.fileName}` : ""}
+                      </p>
+                    </div>
+                    {isFinance && canSubmit ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          submitMutation.mutate(batch.id);
+                        }}
+                        className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+                      >
+                        <CheckCircle className="w-3 h-3" />
+                        {batch.status}
+                      </button>
+                    ) : (
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <StatusBadge status={batch.status as BatchStatus} />
+                      </div>
+                    )}
                   </div>
-                  <StatusBadge status={batch.status as BatchStatus} />
-                </div>
-                <div className="flex items-end justify-between pt-2 border-t border-slate-100">
-                  <div>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Current Total</p>
-                    <p className="text-xl font-bold text-slate-900 mt-1">{formatCompactCurrency(batch.currentTotal || 0)}</p>
-                  </div>
-                  <div className={`text-right flex items-end gap-1 ${(batch.variance || 0) >= 0 ? "text-green-600" : "text-red-600"}`}>
-                    {(batch.variance || 0) >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                    <div className="text-right">
-                      <p className="text-xs text-slate-500">Variance</p>
-                      <p className="text-lg font-bold">{(batch.variance || 0) >= 0 ? "+" : ""}{formatCompactCurrency(batch.variance || 0)}</p>
+
+                  <div className="flex items-end justify-between pt-2 border-t border-slate-100">
+                    <div>
+                      <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Current Total</p>
+                      <p className="text-xl font-bold text-slate-900 mt-1">{formatCompactCurrency(batch.currentTotal || 0)}</p>
+                    </div>
+                    <div className={`text-right flex items-end gap-1 ${(batch.variance || 0) >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {(batch.variance || 0) >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                      <div className="text-right">
+                        <p className="text-xs text-slate-500">Variance</p>
+                        <p className="text-lg font-bold">{(batch.variance || 0) >= 0 ? "+" : ""}{formatCompactCurrency(batch.variance || 0)}</p>
+                      </div>
                     </div>
                   </div>
+
+                  {isFinance && canSubmit && (
+                    <div className="flex justify-end pt-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          submitMutation.mutate(batch.id);
+                        }}
+                        disabled={submitMutation.isPending}
+                        className="flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        {submitMutation.isPending ? "Submitting..." : "Submit for Review"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

@@ -6,8 +6,9 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { MessageSquare, Send, CheckCircle2, Clock, Trash2 } from "lucide-react";
+import { MessageSquare, Send, CheckCircle2, Clock, Trash2, AlertCircle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useRole } from "@/context/RoleContext";
 
 const API_BASE = "";
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -26,6 +27,7 @@ function getAvatarColor(name?: string) {
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { role } = useRole();
 
   const { data, isLoading } = useQuery({
     queryKey: ["project", id],
@@ -91,6 +93,14 @@ export default function ProjectDetail() {
                 <p className="text-slate-300 text-sm mt-1">{project.customerDescription}</p>
               </div>
             </div>
+            <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+              role === "Finance" ? "bg-blue-100 text-blue-700 border-blue-200" :
+              role === "Forecaster" ? "bg-violet-100 text-violet-700 border-violet-200" :
+              role === "PL" ? "bg-amber-100 text-amber-700 border-amber-200" :
+              "bg-emerald-100 text-emerald-700 border-emerald-200"
+            }`}>
+              👤 {role}
+            </span>
           </div>
 
           {/* Metadata Row */}
@@ -257,64 +267,71 @@ export default function ProjectDetail() {
 }
 
 function CommentsSection({ projectId, projectData }: { projectId: string; projectData: any }) {
+  const { role } = useRole();
   const [showForm, setShowForm] = useState(false);
-  const [comment, setComment] = useState("");
-  const [commentedBy, setCommentedBy] = useState("");
+  const [query, setQuery] = useState("");
+  const [raisedBy, setRaisedBy] = useState("Practice Lead");
+  const [responseText, setResponseText] = useState<Record<string, string>>({});
+  const [respondingTo, setRespondingTo] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: comments = [], isLoading } = useQuery({
+  const { data: queries = [], isLoading } = useQuery({
     queryKey: ["comments", projectId],
     queryFn: async () => {
       const res = await fetch(`/api/comments/project/${projectId}`);
-      if (!res.ok) throw new Error("Failed to fetch comments");
+      if (!res.ok) throw new Error("Failed to fetch queries");
       return res.json();
     },
     enabled: !!projectId,
   });
 
-  const addComment = useMutation({
+  const openQueries = queries.filter((q: any) => q.status !== "Resolved");
+
+  const addQuery = useMutation({
     mutationFn: async () => {
       const res = await fetch("/api/comments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, comment, commentedBy }),
+        body: JSON.stringify({ projectId, comment: query, commentedBy: raisedBy }),
       });
-      if (!res.ok) throw new Error("Failed to add comment");
+      if (!res.ok) throw new Error("Failed to raise query");
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
-      setComment("");
-      setCommentedBy("");
+      setQuery("");
       setShowForm(false);
-      toast.success("Comment added successfully!");
+      toast.success("Query raised successfully! PM will be notified.");
     },
-    onError: () => toast.error("Failed to add comment"),
+    onError: () => toast.error("Failed to raise query"),
   });
 
-  const resolveComment = useMutation({
-    mutationFn: async (id: string) => {
+  const respondToQuery = useMutation({
+    mutationFn: async ({ id, response }: { id: string; response: string }) => {
       const res = await fetch(`/api/comments/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "Resolved" }),
+        body: JSON.stringify({ response, respondedBy: "Project PM", status: "Resolved" }),
       });
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
-      toast.success("Comment marked as resolved!");
+      setRespondingTo(null);
+      setResponseText({});
+      toast.success("Response submitted! Query marked as Resolved.");
     },
+    onError: () => toast.error("Failed to submit response"),
   });
 
-  const deleteComment = useMutation({
+  const deleteQuery = useMutation({
     mutationFn: async (id: string) => {
       const res = await fetch(`/api/comments/${id}`, { method: "DELETE" });
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
-      toast.success("Comment deleted!");
+      toast.success("Query deleted!");
     },
   });
 
@@ -322,122 +339,178 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
       {/* Header */}
       <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-blue-500" />
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center">
+            <MessageSquare className="w-5 h-5 text-amber-600" />
+          </div>
           <div>
-            <h2 className="font-semibold text-slate-900">Revenue Comments & Feedback</h2>
-            <p className="text-xs text-slate-400 mt-0.5">{comments.length} comment{comments.length !== 1 ? "s" : ""} · Raise issues regarding revenue or forecast</p>
+            <h2 className="font-semibold text-slate-900">Revenue Queries</h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {queries.length} quer{queries.length !== 1 ? "ies" : "y"} · 
+              <span className={openQueries.length > 0 ? " text-red-500 font-semibold" : " text-emerald-600 font-semibold"}>
+                {openQueries.length > 0 ? ` ${openQueries.length} open` : " All resolved ✅"}
+              </span>
+            </p>
           </div>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
-        >
-          <MessageSquare className="w-4 h-4" />
-          Add Comment
-        </button>
+        <div className="flex items-center gap-2">
+          {openQueries.length > 0 && (
+            <div className="flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 px-3 py-1.5 rounded-xl text-xs font-semibold">
+              <AlertCircle className="w-3.5 h-3.5" />
+              PL approval blocked — {openQueries.length} open quer{openQueries.length !== 1 ? "ies" : "y"}
+            </div>
+          )}
+          {role === "PL" && (
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Raise Query
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Add Comment Form */}
+      {/* Raise Query Form */}
       {showForm && (
-        <div className="p-5 border-b border-slate-100 bg-blue-50/50">
-          <h3 className="font-semibold text-slate-800 mb-4 text-sm">New Comment</h3>
+        <div className="p-5 border-b border-slate-100 bg-amber-50/50">
+          <h3 className="font-semibold text-slate-800 mb-4 text-sm flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-amber-600" />
+            Raise New Query (Practice Lead)
+          </h3>
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Your Name</label>
-              <input
-                value={commentedBy}
-                onChange={e => setCommentedBy(e.target.value)}
-                placeholder="Enter your name..."
-                className="w-full mt-1 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Comment</label>
+              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Query Description</label>
               <textarea
-                value={comment}
-                onChange={e => setComment(e.target.value)}
-                placeholder="Describe the revenue/forecast issue in detail..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Describe the revenue/forecast issue that needs clarification from PM..."
                 rows={4}
-                className="w-full mt-1 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white resize-none"
+                className="w-full mt-1 px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-400 bg-white resize-none"
               />
             </div>
             <div className="flex items-center gap-3 justify-end">
               <button
-                onClick={() => { setShowForm(false); setComment(""); setCommentedBy(""); }}
+                onClick={() => { setShowForm(false); setQuery(""); }}
                 className="px-4 py-2 text-sm text-slate-600 hover:text-slate-800 font-medium"
               >
                 Cancel
               </button>
               <button
-                onClick={() => addComment.mutate()}
-                disabled={!comment || !commentedBy || addComment.isPending}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={() => addQuery.mutate()}
+                disabled={!query || addQuery.isPending}
+                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-5 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="w-4 h-4" />
-                {addComment.isPending ? "Submitting..." : "Submit Comment"}
+                {addQuery.isPending ? "Raising..." : "Raise Query"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Comments List */}
+      {/* Queries List */}
       <div className="divide-y divide-slate-50">
         {isLoading ? (
-          <div className="p-8 text-center text-slate-400">Loading comments...</div>
-        ) : comments.length === 0 ? (
+          <div className="p-8 text-center text-slate-400">Loading queries...</div>
+        ) : queries.length === 0 ? (
           <div className="p-12 text-center">
             <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
               <MessageSquare className="w-6 h-6 text-slate-400" />
             </div>
-            <p className="font-medium text-slate-600">No comments yet</p>
-            <p className="text-sm text-slate-400 mt-1">Click "Add Comment" to raise a revenue issue</p>
+            <p className="font-medium text-slate-600">No queries raised</p>
+            <p className="text-sm text-slate-400 mt-1">PL can raise queries for PM to respond before approval</p>
           </div>
         ) : (
-          comments.map((c: any) => (
-            <div key={c.id} className="p-5 hover:bg-slate-50/50 transition-colors">
+          queries.map((q: any) => (
+            <div key={q.id} className={`p-5 transition-colors ${q.status === "Resolved" ? "bg-emerald-50/30" : "bg-amber-50/20"}`}>
+              {/* Query */}
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1">
-                  <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-blue-700 font-bold text-sm">
-                    {c.commentedBy?.charAt(0)?.toUpperCase() || "?"}
+                  <div className="w-9 h-9 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0 text-amber-700 font-bold text-sm">
+                    PL
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-semibold text-slate-900 text-sm">{c.commentedBy}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        c.status === "Resolved"
+                      <span className="font-semibold text-slate-900 text-sm">Practice Lead</span>
+                      <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
+                        q.status === "Resolved"
                           ? "bg-emerald-100 text-emerald-700"
-                          : "bg-yellow-100 text-yellow-700"
+                          : "bg-amber-100 text-amber-700"
                       }`}>
-                        {c.status === "Resolved" ? "✅ Resolved" : "⏳ Open"}
+                        {q.status === "Resolved" ? "✅ Resolved" : "⏳ Open"}
                       </span>
                       <span className="text-xs text-slate-400">
-                        {new Date(c.commentedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(q.commentedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-700 mt-1.5 leading-relaxed">{c.comment}</p>
+                    <p className="text-sm text-slate-700 mt-1.5 leading-relaxed font-medium">{q.comment}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  {c.status !== "Resolved" && (
+                <button
+                  onClick={() => deleteQuery.mutate(q.id)}
+                  className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition-colors flex-shrink-0"
+                  title="Delete query"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* PM Response */}
+              {q.response && (
+                <div className="mt-3 ml-12 p-3 bg-white rounded-xl border border-emerald-200">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold text-xs">PM</div>
+                    <span className="text-xs font-semibold text-slate-700">Project Manager Response</span>
+                    <span className="text-xs text-slate-400">
+                      {q.respondedAt && new Date(q.respondedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-600 leading-relaxed">{q.response}</p>
+                </div>
+              )}
+
+              {/* Add Response Form */}
+              {q.status !== "Resolved" && (
+                <div className="mt-3 ml-12">
+                  {respondingTo === q.id ? (
+                    <div className="space-y-2">
+                      <textarea
+                        value={responseText[q.id] || ""}
+                        onChange={e => setResponseText(prev => ({ ...prev, [q.id]: e.target.value }))}
+                        placeholder="PM: Enter your response to this query..."
+                        rows={3}
+                        className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 bg-white resize-none"
+                      />
+                      <div className="flex items-center gap-2 justify-end">
+                        <button
+                          onClick={() => setRespondingTo(null)}
+                          className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-800 font-medium"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => respondToQuery.mutate({ id: q.id, response: responseText[q.id] || "" })}
+                          disabled={!responseText[q.id] || respondToQuery.isPending}
+                          className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-xl text-xs font-medium transition-colors disabled:opacity-50"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Submit & Resolve
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
                     <button
-                      onClick={() => resolveComment.mutate(c.id)}
-                      title="Mark as Resolved"
-                      className="p-1.5 rounded-lg hover:bg-emerald-50 text-emerald-600 transition-colors"
+                      onClick={() => setRespondingTo(q.id)}
+                      className="flex items-center gap-1.5 text-xs text-emerald-600 hover:text-emerald-700 font-medium border border-emerald-200 hover:border-emerald-300 px-3 py-1.5 rounded-xl transition-colors bg-white"
                     >
-                      <CheckCircle2 className="w-4 h-4" />
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      Add PM Response & Resolve
                     </button>
                   )}
-                  <button
-                    onClick={() => deleteComment.mutate(c.id)}
-                    title="Delete"
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
                 </div>
-              </div>
+              )}
             </div>
           ))
         )}

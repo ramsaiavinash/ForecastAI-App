@@ -32,14 +32,22 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update comment status
+// Update comment status or add response
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, response, respondedBy } = req.body;
+    const data: any = {};
+    if (status) data.status = status;
+    if (response) {
+      data.response = response;
+      data.respondedBy = respondedBy;
+      data.respondedAt = new Date();
+      data.status = "Resolved";
+    }
     const updated = await prisma.projectComment.update({
       where: { id },
-      data: { status },
+      data,
     });
     res.json(updated);
   } catch (e: any) {

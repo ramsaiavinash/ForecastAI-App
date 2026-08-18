@@ -5,20 +5,24 @@ import {
   LayoutDashboard, Upload, FileText, CheckCircle,
   Shield, FolderOpen, Download, ChevronLeft, Menu, X, TrendingUp,
 } from "lucide-react";
+import { useRole, UserRole } from "@/context/RoleContext";
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-  { icon: Upload, label: "Import", path: "/import" },
-  { icon: FileText, label: "Batch Review", path: "/batches" },
-  { icon: CheckCircle, label: "PL Approval", path: "/approval/pl" },
-  { icon: Shield, label: "PH Approval", path: "/approval/ph" },
-  { icon: FolderOpen, label: "Projects", path: "/projects" },
-  { icon: Download, label: "Export", path: "/export" },
+const navItems: Array<{ icon: any; label: string; path: string; roles: UserRole[] }> = [
+  { icon: LayoutDashboard, label: "Dashboard", path: "/", roles: ["Finance", "Forecaster", "PL", "PH"] },
+  { icon: Upload, label: "Import", path: "/import", roles: ["Finance"] },
+  { icon: FileText, label: "Batch Review", path: "/batches", roles: ["Finance", "Forecaster", "PL", "PH"] },
+  { icon: CheckCircle, label: "PL Approval", path: "/approval/pl", roles: ["PL"] },
+  { icon: Shield, label: "PH Approval", path: "/approval/ph", roles: ["PH"] },
+  { icon: FolderOpen, label: "Projects", path: "/projects", roles: ["Forecaster", "PL", "PH"] },
+  { icon: Download, label: "Export", path: "/export", roles: ["Finance", "Forecaster", "PL", "PH"] },
 ];
 
 export function SidebarLayout() {
+  const { role, setRole } = useRole();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const visibleNavItems = navItems.filter((item) => item.roles.includes(role));
 
   const handleNavClick = () => {
     if (isMobileOpen) setIsMobileOpen(false);
@@ -61,7 +65,20 @@ export function SidebarLayout() {
         </div>
 
         <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
-          {navItems.map(({ icon: Icon, label, path }) => (
+          <div className="px-2 pb-3">
+            <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as UserRole)}
+              className="w-full rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-2 text-sm text-slate-100 outline-none ring-0 focus:border-blue-500"
+            >
+              <option value="Finance">Finance</option>
+              <option value="Forecaster">Forecaster</option>
+              <option value="PL">PL</option>
+              <option value="PH">PH</option>
+            </select>
+          </div>
+          {visibleNavItems.map(({ icon: Icon, label, path }) => (
             <NavLink
               key={path}
               to={path}
@@ -139,7 +156,20 @@ export function SidebarLayout() {
               </div>
             </div>
             <nav className="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
-              {navItems.map(({ icon: Icon, label, path }) => (
+              <div className="px-2 pb-3">
+                <label className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">Role</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value as UserRole)}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-2 text-sm text-slate-100 outline-none ring-0 focus:border-blue-500"
+                >
+                  <option value="Finance">Finance</option>
+                  <option value="Forecaster">Forecaster</option>
+                  <option value="PL">PL</option>
+                  <option value="PH">PH</option>
+                </select>
+              </div>
+              {visibleNavItems.map(({ icon: Icon, label, path }) => (
                 <NavLink
                   key={path} to={path} onClick={handleNavClick}
                   className={({ isActive }) =>

@@ -42,6 +42,18 @@ export interface ProjectMaster {
   janPPM?: number;
 }
 
+export interface BatchQuery {
+  id: string;
+  batchId: string;
+  query: string;
+  raisedBy: "PH" | "PL" | "PM" | string;
+  raisedAt: string;
+  response?: string | null;
+  respondedBy?: string | null;
+  respondedAt?: string | null;
+  status: "Open" | "Resolved";
+}
+
 export interface MonthlyRevenue {
   id: string;
   importBatchId: string;

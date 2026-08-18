@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { parseIndianNumber } from "@/lib/utils";
 import { ValidationIssue, ParsedCSVRow } from "@/types/index";
+import { useRole } from "@/context/RoleContext";
 
 const API_BASE = "";
 
@@ -151,7 +152,29 @@ function validateRows(rows: ParsedCSVRow[]): ValidationIssue[] {
 
 export function Import() {
   const navigate = useNavigate();
+  const { role } = useRole();
   const [file, setFile] = useState<File | null>(null);
+
+  if (role !== "Finance") {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center px-8 py-10">
+        <div className="max-w-md rounded-2xl border border-red-200 bg-red-50 p-8 text-center shadow-sm">
+          <div className="mb-4 flex justify-center">
+            <div className="rounded-full bg-red-100 p-3 text-red-600">
+              <Shield className="h-6 w-6" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900">Access Denied</h2>
+          <p className="mt-3 text-sm text-slate-600">
+            Only the Finance role can import forecast batches.
+          </p>
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700">
+            👤 {role}
+          </div>
+        </div>
+      </div>
+    );
+  }
   const [parsedRows, setParsedRows] = useState<ParsedCSVRow[]>([]);
   const [issues, setIssues] = useState<ValidationIssue[]>([]);
   const [batchName, setBatchName] = useState("");
