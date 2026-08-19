@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import {
   Search, Filter, Plus, FileText, Clock, Lock,
   CheckCircle, Shield, Grid, List, TrendingUp, TrendingDown
@@ -14,7 +13,7 @@ const API_BASE = "";
 
 const STATUS_OPTIONS: { label: string; value: string }[] = [
   { label: "All Statuses", value: "" },
-  { label: "Draft", value: "Draft" },
+  { label: "Imported", value: "Imported" },
   { label: "Under Review", value: "Under Review" },
   { label: "Approved PL", value: "Approved PL" },
   { label: "Approved PH", value: "Approved PH" },
@@ -30,6 +29,7 @@ const roleStyles: Record<string, string> = {
 
 function StatusBadge({ status }: { status: BatchStatus }) {
   const icons: Record<BatchStatus, JSX.Element> = {
+    Imported: <Clock className="w-3 h-3" />,
     Draft: <Clock className="w-3 h-3" />,
     "Under Review": <Clock className="w-3 h-3" />,
     "Approved PL": <CheckCircle className="w-3 h-3" />,
@@ -64,7 +64,6 @@ function BatchCardSkeleton() {
 
 export default function Batches() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
@@ -79,27 +78,20 @@ export default function Batches() {
     },
   });
 
-  const submitMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const res = await fetch(`${API_BASE}/api/batches/${id}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "Under Review" }),
-      });
-      if (!res.ok) throw new Error("Failed to submit batch");
-      return res.json();
-    },
-    onSuccess: () => {
-      toast.success("Batch submitted for review");
-      queryClient.invalidateQueries({ queryKey: ["batches"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    },
-    onError: () => toast.error("Failed to submit batch for review"),
-  });
-
   const visibleBatches = role === "Finance"
     ? batches
-    : batches.filter((batch) => batch.status !== "Draft");
+    : batches.filter((batch) => {
+      const statusRank: Record<string, number> = {
+        Imported: 1,
+        Draft: 1,
+        "Under Review": 2,
+        "Approved PL": 3,
+        "Approved PH": 4,
+        Locked: 5,
+      };
+      const minimumRank = 1;
+      return (statusRank[batch.status] || 0) >= minimumRank;
+    });
 
   const filtered = visibleBatches.filter((b) => {
     const matchSearch =
@@ -184,9 +176,6 @@ export default function Batches() {
           </div>
         ) : (
           filtered.map((batch) => {
-            const isFinance = role === "Finance";
-            const canSubmit = isFinance && batch.status === "Draft";
-
             return (
               <div
                 key={batch.id}
@@ -202,23 +191,9 @@ export default function Batches() {
                         {batch.fileName ? ` · ${batch.fileName}` : ""}
                       </p>
                     </div>
-                    {isFinance && canSubmit ? (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          submitMutation.mutate(batch.id);
-                        }}
-                        className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100"
-                      >
-                        <CheckCircle className="w-3 h-3" />
-                        {batch.status}
-                      </button>
-                    ) : (
-                      <div onClick={(e) => e.stopPropagation()}>
-                        <StatusBadge status={batch.status as BatchStatus} />
-                      </div>
-                    )}
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <StatusBadge status={batch.status as BatchStatus} />
+                    </div>
                   </div>
 
                   <div className="flex items-end justify-between pt-2 border-t border-slate-100">
@@ -235,22 +210,6 @@ export default function Batches() {
                     </div>
                   </div>
 
-                  {isFinance && canSubmit && (
-                    <div className="flex justify-end pt-1">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          submitMutation.mutate(batch.id);
-                        }}
-                        disabled={submitMutation.isPending}
-                        className="flex items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-                      >
-                        <CheckCircle className="w-3.5 h-3.5" />
-                        {submitMutation.isPending ? "Submitting..." : "Submit for Review"}
-                      </button>
-                    </div>
-                  )}
                 </div>
               </div>
             );

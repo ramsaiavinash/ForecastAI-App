@@ -42,6 +42,8 @@ model ImportBatch {
 
   monthlyRevenues        MonthlyRevenue[]   @relation("BatchMonthlyRevenue")
   submissionSummaries    SubmissionSummary[] @relation("BatchSubmissionSummary")
+  projectSubmissions     ProjectSubmission[] @relation("BatchProjectSubmission")
+  projectComments        ProjectComment[]   @relation("BatchProjectComments")
   batchQueries           BatchQuery[]
 
   @@map("cr5c7_importbatch")
@@ -94,6 +96,17 @@ model ProjectMaster {
   edlId                     String?            @map("cr5c7_EDLID")
   edlName                   String?            @map("cr5c7_EDLName")
   janPPM                    String?            @map("cr5c7_JanPPM")
+  febPPM                    String?            @map("cr5c7_FebPPM")
+  marPPM                    String?            @map("cr5c7_MarPPM")
+  aprPPM                    String?            @map("cr5c7_AprPPM")
+  mayPPM                    String?            @map("cr5c7_MayPPM")
+  junPPM                    String?            @map("cr5c7_JunPPM")
+  julPPM                    String?            @map("cr5c7_JulPPM")
+  augPPM                    String?            @map("cr5c7_AugPPM")
+  sepPPM                    String?            @map("cr5c7_SepPPM")
+  octPPM                    String?            @map("cr5c7_OctPPM")
+  novPPM                    String?            @map("cr5c7_NovPPM")
+  decPPM                    String?            @map("cr5c7_DecPPM")
   market                    String?            @map("cr5c7_MarketsDescription")
   marketUnit                String?            @map("cr5c7_MarketUnitDescription")
   opportunityId             String?            @map("cr5c7_OpportunityID")
@@ -129,6 +142,7 @@ model ProjectMaster {
 
   monthlyRevenues           MonthlyRevenue[]   @relation("ProjectMonthlyRevenue")
   submissionSummaries       SubmissionSummary[] @relation("ProjectSubmissionSummary")
+  projectSubmissions        ProjectSubmission[] @relation("ProjectProjectSubmission")
 
   @@map("cr5c7_projectmaster")
   comments ProjectComment[]
@@ -170,6 +184,21 @@ model SubmissionSummary {
   project                ProjectMaster   @relation(fields: [projectId], references: [id], name: "ProjectSubmissionSummary")
 
   @@map("cr5c7_submissionsummary")
+}
+
+model ProjectSubmission {
+  id          String        @id @default(uuid())
+  batchId     String
+  projectId   String
+  submittedBy String
+  submittedAt DateTime      @default(now())
+  status      String        @default("Submitted")
+
+  batch       ImportBatch   @relation(fields: [batchId], references: [id], name: "BatchProjectSubmission")
+  project     ProjectMaster @relation(fields: [projectId], references: [id], name: "ProjectProjectSubmission")
+
+  @@unique([batchId, projectId])
+  @@map("cr5c7_projectsubmission")
 }
 
 model Customer {
@@ -375,15 +404,26 @@ model ResourcePerson {
 
 model ProjectComment {
   id          String   @id @default(uuid())
-  projectId   String
-  comment     String
-  commentedBy String
-  commentedAt DateTime @default(now())
+  projectId   String?
+  batchId     String?
+  parentId    String?
+  message     String   @default("")
+  sentBy      String   @default("PL")
+  sentAt      DateTime @default(now())
+  queryType   String   @default("PL_PM")
   status      String   @default("Open")
+
+  // Legacy fields retained so existing project comments remain readable.
+  comment     String?
+  commentedBy String?
+  commentedAt DateTime @default(now())
+  repliedBy   String?
+  messageType String   @default("query")
   response    String?
   respondedBy String?
   respondedAt DateTime?
-  project     ProjectMaster @relation(fields: [projectId], references: [id])
+  project     ProjectMaster? @relation(fields: [projectId], references: [id])
+  batch       ImportBatch? @relation(fields: [batchId], references: [id], name: "BatchProjectComments")
 
   @@map("cr5c7_projectcomment")
 }
@@ -394,6 +434,9 @@ model BatchQuery {
   query       String
   raisedBy    String
   raisedAt    DateTime  @default(now())
+  parentId    String?
+  repliedBy   String?
+  messageType String    @default("query")
   response    String?
   respondedBy String?
   respondedAt DateTime?

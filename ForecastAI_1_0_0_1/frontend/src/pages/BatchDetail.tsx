@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatCompactCurrency, getBatchStatusColor } from "@/lib/utils";
-import { BatchStatus } from "@/types/index";
+import { BatchStatus, ProjectSubmission } from "@/types/index";
 import { useRole } from "@/context/RoleContext";
 
 const API_BASE = "";
@@ -25,6 +25,7 @@ export default function BatchDetail() {
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [filters, setFilters] = useState<Record<string, string[]>>({});
   const [openFilter, setOpenFilter] = useState<string | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["batch", id],
@@ -42,7 +43,7 @@ export default function BatchDetail() {
       if (!id || !projectIds.length) return [];
       const results = await Promise.all(
         projectIds.map(async (projectId) => {
-          const res = await fetch(`${API_BASE}/api/comments/project/${projectId}`);
+          const res = await fetch(`${API_BASE}/api/comments/project/${projectId}?queryType=PL_PM`);
           if (!res.ok) return { projectId, open: 0, queries: [] };
           const queries = await res.json();
           return {
@@ -55,24 +56,6 @@ export default function BatchDetail() {
       return results;
     },
     enabled: !!id,
-  });
-
-  const statusMutation = useMutation({
-    mutationFn: async (status: string) => {
-      const res = await fetch(`${API_BASE}/api/batches/${id}/status`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      if (!res.ok) throw new Error("Failed to update status");
-      return res.json();
-    },
-    onSuccess: (_, status) => {
-      toast.success(`Batch status updated to "${status}"`);
-      queryClient.invalidateQueries({ queryKey: ["batch", id] });
-      queryClient.invalidateQueries({ queryKey: ["batches"] });
-    },
-    onError: () => toast.error("Failed to update batch status"),
   });
 
   const saveRevenueMutation = useMutation({
@@ -103,9 +86,62 @@ export default function BatchDetail() {
     onError: () => toast.error("Failed to save changes"),
   });
 
+  const submitProjectsMutation = useMutation({
+    mutationFn: async (projectIds: string[]) => {
+      const res = await fetch(`${API_BASE}/api/project-submissions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ batchId: id, projectIds, submittedBy: role }),
+      });
+      if (!res.ok) throw new Error("Failed to submit projects");
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Project forecast submitted successfully");
+      queryClient.invalidateQueries({ queryKey: ["batch", id] });
+    },
+    onError: () => toast.error("Failed to submit project forecast"),
+  });
+
+  const submitForReviewMutation = useMutation({
+    mutationFn: async () => {
+      const pendingProjectIds = ownProjectRows
+        .filter(({ project }) => !submittedProjectIds.has(project?.id))
+        .map(({ project }) => project.id);
+
+      if (pendingProjectIds.length > 0) {
+        const submissionResponse = await fetch(`${API_BASE}/api/project-submissions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ batchId: id, projectIds: pendingProjectIds, submittedBy: role }),
+        });
+        if (!submissionResponse.ok) throw new Error("Failed to submit projects");
+      }
+
+      const statusResponse = await fetch(`${API_BASE}/api/batches/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Under Review" }),
+      });
+      if (!statusResponse.ok) throw new Error("Failed to submit batch for review");
+      return statusResponse.json();
+    },
+    onSuccess: () => {
+      toast.success("Batch submitted for PL review");
+      queryClient.invalidateQueries({ queryKey: ["batch", id] });
+      queryClient.invalidateQueries({ queryKey: ["batches"] });
+    },
+    onError: () => toast.error("Failed to submit batch for review"),
+  });
+
   const batch = data?.batch;
   const revenues: any[] = data?.revenues || [];
+  const previousRevenues: any[] = data?.previousRevenues || [];
   const projects: any[] = data?.projects || [];
+  const projectSubmissions: ProjectSubmission[] = data?.projectSubmissions || [];
+  const submittedProjectIds = new Set(
+    projectSubmissions.filter(submission => submission.status === "Submitted").map(submission => submission.projectId)
+  );
   const projectIds = [...new Set(revenues.map((r: any) => r.projectId))];
   const openProjectQueries = projectQueryAudit.filter((item: any) => item.open > 0);
 
@@ -119,7 +155,12 @@ export default function BatchDetail() {
     projectMap.get(rev.projectId)!.months[rev.month] = rev;
   }
 
-  let projectRows = Array.from(projectMap.values());
+  const allProjectRows = Array.from(projectMap.values());
+  const configuredUserName = localStorage.getItem("forecastai-user-name")?.trim().toLowerCase() || "";
+  const isOwnProject = (project: any) => !configuredUserName || project?.pmName?.trim().toLowerCase() === configuredUserName;
+  let projectRows = role === "Forecaster"
+    ? allProjectRows.filter(({ project }) => isOwnProject(project))
+    : allProjectRows;
 
   if (search) {
     const q = search.toLowerCase();
@@ -147,6 +188,10 @@ export default function BatchDetail() {
     return Number(rev?.amount || 0);
   };
 
+  const previousRevenueMap = new Map(
+    previousRevenues.map(rev => [`${rev.projectId}-${rev.month}`, rev])
+  );
+
   const handleAmountChange = (projectId: string, month: number, value: string) => {
     const num = parseFloat(value) || 0;
     setEditedAmounts(prev => ({
@@ -163,6 +208,7 @@ export default function BatchDetail() {
   };
 
   const statusIcon: Record<BatchStatus, JSX.Element> = {
+    Imported: <Clock className="w-3.5 h-3.5" />,
     Draft: <Clock className="w-3.5 h-3.5" />,
     "Under Review": <Clock className="w-3.5 h-3.5" />,
     "Approved PL": <CheckCircle className="w-3.5 h-3.5" />,
@@ -258,8 +304,16 @@ export default function BatchDetail() {
   const isLocked = batch.status === "Locked";
   const isFinance = role === "Finance";
   const isReviewRole = role === "PL" || role === "PH";
-  const canEdit = ((isFinance && batch.status === "Draft") || (isReviewRole && (batch.status === "Under Review" || batch.status === "Approved PL" || batch.status === "Approved PH"))) && !isLocked;
-  const isReadOnlyRole = role === "Forecaster" || (!isFinance && !isReviewRole);
+  const statusRank: Record<string, number> = { Imported: 1, Draft: 1, "Under Review": 2, "Approved PL": 3, "Approved PH": 4, Locked: 5 };
+  const batchRank = statusRank[batch.status] || 0;
+  const canEdit = !isLocked && (
+    (isFinance && batch.status === "Imported") ||
+    (role === "Forecaster" && (batch.status === "Imported" || batch.status === "Draft")) ||
+    (role === "PL" && batchRank >= 2) ||
+    (role === "PH" && batchRank >= 3)
+  );
+  const canSubmitProjects = role === "Forecaster" && (batch.status === "Imported" || batch.status === "Draft");
+  const ownProjectRows = allProjectRows.filter(({ project }) => isOwnProject(project));
 
   // Grand totals
   const grandTotal = projectRows.reduce((sum, { project, months }) => {
@@ -300,13 +354,13 @@ export default function BatchDetail() {
               👤 {role}
             </span>
             <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm ${
-              batch.status === "Draft" ? "bg-amber-500/20 text-amber-200 border border-amber-500/30" :
+              batch.status === "Imported" || batch.status === "Draft" ? "bg-blue-500/20 text-blue-200 border border-blue-500/30" :
               batch.status === "Under Review" ? "bg-blue-500/20 text-blue-200 border border-blue-500/30" :
               batch.status === "Approved PL" ? "bg-purple-500/20 text-purple-200 border border-purple-500/30" :
               batch.status === "Locked" ? "bg-green-500/20 text-green-200 border border-green-500/30" :
               "bg-slate-500/20 text-slate-200 border border-slate-500/30"
             }`}>
-              {batch.status === "Draft" && <Clock className="w-4 h-4" />}
+              {(batch.status === "Imported" || batch.status === "Draft") && <Clock className="w-4 h-4" />}
               {batch.status === "Under Review" && <Clock className="w-4 h-4" />}
               {batch.status === "Approved PL" && <CheckCircle className="w-4 h-4" />}
               {batch.status === "Locked" && <Lock className="w-4 h-4" />}
@@ -429,11 +483,6 @@ export default function BatchDetail() {
                 </button>
               </div>
             )}
-            {isReadOnlyRole && (
-              <span className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
-                Read-only view for {role}
-              </span>
-            )}
           </div>
         </div>
 
@@ -498,7 +547,29 @@ export default function BatchDetail() {
                       <td className="px-3 py-3 text-slate-800 font-mono text-xs">{project?.customerId || "—"}</td>
                       <td className="px-3 py-3 text-slate-800 truncate max-w-[150px]" title={project?.customerDescription}>{project?.customerDescription || "—"}</td>
                       <td className="px-3 py-3 text-emerald-600 font-mono text-xs font-bold">{project?.projectId || "—"}</td>
-                      <td className="px-3 py-3 text-slate-800 font-semibold truncate max-w-[180px]" title={project?.projectDescription}>{project?.projectDescription || "—"}</td>
+                      <td className="px-3 py-3 text-slate-800 font-semibold truncate max-w-[180px]" title={project?.projectDescription}>
+                        <div className="flex items-center gap-2">
+                          <span className="truncate">{project?.projectDescription || "—"}</span>
+                          {role === "Forecaster" && (
+                            <button
+                              type="button"
+                              onClick={e => {
+                                e.stopPropagation();
+                                if (!submittedProjectIds.has(projectId)) submitProjectsMutation.mutate([projectId]);
+                              }}
+                              disabled={submittedProjectIds.has(projectId) || submitProjectsMutation.isPending || !canSubmitProjects}
+                              className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold ${submittedProjectIds.has(projectId) ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700 hover:bg-amber-200 disabled:opacity-50"}`}
+                            >
+                              {submittedProjectIds.has(projectId) ? "✅ Submitted by PM" : "⏳ Submit PM"}
+                            </button>
+                          )}
+                          {role !== "Forecaster" && (
+                            <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold ${submittedProjectIds.has(projectId) ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                              {submittedProjectIds.has(projectId) ? "✅ Submitted by PM" : "⏳ Pending PM"}
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className="px-3 py-3 text-slate-800 text-xs truncate max-w-[80px]" title={project?.projectBillability}>{project?.projectBillability || "—"}</td>
                       <td className="px-3 py-3 text-slate-800 truncate max-w-[130px]" title={project?.subPractice}>{project?.subPractice || "—"}</td>
                       <td className="px-3 py-3">
@@ -518,10 +589,17 @@ export default function BatchDetail() {
                       </td>
 
                       {/* Month cells */}
-                      {MONTHS.map((_, i) => {
+                      {MONTHS.map((monthName, i) => {
                         const month = i + 1;
                         const rev = months[month];
                         const amount = getAmount(projectId, month, rev);
+                        const ppmKey = monthName.substring(0,3).toLowerCase() + "PPM";
+                        if (month === 1 && i === 0) console.log("PPM Debug - project keys:", Object.keys(project || {}), "ppmKey:", ppmKey, "value:", project?.[ppmKey]);
+                        const ppmValue = project?.[ppmKey];
+                        const ppmDisplay = ppmValue === null || ppmValue === undefined || ppmValue === ""
+                          ? "-"
+                          : Number(ppmValue).toLocaleString();
+                        const previousValue = previousRevenueMap.get(`${projectId}-${month}`)?.amount;
                         const isEstimated = rev?.isEstimated;
                         const currentMonth = new Date().getMonth() + 1; // 1=Jan, 8=Aug
                         const isPast = month <= currentMonth;
@@ -531,13 +609,26 @@ export default function BatchDetail() {
                         if (isEditing && !isPast && !isLocked) {
                           // Editable cell
                           return (
-                            <td key={i} className="px-2 py-2 bg-green-50 border border-green-200">
+                            <td
+                              key={i}
+                              className="relative px-2 py-2 bg-green-50 border border-green-200"
+                              onMouseEnter={() => setHoveredCell(cellKey)}
+                              onMouseLeave={() => setHoveredCell(null)}
+                            >
                               <input
                                 type="number"
                                 value={editedAmounts[projectId]?.[month] ?? amount}
                                 onChange={e => handleAmountChange(projectId, month, e.target.value)}
                                 className="w-full text-right text-sm border border-green-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white font-semibold"
                               />
+                              {hoveredCell === cellKey && (
+                                <div className="absolute bottom-full right-0 mb-2 z-50 rounded-xl bg-white px-3 py-2 text-left text-xs text-slate-700 shadow-lg whitespace-nowrap border border-slate-200">
+                                  <div>PPM Value: {ppmDisplay}</div>
+                                  {previousValue !== undefined && previousValue !== null && (
+                                    <div>Previous value: {Number(previousValue).toLocaleString()}</div>
+                                  )}
+                                </div>
+                              )}
                             </td>
                           );
                         }
@@ -545,15 +636,25 @@ export default function BatchDetail() {
                         return (
                           <td 
                             key={i} 
-                            className={`px-2.5 py-3 text-right whitespace-nowrap font-semibold ${
+                            className={`relative px-2.5 py-3 text-right whitespace-nowrap font-semibold ${
                               isPast ? "bg-gradient-to-br from-blue-50 to-blue-100 text-blue-900 border-r border-blue-200" :
                               isEstimated ? "bg-yellow-50 text-slate-700 italic border-r border-yellow-200" :
                               "bg-gradient-to-br from-green-50 to-green-100 text-slate-900 border-r border-green-200"
                             }`}
+                            onMouseEnter={() => setHoveredCell(cellKey)}
+                            onMouseLeave={() => setHoveredCell(null)}
                           >
                             <span className={isEstimated ? "text-slate-700 italic" : ""}>
                               ${amount.toLocaleString()}
                             </span>
+                            {hoveredCell === cellKey && (
+                              <div className="absolute bottom-full right-0 mb-2 z-50 rounded-xl bg-white px-3 py-2 text-left text-xs text-slate-700 shadow-lg whitespace-nowrap border border-slate-200">
+                                <div>PPM Value: {ppmDisplay}</div>
+                                {previousValue !== undefined && previousValue !== null && (
+                                  <div>Previous value: {Number(previousValue).toLocaleString()}</div>
+                                )}
+                              </div>
+                            )}
                           </td>
                         );
                       })}
@@ -624,21 +725,21 @@ export default function BatchDetail() {
           Status: <span className="font-semibold text-slate-700">{batch.status}</span>
         </div>
 
-        {batch.status === "Draft" && openProjectQueries.length > 0 && (
+        {(batch.status === "Imported" || batch.status === "Draft") && openProjectQueries.length > 0 && (
           <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
             <AlertCircle className="w-4 h-4" />
             {openProjectQueries.length} project{openProjectQueries.length !== 1 ? "s have" : " has"} open queries. Resolve all queries before submitting.
           </div>
         )}
         
-        {isFinance && batch.status === "Draft" && (
+        {role === "Forecaster" && (batch.status === "Imported" || batch.status === "Draft") && (
           <button
-            onClick={() => statusMutation.mutate("Under Review")}
-            disabled={statusMutation.isPending || openProjectQueries.length > 0}
+            onClick={() => submitForReviewMutation.mutate()}
+            disabled={submitForReviewMutation.isPending || openProjectQueries.length > 0 || ownProjectRows.length === 0}
             className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <CheckCircle className="w-4 h-4" />
-            {statusMutation.isPending ? "Submitting..." : "Submit for Review"}
+            {submitForReviewMutation.isPending ? "Submitting..." : "Submit for Review"}
           </button>
         )}
         

@@ -8,9 +8,19 @@ router.get("/batch/:batchId", async (req, res) => {
         const { batchId } = req.params;
         const queries = await prisma_1.prisma.batchQuery.findMany({
             where: { batchId },
-            orderBy: { raisedAt: "desc" },
+            orderBy: { raisedAt: "asc" },
         });
-        res.json(queries);
+        const repliesByParent = new Map();
+        for (const query of queries) {
+            if (query.parentId) {
+                const replies = repliesByParent.get(query.parentId) || [];
+                replies.push(query);
+                repliesByParent.set(query.parentId, replies);
+            }
+        }
+        res.json(queries
+            .filter(query => !query.parentId)
+            .map(query => ({ ...query, replies: repliesByParent.get(query.id) || [] })));
     }
     catch (error) {
         console.error("Failed to fetch batch queries:", error);
@@ -20,7 +30,7 @@ router.get("/batch/:batchId", async (req, res) => {
 router.get("/open", async (req, res) => {
     try {
         const queries = await prisma_1.prisma.batchQuery.findMany({
-            where: { status: "Open" },
+            where: { status: "Open", parentId: null },
             orderBy: { raisedAt: "desc" },
         });
         res.json(queries);
@@ -32,7 +42,7 @@ router.get("/open", async (req, res) => {
 });
 router.post("/", async (req, res) => {
     try {
-        const { batchId, query, raisedBy } = req.body;
+        const { batchId, query, raisedBy, parentId, repliedBy, messageType } = req.body;
         if (!batchId || !query || !raisedBy) {
             return res.status(400).json({ error: "batchId, query, and raisedBy are required" });
         }
@@ -41,6 +51,9 @@ router.post("/", async (req, res) => {
                 batchId,
                 query,
                 raisedBy,
+                parentId: parentId || null,
+                repliedBy: repliedBy || raisedBy,
+                messageType: messageType || (parentId ? "reply" : "query"),
                 status: "Open",
             },
         });
@@ -69,9 +82,6 @@ router.put("/:id", async (req, res) => {
         if (!response && !status) {
             return res.status(400).json({ error: "No valid update fields provided" });
         }
-        if (response && !data.status) {
-            data.status = "Resolved";
-        }
         const updated = await prisma_1.prisma.batchQuery.update({
             where: { id },
             data,
@@ -85,6 +95,7 @@ router.put("/:id", async (req, res) => {
 });
 router.delete("/:id", async (req, res) => {
     try {
+        await prisma_1.prisma.batchQuery.deleteMany({ where: { parentId: req.params.id } });
         const { id } = req.params;
         await prisma_1.prisma.batchQuery.delete({ where: { id } });
         res.json({ success: true });

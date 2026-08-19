@@ -5,7 +5,7 @@ import { sendPLApprovalEmail, sendPHApprovalEmail } from "../services/emailServi
 const router = Router();
 
 const STATUS_MAP: Record<string, number> = {
-  "Draft": 1,
+  "Imported": 1,
   "Under Review": 2,
   "Approved PL": 3,
   "Approved PH": 4,
@@ -13,7 +13,7 @@ const STATUS_MAP: Record<string, number> = {
 };
 
 const STATUS_REVERSE: Record<number, string> = {
-  1: "Draft",
+  1: "Imported",
   2: "Under Review",
   3: "Approved PL",
   4: "Approved PH",
@@ -54,18 +54,32 @@ router.get("/:id", async (req, res) => {
     const batch = await prisma.importBatch.findUnique({ where: { id } });
     if (!batch) return res.status(404).json({ error: "Batch not found" });
 
+    const previousBatch = await prisma.importBatch.findFirst({
+      where: {
+        id: { not: id },
+        importDate: { lt: batch.importDate || new Date() },
+      },
+      orderBy: { importDate: "desc" },
+    });
+
     const revenues = await prisma.monthlyRevenue.findMany({
       where: { batchId: id }
     });
+    const previousRevenues = previousBatch
+      ? await prisma.monthlyRevenue.findMany({ where: { batchId: previousBatch.id } })
+      : [];
     const projectIds = [...new Set(revenues.map((r: any) => r.projectId))];
     const projects = await prisma.projectMaster.findMany({
       where: { id: { in: projectIds } }
     });
+    const projectSubmissions = await prisma.projectSubmission.findMany({ where: { batchId: id } });
 
     res.json({
       batch: formatBatch(batch),
       revenues,
+      previousRevenues,
       projects,
+      projectSubmissions,
     });
   } catch (error: any) {
     console.error(error);
@@ -97,11 +111,15 @@ router.put("/:id/status", async (req, res) => {
     // Send email notifications
     try {
       if (status === "Under Review") {
+        // TODO: Graph API - notify PL when Finance submits for review
         await sendPLApprovalEmail(formattedBatch);
         console.log("PL approval email sent!");
       } else if (status === "Approved PL") {
+        // TODO: Graph API - notify PH when PL approves
         await sendPHApprovalEmail(formattedBatch);
         console.log("PH approval email sent!");
+      } else if (status === "Locked") {
+        // TODO: Graph API - notify Finance when locked
       }
     } catch (emailError) {
       console.error("Email sending failed:", emailError);

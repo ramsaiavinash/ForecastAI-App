@@ -45,6 +45,15 @@ const COLUMN_GROUPS = [
     columns: ["EDL ID", "EDL Name", "PDL ID", "PDL Name", "PM ID", "PM Name"],
   },
   {
+    key: "ppm",
+    label: "PPM",
+    description: "Monthly PPM reference values",
+    badge: "PPM",
+    badgeColor: "bg-amber-100 text-amber-700",
+    locked: false,
+    columns: ["Jan PPM", "Feb PPM", "Mar PPM", "Apr PPM", "May PPM", "Jun PPM", "Jul PPM", "Aug PPM", "Sep PPM", "Oct PPM", "Nov PPM", "Dec PPM"],
+  },
+  {
     key: "revenue",
     label: "Revenue",
     description: "Monthly revenue values (always imported)",
@@ -90,6 +99,16 @@ function parseCSVLine(line: string): string[] {
 }
 
 function rowToParsedCSV(row: Record<string, string>): ParsedCSVRow {
+  const parseMonthlyPPM = (month: string) => {
+    const normalizedMonth = month.toLowerCase();
+    const headers = Object.keys(row);
+    const normalizeHeader = (key: string) => key.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const header = headers.find(key => {
+      const normalized = normalizeHeader(key);
+      return normalized.startsWith(normalizedMonth) && normalized.includes('ppm');
+    });
+    return header === undefined || row[header].trim() === "" ? null : parseIndianNumber(row[header]);
+  };
   const getMonthForecast = (idx: number) => {
     const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     return parseIndianNumber(row[`${monthNames[idx]}'26 Forecast`] || "0");
@@ -118,7 +137,12 @@ function rowToParsedCSV(row: Record<string, string>): ParsedCSVRow {
     opportunityId: row["Oppurtunity ID"] || "",
     opportunityName: row["Oppurtunity Name"] || "",
     soId: row["SO ID"] || "",
-    janPPM: parseIndianNumber(row["Jan PPM"] || "0"),
+    janPPM: parseMonthlyPPM("Jan"), febPPM: parseMonthlyPPM("Feb"),
+    marPPM: parseMonthlyPPM("Mar"), aprPPM: parseMonthlyPPM("Apr"),
+    mayPPM: parseMonthlyPPM("May"), junPPM: parseMonthlyPPM("Jun"),
+    julPPM: parseMonthlyPPM("Jul"), augPPM: parseMonthlyPPM("Aug"),
+    sepPPM: parseMonthlyPPM("Sep"), octPPM: parseMonthlyPPM("Oct"),
+    novPPM: parseMonthlyPPM("Nov"), decPPM: parseMonthlyPPM("Dec"),
     jan: getMonthForecast(0), feb: getMonthForecast(1),
     mar: getMonthForecast(2), apr: getMonthForecast(3),
     may: getMonthForecast(4), jun: getMonthForecast(5),

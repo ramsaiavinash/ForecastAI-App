@@ -44,6 +44,7 @@ export function parseIndianNumber(value: string): number {
 
 export function getBatchStatusColor(status: string): string {
   switch (status) {
+    case "Imported": return "bg-blue-100 text-blue-700";
     case "Draft": return "bg-gray-100 text-gray-700";
     case "Under Review": return "bg-yellow-100 text-yellow-700";
     case "Approved PL": return "bg-blue-100 text-blue-700";

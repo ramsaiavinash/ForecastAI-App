@@ -5,6 +5,7 @@ import { Lock, XCircle, Shield, TrendingUp, TrendingDown, ArrowRight, Eye, Alert
 import { toast } from "sonner";
 import { formatCompactCurrency, getBatchStatusColor } from "@/lib/utils";
 import { ImportBatch } from "@/types/index";
+import BatchQueryThread from "@/components/BatchQueryThread";
 
 const API_BASE = "";
 
@@ -135,7 +136,7 @@ export default function PHApproval() {
   const { data: batchQuerySummary = [] } = useQuery({
     queryKey: ["batch-query-summary-ph"],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/batch-queries/open`);
+      const res = await fetch(`${API_BASE}/api/comments/open?queryType=PH_PL`);
       if (!res.ok) throw new Error("Failed to fetch open batch queries");
       return res.json();
     },
@@ -295,6 +296,17 @@ export default function PHApproval() {
                         className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none shadow-sm"
                       />
                     </div>
+                    <div className="border-t border-slate-200 pt-4">
+                      <h3 className="text-sm font-bold text-slate-800">Review Conversation</h3>
+                      <p className="mt-1 text-xs text-slate-500">Discuss the batch independently from the approval decision.</p>
+                      <BatchQueryThread
+                        batchId={batch.id}
+                        role="PH"
+                        raisedBy="PH"
+                        title="PH Query Thread"
+                        emptyMessage="No PH queries on this batch."
+                      />
+                    </div>
                     <div className="flex items-center gap-3 justify-end">
                       <button
                         onClick={() => setSelectedBatch(null)}
@@ -319,7 +331,6 @@ export default function PHApproval() {
                         {approveMutation.isPending ? "Locking..." : "Approve & Lock"}
                       </button>
                     </div>
-                    <BatchQueryPanel batchId={batch.id} />
                   </div>
                 )}
 

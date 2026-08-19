@@ -5,6 +5,7 @@ import { CheckCircle, XCircle, AlertCircle, TrendingUp, TrendingDown, ArrowRight
 import { toast } from "sonner";
 import { formatCompactCurrency, getBatchStatusColor } from "@/lib/utils";
 import { ImportBatch } from "@/types/index";
+import BatchQueryThread from "@/components/BatchQueryThread";
 
 const API_BASE = "";
 
@@ -143,16 +144,17 @@ export default function PLApproval() {
   const { data: batches = [], isLoading } = useQuery<ImportBatch[]>({
     queryKey: ["batches-pl"],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/batches?status=Under Review`);
+      const res = await fetch(`${API_BASE}/api/batches`);
       if (!res.ok) throw new Error("Failed to fetch batches");
-      return res.json();
+      const allBatches = await res.json();
+      return allBatches.filter((batch: ImportBatch) => batch.status === "Under Review" || batch.status === "Approved PL");
     },
   });
 
   const openBatchQueryMap = useQuery({
     queryKey: ["batch-query-summary-pl"],
     queryFn: async () => {
-      const res = await fetch(`${API_BASE}/api/batch-queries/open`);
+      const res = await fetch(`${API_BASE}/api/comments/open?queryType=PH_PL`);
       if (!res.ok) throw new Error("Failed to fetch open batch queries");
       return res.json();
     },
@@ -219,7 +221,7 @@ export default function PLApproval() {
             const variancePercent = batch.lastTotal ? ((batch.variance || 0) / batch.lastTotal) * 100 : 0;
             const isExpanded = selectedBatch?.id === batch.id;
             const openPhQueries = (openBatchQueryMap.data || []).filter(
-              (query: any) => query.batchId === batch.id && query.raisedBy === "PH" && query.status !== "Resolved"
+              (query: any) => query.batchId === batch.id && query.sentBy === "PH" && query.status !== "Resolved"
             );
 
             return (
@@ -290,6 +292,11 @@ export default function PLApproval() {
                         <span className="flex items-center gap-2"><AlertCircle className="w-4 h-4" /> {openPhQueries.length} open PH query{openPhQueries.length !== 1 ? "ies" : "y"} must be resolved before approving.</span>
                       </div>
                     )}
+                    {batch.status === "Approved PL" && (
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800">
+                        ✅ You approved this batch · Awaiting PH approval
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-bold text-slate-700 mb-2">Comments (optional)</label>
                       <textarea
@@ -300,7 +307,18 @@ export default function PLApproval() {
                         className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none shadow-sm"
                       />
                     </div>
-                    <div className="flex items-center gap-3 justify-end">
+                    <div className="border-t border-slate-200 pt-4">
+                      <h3 className="text-sm font-bold text-slate-800">Review Conversation</h3>
+                      <p className="mt-1 text-xs text-slate-500">Discuss the batch independently from the approval decision.</p>
+                      <BatchQueryThread
+                        batchId={batch.id}
+                        role="PL"
+                        raisedBy="PH"
+                        title="PH Query Thread"
+                        emptyMessage="No PH queries on this batch."
+                      />
+                    </div>
+                    {batch.status !== "Approved PL" && <div className="flex items-center gap-3 justify-end">
                       <button
                         onClick={() => setSelectedBatch(null)}
                         className="text-slate-600 hover:text-slate-900 font-medium text-sm"
@@ -323,8 +341,7 @@ export default function PLApproval() {
                         <CheckCircle className="w-4 h-4" />
                         {approveMutation.isPending ? "Approving..." : "Approve"}
                       </button>
-                    </div>
-                    <BatchQueryAudit batchId={batch.id} />
+                    </div>}
                   </div>
                 )}
 

@@ -135,6 +135,7 @@ router.post("/csv", async (req: Request, res: Response) => {
         statuscode: 1,
       }
     });
+    // TODO: Graph API - notify PMs when Finance imports
     console.log("Batch created:", batch.id);
 
     let importedRows = 0;
@@ -173,6 +174,18 @@ router.post("/csv", async (req: Request, res: Response) => {
             opportunityId: row.opportunityId || undefined,
             opportunityName: row.opportunityName || undefined,
             soId: row.soId || undefined,
+            janPPM: row.janPPM === null || row.janPPM === undefined || row.janPPM === "" ? null : String(row.janPPM),
+            febPPM: row.febPPM === null || row.febPPM === undefined || row.febPPM === "" ? null : String(row.febPPM),
+            marPPM: row.marPPM === null || row.marPPM === undefined || row.marPPM === "" ? null : String(row.marPPM),
+            aprPPM: row.aprPPM === null || row.aprPPM === undefined || row.aprPPM === "" ? null : String(row.aprPPM),
+            mayPPM: row.mayPPM === null || row.mayPPM === undefined || row.mayPPM === "" ? null : String(row.mayPPM),
+            junPPM: row.junPPM === null || row.junPPM === undefined || row.junPPM === "" ? null : String(row.junPPM),
+            julPPM: row.julPPM === null || row.julPPM === undefined || row.julPPM === "" ? null : String(row.julPPM),
+            augPPM: row.augPPM === null || row.augPPM === undefined || row.augPPM === "" ? null : String(row.augPPM),
+            sepPPM: row.sepPPM === null || row.sepPPM === undefined || row.sepPPM === "" ? null : String(row.sepPPM),
+            octPPM: row.octPPM === null || row.octPPM === undefined || row.octPPM === "" ? null : String(row.octPPM),
+            novPPM: row.novPPM === null || row.novPPM === undefined || row.novPPM === "" ? null : String(row.novPPM),
+            decPPM: row.decPPM === null || row.decPPM === undefined || row.decPPM === "" ? null : String(row.decPPM),
           },
           create: {
             projectId: row.projectId,
@@ -198,6 +211,18 @@ router.post("/csv", async (req: Request, res: Response) => {
             opportunityId: row.opportunityId || undefined,
             opportunityName: row.opportunityName || undefined,
             soId: row.soId || undefined,
+            janPPM: row.janPPM === null || row.janPPM === undefined || row.janPPM === "" ? null : String(row.janPPM),
+            febPPM: row.febPPM === null || row.febPPM === undefined || row.febPPM === "" ? null : String(row.febPPM),
+            marPPM: row.marPPM === null || row.marPPM === undefined || row.marPPM === "" ? null : String(row.marPPM),
+            aprPPM: row.aprPPM === null || row.aprPPM === undefined || row.aprPPM === "" ? null : String(row.aprPPM),
+            mayPPM: row.mayPPM === null || row.mayPPM === undefined || row.mayPPM === "" ? null : String(row.mayPPM),
+            junPPM: row.junPPM === null || row.junPPM === undefined || row.junPPM === "" ? null : String(row.junPPM),
+            julPPM: row.julPPM === null || row.julPPM === undefined || row.julPPM === "" ? null : String(row.julPPM),
+            augPPM: row.augPPM === null || row.augPPM === undefined || row.augPPM === "" ? null : String(row.augPPM),
+            sepPPM: row.sepPPM === null || row.sepPPM === undefined || row.sepPPM === "" ? null : String(row.sepPPM),
+            octPPM: row.octPPM === null || row.octPPM === undefined || row.octPPM === "" ? null : String(row.octPPM),
+            novPPM: row.novPPM === null || row.novPPM === undefined || row.novPPM === "" ? null : String(row.novPPM),
+            decPPM: row.decPPM === null || row.decPPM === undefined || row.decPPM === "" ? null : String(row.decPPM),
             ownerId: "system",
             statecode: 0,
           }

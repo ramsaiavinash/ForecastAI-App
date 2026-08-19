@@ -1,4 +1,4 @@
-export type BatchStatus = "Draft" | "Under Review" | "Approved PL" | "Approved PH" | "Locked";
+export type BatchStatus = "Imported" | "Draft" | "Under Review" | "Approved PL" | "Approved PH" | "Locked";
 
 export interface ImportBatch {
   id: string;
@@ -12,6 +12,15 @@ export interface ImportBatch {
   lastTotal: number;
   variance: number;
   createdAt: string;
+}
+
+export interface ProjectSubmission {
+  id: string;
+  batchId: string;
+  projectId: string;
+  submittedBy: string;
+  submittedAt: string;
+  status: string;
 }
 
 export interface ProjectMaster {
@@ -112,7 +121,9 @@ export interface ParsedCSVRow {
   opportunityId: string;
   opportunityName: string;
   soId: string;
-  janPPM: number;
+  janPPM: number | null; febPPM: number | null; marPPM: number | null; aprPPM: number | null;
+  mayPPM: number | null; junPPM: number | null; julPPM: number | null; augPPM: number | null;
+  sepPPM: number | null; octPPM: number | null; novPPM: number | null; decPPM: number | null;
   jan: number; feb: number; mar: number; apr: number;
   may: number; jun: number; jul: number; aug: number;
   sep: number; oct: number; nov: number; dec: number;

@@ -6,6 +6,7 @@ const router = Router();
 router.delete("/clear", async (req, res) => {
   try {
     await prisma.$transaction([
+      prisma.projectSubmission.deleteMany(),
       prisma.batchQuery.deleteMany(),
       prisma.projectComment.deleteMany(),
       prisma.submissionSummary.deleteMany(),

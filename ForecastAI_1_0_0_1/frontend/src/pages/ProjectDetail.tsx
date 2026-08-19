@@ -260,8 +260,8 @@ export default function ProjectDetail() {
           <div className="flex items-center gap-1.5"><div className="w-3 h-3 bg-green-50 rounded border border-green-200" /><span>May–Dec: Forecast</span></div>
         </div>
       </div>
-    {/* Comments Section */}
-    <CommentsSection projectId={id!} projectData={data} />
+    {/* PL ↔ PM project conversations are hidden from Finance and PH. */}
+    {(role === "PL" || role === "Forecaster") && <CommentsSection projectId={id!} projectData={data} />}
     </div>
   );
 }
@@ -271,14 +271,14 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
   const [showForm, setShowForm] = useState(false);
   const [query, setQuery] = useState("");
   const [raisedBy, setRaisedBy] = useState("Practice Lead");
-  const [responseText, setResponseText] = useState<Record<string, string>>({});
+  const [responseText, setResponseText] = useState("");
   const [respondingTo, setRespondingTo] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const { data: queries = [], isLoading } = useQuery({
     queryKey: ["comments", projectId],
     queryFn: async () => {
-      const res = await fetch(`/api/comments/project/${projectId}`);
+      const res = await fetch(`/api/comments/project/${projectId}?queryType=PL_PM`);
       if (!res.ok) throw new Error("Failed to fetch queries");
       return res.json();
     },
@@ -286,13 +286,14 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
   });
 
   const openQueries = queries.filter((q: any) => q.status !== "Resolved");
+  const canReply = role === "PL" || role === "Forecaster";
 
   const addQuery = useMutation({
     mutationFn: async () => {
       const res = await fetch("/api/comments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, comment: query, commentedBy: raisedBy }),
+        body: JSON.stringify({ projectId, message: query, sentBy: "PL", queryType: "PL_PM" }),
       });
       if (!res.ok) throw new Error("Failed to raise query");
       return res.json();
@@ -307,21 +308,45 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
   });
 
   const respondToQuery = useMutation({
-    mutationFn: async ({ id, response }: { id: string; response: string }) => {
-      const res = await fetch(`/api/comments/${id}`, {
-        method: "PUT",
+    mutationFn: async ({ parentId, response }: { parentId: string; response: string }) => {
+      const res = await fetch("/api/comments", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ response, respondedBy: "Project PM", status: "Resolved" }),
+        body: JSON.stringify({
+          projectId,
+          parentId,
+          message: response,
+          sentBy: role === "PL" ? "PL" : "PM",
+          queryType: "PL_PM",
+        }),
       });
+      if (!res.ok) throw new Error("Failed to submit reply");
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
       setRespondingTo(null);
-      setResponseText({});
-      toast.success("Response submitted! Query marked as Resolved.");
+      setResponseText("");
+      toast.success("Reply submitted!");
     },
-    onError: () => toast.error("Failed to submit response"),
+    onError: () => toast.error("Failed to submit reply"),
+  });
+
+  const resolveQuery = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/comments/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Resolved", resolvedBy: role }),
+      });
+      if (!res.ok) throw new Error("Failed to resolve query");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", projectId] });
+      toast.success("Query marked as resolved.");
+    },
+    onError: () => toast.error("Only PL can resolve a query"),
   });
 
   const deleteQuery = useMutation({
@@ -423,8 +448,19 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
             <p className="text-sm text-slate-400 mt-1">PL can raise queries for PM to respond before approval</p>
           </div>
         ) : (
-          queries.map((q: any) => (
-            <div key={q.id} className={`p-5 transition-colors ${q.status === "Resolved" ? "bg-emerald-50/30" : "bg-amber-50/20"}`}>
+          queries.map((q: any) => {
+            const replies = [
+              ...(q.replies || []),
+              ...(q.response ? [{
+                id: `${q.id}-legacy-response`,
+                comment: q.response,
+                commentedAt: q.respondedAt || q.commentedAt,
+                repliedBy: "PM",
+              }] : []),
+            ];
+            const isResolved = q.status === "Resolved";
+            return (
+            <div key={q.id} className={`p-5 border-l-4 transition-colors ${isResolved ? "bg-emerald-50 border-emerald-400" : "bg-amber-50/40 border-amber-400"}`}>
               {/* Query */}
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-3 flex-1">
@@ -435,12 +471,13 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-slate-900 text-sm">Practice Lead</span>
                       <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
-                        q.status === "Resolved"
+                        isResolved
                           ? "bg-emerald-100 text-emerald-700"
                           : "bg-amber-100 text-amber-700"
                       }`}>
-                        {q.status === "Resolved" ? "✅ Resolved" : "⏳ Open"}
+                        {isResolved ? "✅ Resolved" : "⏳ Open"}
                       </span>
+                      <span className="text-xs text-slate-400">{replies.length} repl{replies.length === 1 ? "y" : "ies"}</span>
                       <span className="text-xs text-slate-400">
                         {new Date(q.commentedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                       </span>
@@ -457,62 +494,76 @@ function CommentsSection({ projectId, projectData }: { projectId: string; projec
                 </button>
               </div>
 
-              {/* PM Response */}
-              {q.response && (
-                <div className="mt-3 ml-12 p-3 bg-white rounded-xl border border-emerald-200">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold text-xs">PM</div>
-                    <span className="text-xs font-semibold text-slate-700">Project Manager Response</span>
-                    <span className="text-xs text-slate-400">
-                      {q.respondedAt && new Date(q.respondedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                    </span>
+              {/* Thread replies */}
+              {replies.map((reply: any) => {
+                const isPLReply = reply.sentBy === "PL" || reply.repliedBy === "PL" || reply.commentedBy === "Practice Lead";
+                return (
+                  <div key={reply.id} className={`mt-3 ml-12 p-3 rounded-xl border-l-4 ${isPLReply ? "bg-amber-50 border-amber-300" : "bg-blue-50 border-blue-300"}`}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs ${isPLReply ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}`}>{isPLReply ? "PL" : "PM"}</div>
+                      <span className="text-xs font-semibold text-slate-700">{isPLReply ? "Practice Lead" : "Project Manager"}</span>
+                      <span className="text-xs text-slate-400">{new Date(reply.commentedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                    </div>
+                    <p className="text-sm text-slate-600 leading-relaxed">{reply.comment}</p>
                   </div>
-                  <p className="text-sm text-slate-600 leading-relaxed">{q.response}</p>
-                </div>
-              )}
+                );
+              })}
 
-              {/* Add Response Form */}
-              {q.status !== "Resolved" && (
+              {/* Reply and resolve controls */}
+              {!isResolved && canReply && (
                 <div className="mt-3 ml-12">
                   {respondingTo === q.id ? (
                     <div className="space-y-2">
                       <textarea
-                        value={responseText[q.id] || ""}
-                        onChange={e => setResponseText(prev => ({ ...prev, [q.id]: e.target.value }))}
-                        placeholder="PM: Enter your response to this query..."
+                        value={responseText}
+                        onChange={e => setResponseText(e.target.value)}
+                        placeholder={`${role}: Write a reply...`}
                         rows={3}
                         className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-100 focus:border-emerald-400 bg-white resize-none"
                       />
                       <div className="flex items-center gap-2 justify-end">
                         <button
-                          onClick={() => setRespondingTo(null)}
+                          onClick={() => { setRespondingTo(null); setResponseText(""); }}
                           className="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-800 font-medium"
                         >
                           Cancel
                         </button>
                         <button
-                          onClick={() => respondToQuery.mutate({ id: q.id, response: responseText[q.id] || "" })}
-                          disabled={!responseText[q.id] || respondToQuery.isPending}
-                          className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-xl text-xs font-medium transition-colors disabled:opacity-50"
+                          onClick={() => respondToQuery.mutate({ parentId: q.id, response: responseText })}
+                          disabled={!responseText.trim() || respondToQuery.isPending}
+                          className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl text-xs font-medium transition-colors disabled:opacity-50"
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          Submit & Resolve
+                          <Send className="w-3.5 h-3.5" />
+                          Send Reply
                         </button>
                       </div>
                     </div>
                   ) : (
                     <button
                       onClick={() => setRespondingTo(q.id)}
-                      className="flex items-center gap-1.5 text-xs text-emerald-600 hover:text-emerald-700 font-medium border border-emerald-200 hover:border-emerald-300 px-3 py-1.5 rounded-xl transition-colors bg-white"
+                      className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 font-medium border border-blue-200 hover:border-blue-300 px-3 py-1.5 rounded-xl transition-colors bg-white"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      Add PM Response & Resolve
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      Reply
                     </button>
                   )}
                 </div>
               )}
+              {!isResolved && role === "PL" && (
+                <div className="mt-3 flex justify-end">
+                  <button
+                    onClick={() => resolveQuery.mutate(q.id)}
+                    disabled={resolveQuery.isPending}
+                    className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-medium transition-colors disabled:opacity-50"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Mark as Resolved
+                  </button>
+                </div>
+              )}
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

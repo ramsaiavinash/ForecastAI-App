@@ -13,6 +13,7 @@ import dataRouter from "./routes/data";
 import revenuesRouter from "./routes/revenues";
 import commentsRouter from "./routes/comments";
 import batchQueriesRouter from "./routes/batchQueries";
+import projectSubmissionsRouter from "./routes/projectSubmissions";
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
@@ -36,6 +37,7 @@ app.use("/api/data", dataRouter);
 app.use("/api/revenues", revenuesRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/batch-queries", batchQueriesRouter);
+app.use("/api/project-submissions", projectSubmissionsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
