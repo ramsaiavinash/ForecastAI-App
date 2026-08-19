@@ -20,7 +20,7 @@ export default function BatchDetail() {
   const queryClient = useQueryClient();
   const { role } = useRole();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedAmounts, setEditedAmounts] = useState<Record<string, Record<number, number>>>({});
+  const [editedAmounts, setEditedAmounts] = useState<Record<string, Record<number, number | string>>>({});
   const [search, setSearch] = useState("");
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [filters, setFilters] = useState<Record<string, string[]>>({});
@@ -69,7 +69,7 @@ export default function BatchDetail() {
               fetch(`${API_BASE}/api/revenues/${rev.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ amount }),
+                body: JSON.stringify({ amount: amount === "" ? 0 : Number(amount) }),
               })
             );
           }
@@ -184,7 +184,10 @@ export default function BatchDetail() {
   });
 
   const getAmount = (projectId: string, month: number, rev: any) => {
-    if (editedAmounts[projectId]?.[month] !== undefined) return editedAmounts[projectId][month];
+    if (editedAmounts[projectId]?.[month] !== undefined) {
+      const editedAmount = editedAmounts[projectId][month];
+      return editedAmount === "" ? 0 : Number(editedAmount);
+    }
     return Number(rev?.amount || 0);
   };
 
@@ -193,10 +196,9 @@ export default function BatchDetail() {
   );
 
   const handleAmountChange = (projectId: string, month: number, value: string) => {
-    const num = parseFloat(value) || 0;
     setEditedAmounts(prev => ({
       ...prev,
-      [projectId]: { ...(prev[projectId] || {}), [month]: num }
+      [projectId]: { ...(prev[projectId] || {}), [month]: value === "" ? "" : Number(value) }
     }));
   };
 
